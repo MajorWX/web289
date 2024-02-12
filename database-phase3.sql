@@ -78,7 +78,7 @@ CREATE TABLE `images` (
 --
 
 INSERT INTO `images` (`image_id`, `user_id`, `content`, `upload_date`) VALUES
-(1, 1, 'this would be a pointer to the image\'s location', '2024-02-10 23:21:08');
+(1, 1, "this would be a pointer to the image's location", '2024-02-10 23:21:08');
 
 -- --------------------------------------------------------
 

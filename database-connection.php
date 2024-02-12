@@ -57,7 +57,7 @@ function print_table($table_name){
     // Getting each value from the row, one cell at a time
     foreach($row as $property => $value) {
       // Removing extra data by checking properties against the field names
-      if(in_array($property, $field_names)) {
+      if(in_array($property, $field_names)  && $property != '0') {
         // Printing each cell value to a cell
         echo "<td>" . $value . "</td>";
       }
