@@ -2,18 +2,15 @@
 
 //Defining Database Credentials
 
-// localhost
-define("DB_SERVER", "localhost");
-define("DB_USER", "farmersMarketUser");
-define("DB_PASS", "web289");
-define("DB_NAME", "farmers_market");
+require_once('db_credentials.php');
 
-// Kira's Webhost
-// define("DB_SERVER", "localhost");
-// define("DB_USER", "umuzpnjuhogpj ");
-// define("DB_PASS", "ggicyhnls95h");
-// define("DB_NAME", "dbu7plrbumrykh");
-
+if(!defined('DB_SERVER')) {
+  // localhost
+  define("DB_SERVER", "localhost");
+  define("DB_USER", "farmersMarketUser");
+  define("DB_PASS", "web289");
+  define("DB_NAME", "farmers_market");
+}
 
 //Connecting to the database
 
