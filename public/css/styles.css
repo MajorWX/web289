@@ -1,0 +1,31 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+
+}
+
+body {
+
+}
+
+table, th, td, caption {
+  border: 1px solid black;
+  padding: 2px;
+}
+
+th {
+  min-width: 60px;
+}
+
+td {
+  padding-left: 6px;
+  vertical-align: top;
+}
+
+.empty {
+  border: none;
+}
+
+

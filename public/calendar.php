@@ -18,7 +18,11 @@
   <main>
     <h2>Calendar</h2>
 
-    
+    <?php
+      $calendarDateArray = CalendarDate::find_all_dates();
+
+      CalendarDate::create_calendar($calendarDateArray);
+    ?>
 
   </main>
 

@@ -9,6 +9,11 @@ class CalendarDate extends DatabaseObject {
   public $date;
   public $listed_vendors = [];
 
+  // public $year;
+  // public $month;
+  // public $day;
+
+
   // DATE FUNCTIONS ================================================
 
   static public function to_sql_datetime($date){
@@ -111,19 +116,104 @@ class CalendarDate extends DatabaseObject {
   static public function find_all_dates() {
     $month_first_day = static::month_first_day();
 
-    $sql = "SELECT calendar_id, date, vendor_display_name";
-    $sql .= "FROM calendar c, calender_listing li, vendors v";
-    $sql .= "WHERE c.calendar_id = li.li_calendar_id";
-    $sql .= "AND li.li_vendor_id = v.vendor_id";
-    $sql .= "AND date >=" . static::to_sql_datetime($month_first_day);
+    $sql = "SELECT c.calendar_id, c.date, v.vendor_display_name ";
+    $sql .= "FROM calendar c, calendar_listing li, vendors v ";
+    $sql .= "WHERE c.calendar_id = li.li_calendar_id ";
+    $sql .= "AND li.li_vendor_id = v.vendor_id ";
+    $sql .= "AND date >= " . static::to_sql_datetime($month_first_day) . ";";
+
+    // echo $sql;
 
     return static::find_by_sql($sql);
   }
 
   // CALENDAR RENDERING FUNCTIONS =====================================
 
-  static public function create_calendar($CalendarDateArray) {
+  static public function explode_dates($calendarDateArray) {
+    $full_calendar = [];
     
+    foreach($calendarDateArray as $calendarDate){
+      $explodedDate = explode('-', $calendarDate->date);
+
+      $year = $explodedDate[0];
+      $month = $explodedDate[1];
+      $day = $explodedDate[2];
+
+      $full_calendar[$year][$month][$day] = $calendarDate;
+    }
+
+    return $full_calendar;
+  }
+
+  static public function create_calendar($calendarDateArray) {
+    $full_calendar = static::explode_dates($calendarDateArray);
+    foreach($full_calendar as $year => $month){
+      echo "<h3>" . $year . "</h3>";
+      foreach($month as $month => $days){
+        echo "<table>";
+        echo "<caption>" . date("F", static::month_first_day($month, $year)) . "</caption>";
+        echo "<tr>";
+        echo "<th>Monday</th>";
+        echo "<th>Tuesday</th>";
+        echo "<th>Wednesday</th>";
+        echo "<th>Thursday</th>";
+        echo "<th>Friday</th>";
+        echo "<th>Saturday</th>";
+        echo "<th>Sunday</th>";
+        echo "</tr>";
+
+        $days_in_month = static::days_in_month($month, $year);
+        $day_counter = 1;
+        $starting_weekday = static::month_starting_day_number($month, $year);
+        $weekday_counter = 1;
+
+        // Starting week
+        echo "<tr>";
+        while($weekday_counter < $starting_weekday) {
+          echo '<td class="empty"></td>';
+          $weekday_counter++;
+        }
+
+        // Day Loop
+        while ($day_counter <= $days_in_month) {
+          if($weekday_counter == 1){
+            echo "<tr>";
+          }
+          echo "<td>" . $day_counter;
+          if(array_key_exists($day_counter, $days)){
+            $days[$day_counter]->list_as_day();
+          }
+          $weekday_counter++;
+          if($weekday_counter > 7){
+            echo "</tr>";
+            $weekday_counter = 1;
+          }
+          $day_counter++;
+        } // End Day
+
+        // Finishing out any hanging weeks with empty cells
+        while($weekday_counter <= 7 && $weekday_counter != 1) {
+          echo '<td class="empty"></td>';
+          $weekday_counter++;
+          if($weekday_counter > 7){
+            echo "</tr>";
+          }
+        }
+        echo "</table>";
+      } // End Month
+    } // End Year
+  }
+
+  public function list_as_day(){
+    echo "<br>";
+    echo "Market day<br>";
+    if(count($this->listed_vendors) > 0){
+      echo "<ul>";
+      foreach($this->listed_vendors as $vendor_display_name){
+        echo "<li>" . $vendor_display_name . "</li>";
+      }
+      echo "</ul>";
+    }
   }
 
 

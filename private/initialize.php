@@ -23,10 +23,10 @@
 
   // Loading Files
   require_once('functions.php');
+  // require_once('status_error_functions.php');
 
   // Defining Database Credentials
-
-  require_once('db_credentials.php');
+  // require_once('db_credentials.php');
 
   if(!defined('DB_SERVER')) {
     // localhost
@@ -38,11 +38,26 @@
 
   // Loading More Files
   require_once('database_functions.php');
+  require_once('validation_functions.php');
 
   // Autoload Classes
   // Line 36-52
 
-  //
+  // -> All classes in directory
+  foreach(glob('classes/*.class.php') as $file) {
+    require_once($file);
+  }
+
+  // Autoload class definitions
+  function my_autoload($class) {
+    if(preg_match('/\A\w+\Z/', $class)) {
+      include('classes\\' . $class . '.class.php');
+    }
+  }
+  spl_autoload_register('my_autoload');
+
+  $database = db_connect();
+  DatabaseObject::set_database($database);
 
 
 

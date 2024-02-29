@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <title>Reynolds Hill Farmers Market <?php if(isset($page_title)) {echo ' - ' . h($page_title); }?></title>
   <!-- Change this link to use <a href="<~?php echo url_for('/index.php'); ?>" -->
-  <link href="css/styles.css" rel="stylesheet">
+  <link href="<?php echo url_for('/css/styles.css') ?>" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
@@ -16,7 +16,7 @@
     <!-- Change all these <a> links to use <a href="<~?php echo url_for('/index.php'); ?>" -->
     <nav>
       <ul>
-        <li><a href="#">Calendar</a></li>
+        <li><a href="<?php echo url_for('/calendar.php')?>">Calendar</a></li>
         <li><a href="#">Vendors</a></li>
         <li><a href="#">Products</a></li>
         <!-- Edit this to be views and split the links into a login and a signup -->
