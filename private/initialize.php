@@ -23,7 +23,7 @@
 
   // Loading Files
   require_once('functions.php');
-  // require_once('status_error_functions.php');
+  require_once('status_error_functions.php');
 
   // Defining Database Credentials
   // require_once('db_credentials.php');
@@ -39,6 +39,7 @@
   // Loading More Files
   require_once('database_functions.php');
   require_once('validation_functions.php');
+  require_once('classes/Session.class.php');
 
   // Autoload Classes
   // Line 36-52
@@ -59,6 +60,6 @@
   $database = db_connect();
   DatabaseObject::set_database($database);
 
-
+  $session = new Session;
 
 ?>

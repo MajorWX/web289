@@ -93,15 +93,15 @@
     return preg_match($email_regex, $value) === 1;
   }
 
-  // // has_unique_username('johnqpublic')
-  // // * Validates uniqueness of members.username
-  // // * For new records, provide only the username.
-  // // * For existing records, provide current ID as second argument
-  // //   has_unique_username('johnqpublic', 4)
-  // function has_unique_username($username, $current_id="0") {
-  //   // Need to re-write for OOP
-  //   $member = Member::find_by_username($username);
-  //   return ($member === false || $member->id == $current_id);
-  // }
+  // has_unique_username('johnqpublic')
+  // * Validates uniqueness of members.username
+  // * For new records, provide only the username.
+  // * For existing records, provide current ID as second argument
+  //   has_unique_username('johnqpublic', 4)
+  function has_unique_display_name($display_name, $current_id="0") {
+    // Need to re-write for OOP
+    $user = User::find_by_display_name($display_name);
+    return ($user === false || $user->user_id == $current_id);
+  }
 
 ?>
