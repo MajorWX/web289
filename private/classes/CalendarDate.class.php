@@ -32,6 +32,17 @@ class CalendarDate extends DatabaseObject {
     return date('Y');
   }
 
+  public function print_date(){
+    $explodedDate = explode('-', $this->date);
+
+    $year = $explodedDate[0];
+    $month = $explodedDate[1];
+    $day = $explodedDate[2];
+
+    return date('F, jS', mktime(0, 0, 0, $month, $day, $year));
+
+  }
+
   /**
    * Returns the first day of a given month, as a DateTime object
    */
@@ -120,7 +131,20 @@ class CalendarDate extends DatabaseObject {
     $sql .= "FROM calendar c, calendar_listing li, vendors v ";
     $sql .= "WHERE c.calendar_id = li.li_calendar_id ";
     $sql .= "AND li.li_vendor_id = v.vendor_id ";
-    $sql .= "AND date >= " . static::to_sql_datetime($month_first_day) . ";";
+    $sql .= "AND date >= '" . static::to_sql_datetime($month_first_day) . "';";
+
+    // echo $sql;
+
+    return static::find_by_sql($sql);
+  }
+
+  static public function find_by_vendor($vendor_id) {
+
+    $sql = "SELECT c.calendar_id, c.date ";
+    $sql .= "FROM calendar c, calendar_listing li ";
+    $sql .= "WHERE c.calendar_id = li.li_calendar_id ";
+    $sql .= "AND li.li_vendor_id = " . $vendor_id . " ";
+    $sql .= "AND c.date >= '" . date("Y-m-d") . "';";
 
     // echo $sql;
 

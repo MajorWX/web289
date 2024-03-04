@@ -36,7 +36,7 @@ class DatabaseObject {
 
   static public function find_by_id($id) {
     $sql = "SELECT * FROM " . static::$table_name . " ";
-    $sql .= "WHERE id='" . self::$database->escape_string($id) . "'";
+    $sql .= "WHERE " . static::$db_columns[0] . "='" . self::$database->escape_string($id) . "'";
     $obj_array = static::find_by_sql($sql);
     if(!empty($obj_array)) {
       return array_shift($obj_array);
