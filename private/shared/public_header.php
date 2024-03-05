@@ -20,7 +20,7 @@
       <ul>
         <li><a href="<?php echo url_for('/calendar.php')?>">Calendar</a></li>
         <li><a href="<?php echo url_for('/vendors.php')?>">Vendors</a></li>
-        <li><a href="#">Products</a></li>
+        <li><a href="<?php echo url_for('/products.php')?>">Products</a></li>
 
         <!-- What shows up when logged in -->
         <?php if($session->is_logged_in()) {?>

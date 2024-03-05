@@ -80,7 +80,7 @@ class CalendarDate extends DatabaseObject {
 
   // SQL FUNCTIONS =====================================================
 
-  static public function find_by_sql($sql) {
+  static public function find_listing_by_sql($sql) {
     $result = self::$database->query($sql);
     if(!$result) {
       exit("Database query failed.");
@@ -135,7 +135,7 @@ class CalendarDate extends DatabaseObject {
 
     // echo $sql;
 
-    return static::find_by_sql($sql);
+    return static::find_listing_by_sql($sql);
   }
 
   static public function find_by_vendor($vendor_id) {
@@ -148,7 +148,26 @@ class CalendarDate extends DatabaseObject {
 
     // echo $sql;
 
-    return static::find_by_sql($sql);
+    return static::find_listing_by_sql($sql);
+  }
+
+  static public function get_next_market_day() {
+    $sql = "SELECT * FROM calendar ";
+    $sql .= "WHERE date >= '" . date("Y-m-d") . "';";
+
+    // $sql .= "WHERE date >= '" . date("Y-m-d") . "' ";
+    // $sql .= "LIMIT 1;";
+
+    $result = static::find_by_sql($sql);
+
+    if(!empty($result)){
+      $next_market_day = $result[0];
+      return $next_market_day;
+    } else {
+      echo "There is no calendar date listed";
+      return false;
+    }
+    
   }
 
   // CALENDAR RENDERING FUNCTIONS =====================================

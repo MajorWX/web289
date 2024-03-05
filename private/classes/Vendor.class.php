@@ -111,6 +111,19 @@ class Vendor extends DatabaseObject {
     return $vendor_object;
   }
 
+  public function is_coming_on_date($given_date){
+
+    if(empty($this->listed_dates)){
+      $this->populate_dates();
+    }
+
+    $listed_date_ids = [];
+    foreach($this->listed_dates as $date){
+      $listed_date_ids[] = $date->calendar_id;
+    }
+
+    return in_array($given_date->calendar_id, $listed_date_ids);
+  }
 
 
 }

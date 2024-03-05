@@ -58,6 +58,8 @@ class VendorInventory extends DatabaseObject {
     }
   }
 
+
+
   // VENDOR RENDERING FUNCTIONS =====================================================
 
 
@@ -96,9 +98,41 @@ class VendorInventory extends DatabaseObject {
       } // End loop for each listing
     } // End loop for categories
     echo "</table>";
+  } // End create_products_table()
+
+  static public function filter_vendors_by_date($vendor_inventory_array, $given_date){
+    $filtered_vendor_list = [];
+
+    // $next_market_day = CalendarDate::get_next_market_day();
+
+    foreach($vendor_inventory_array as $inventory_listing){
+      if($inventory_listing->vendor->is_coming_on_date($given_date)){
+        $filtered_vendor_list[] = $inventory_listing;
+      }
+    }
+
+    return $filtered_vendor_list;
   }
 
+  static public function create_vendor_table($filtered_vendor_list){
+    echo "<table>";
+    echo "<tr>";
+    echo "<th>Vendor Name</th>";
+    echo "<th>Link to Vendor</th>";
+    echo "<th>Listed Price</th>";
+    echo "<th>In Stock</th>";
+    echo "</tr>";
 
+    foreach($filtered_vendor_list as $inventory_listing){
+      echo "<tr>";
+        echo "<td>" . $inventory_listing->vendor->vendor_display_name . "</td>";
+        echo '<td><a href="' . url_for('/vendors/show.php?id=' . $inventory_listing->vendor->vendor_id) . '">View Details</a></td>';
+        echo "<td>$" . $inventory_listing->listing_price . "</td>";
+        echo "<td>" . ($inventory_listing->in_stock ? "Yes" : "No") . "</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+  }
 
 }
 
