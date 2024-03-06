@@ -31,6 +31,6 @@ $sorted_product_array = Product::sort_into_categories($products);
     </datalist>
   </dd>
 
-  
+  <!-- Add listing price and  -->
 
 </dl>
