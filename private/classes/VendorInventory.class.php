@@ -17,11 +17,11 @@ class VendorInventory extends DatabaseObject {
   // SQL FUNCTIONS =====================================================
 
   public function populate_product(){
-    $this->product = Product::find_by_id($this->inv_product_id)[0];
+    $this->product = Product::find_by_id($this->inv_product_id);
   }
 
   public function populate_vendor(){
-    $this->vendor = Vendor::find_by_id($this->inv_vendor_id)[0];
+    $this->vendor = Vendor::find_by_id($this->inv_vendor_id);
   }
 
   static public function find_by_vendor($vendor_id){

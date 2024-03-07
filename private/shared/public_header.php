@@ -27,13 +27,30 @@
           <?php if ($session->is_logged_in()) { ?>
             <li id="logged-in">
               <span>User: <?php echo $session->display_name; ?></span>
+              <!-- What shows up if user is an approved vendor -->
+              <?php // Add && !$session->is_admin_logged_in()
+                if($session->has_vendor() && !$session->is_pending ){
+                  echo '<a href="' . url_for('/vendors/user_view.php?id=' . $session->active_vendor_id) . '">' . $session->active_vendor_name . '</a>';
+                }
+              ?>
+              <!-- What shows up if user has no listed vendor-->
+              <?php // Add && !$session->is_admin_logged_in()
+                if(!$session->has_vendor()){
+                  echo '<a href="' . url_for('/pending_vendors/create.php') . '">Apply to be a Vendor</a>';
+                }
+              ?>
+              <!-- What dhows up the user has applied to be a vendor, but isn't approved -->
+              <?php // Add && !$session->is_admin_logged_in()
+                if($session->has_vendor() && $session->is_pending ){
+                  echo '<a href="' . url_for('/pending_vendors/show.php?id=' . $session->active_vendor_id) . '">View your pending application</a>';
+                }
+              ?>
               <a href="<?php echo url_for('/logout.php'); ?>">Logout</a>
             </li>
           <?php } else { ?>
-            <!-- What shows up when logged out -->
+          <!-- What shows up when logged out -->
+            <li><a href="<?php echo url_for('/signup.php') ?>">Become a Vendor</a></li>
             <li><a href="<?php echo url_for('/login.php') ?>">Login</a></li>
-            <li><a href="<?php echo url_for('/signup.php') ?>">Register</a></li>
-
           <?php } ?>
         </ul>
       </nav>

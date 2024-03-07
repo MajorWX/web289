@@ -3,7 +3,7 @@
 class Vendor extends DatabaseObject {
 
   static protected $table_name = 'vendors';
-  static protected $db_columns = ['vendor_id', 'vd_user_id', 'vendor_display_name', 'vendor_desc', 'contact_info', 'address', 'city', 'vd_state_id'];
+  static protected $db_columns = ['vendor_id', 'vd_user_id', 'vendor_display_name', 'vendor_desc', 'contact_info', 'address', 'city', 'vd_state_id', 'is_pending'];
 
   public $vendor_id;
   public $vd_user_id;
@@ -13,6 +13,7 @@ class Vendor extends DatabaseObject {
   public $address;
   public $city;
   public $vd_state_id;
+  public $is_pending;
 
   public $state;
   public $user;
@@ -26,6 +27,7 @@ class Vendor extends DatabaseObject {
   static public function list_all() {
     $sql = "SELECT vendor_id, vendor_display_name ";
     $sql .= "FROM " . static::$table_name . " ";
+    $sql .= "WHERE is_pending = FALSE;";
 
     return static::find_by_sql($sql);
   }
@@ -35,6 +37,14 @@ class Vendor extends DatabaseObject {
     $sql .= "FROM " . static::$table_name . " ";
     $sql .= "WHERE vendor_id = " . $vendor_id . ";";
 
+    return static::find_by_sql($sql)[0];
+  }
+
+  static public function find_by_user_id($user_id) {
+    $sql = "SELECT vendor_id, vendor_display_name, is_pending ";
+    $sql .= "FROM " . static::$table_name . " ";
+    $sql .= "WHERE vd_user_id = " . $user_id . ";";
+    
     return static::find_by_sql($sql);
   }
 
