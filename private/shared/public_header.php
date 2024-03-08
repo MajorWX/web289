@@ -14,17 +14,17 @@
 <body>
   <div id="wrapper">
     <header>
-      <a href="<?php echo url_for('/index.php') ?>">
-        <h1>Reynolds Hill Farmers Market</h1>
-      </a>
       <nav>
+        <a href="<?php echo url_for('/index.php') ?>">
+          <h1>Reynolds Hill Farmers Market</h1>
+        </a>
         <ul>
           <li><a href="<?php echo url_for('/calendar.php') ?>">Calendar</a></li>
           <li><a href="<?php echo url_for('/vendors.php') ?>">Vendors</a></li>
           <li><a href="<?php echo url_for('/products.php') ?>">Products</a></li>
 
           <!-- What shows up when logged in -->
-          <?php if ($session->is_logged_in()) { ?>
+          <?php if ($session->is_logged_in()) { ?> 
             <li id="logged-in">
               <span>User: <?php echo $session->display_name; ?></span>
               <!-- What shows up if user is an approved vendor -->
@@ -53,6 +53,13 @@
             <li><a href="<?php echo url_for('/login.php') ?>">Login</a></li>
           <?php } ?>
         </ul>
+        <?php if ($session->is_admin_logged_in()) {?>
+          <ul>
+            <li><a href="<?php echo url_for('/pending_vendors/list.php') ?>">Pending Vendors</a></li>
+            <li><a href="<?php echo url_for('/users/list.php') ?>">Users List</a></li>
+            <li><a href="<?php echo url_for('image_upload.php') ?>">Image Upload</a></li>
+          </ul>
+        <?php } ?>
       </nav>
     </header>
 

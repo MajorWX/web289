@@ -1,5 +1,5 @@
 <?php require_once('../../private/initialize.php'); ?>
-<?php $page_title = 'User List'; ?>
+<?php $page_title = 'User Details'; ?>
 <?php include(SHARED_PATH . '/public_header.php'); ?>
 
 
@@ -8,9 +8,7 @@
 
   <main>
     Stub
-    <a href="<?php echo url_for('/users/show.php') ?>">Read</a>
-    <a href="<?php echo url_for('/users/edit.php') ?>">Update</a>
-    <a href="<?php echo url_for('/users/delete.php') ?>">Delete</a>
+
   </main>
 
 
