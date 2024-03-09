@@ -85,7 +85,7 @@ class VendorInventory extends DatabaseObject {
     // Loop for categories
     foreach($sorted_inventory_array as $category => $products){
       echo "<tr>";
-      echo '<td class="product_category">' . $category . '</td>';
+      echo '<td class="product-category" colspan="3">' . $category . '</td>';
       echo "</tr>";
 
       // Loop for each listing

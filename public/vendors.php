@@ -2,27 +2,49 @@
 <?php $page_title = 'Vendors'; ?>
 <?php include(SHARED_PATH . '/public_header.php'); ?>
 
+<?php 
+  $vendors = Vendor::list_all();
+?>
 
 <!-- Begin HTML -->
 
 
-  <main>
+  <main id="vendor">
     <h2>Vendors</h2>
 
     <h3>Search Vendors</h3>
+    <form>
+      <input type="text" name="vendor-search" id="vendor-search" list="vendor-suggestions">
+      <datalist id="vendor-suggestions">
+        <?php 
+          foreach($vendors as $vendor){
+            echo '<option value="' . $vendor->vendor_display_name . '"></option>';
+          }
+        ?>
+      </datalist>
+      <input type="submit" value="Search">
+    </form>
 
     <h3>Full Vendor List</h3>
-    <ul>
+
+    <?php 
+
+    ?>
+
+    <table>
+      <tr>
+        <th>Vendor Display Name</th>
+        <th>&nbsp;</th>
+      </tr>
       <?php
-        $vendors = Vendor::list_all();
-
         foreach($vendors as $vendor){
-          echo "<li>" . $vendor->vendor_display_name . " ";
-          echo '<a href="' . url_for('/vendors/show.php?id=' . $vendor->vendor_id) . '">View Details</a>';
+          echo "<tr>";
+          echo "<td>" . $vendor->vendor_display_name . "</td>";
+          echo '<td><a href="' . url_for('/vendors/show.php?id=' . $vendor->vendor_id) . '">View Details</a></td>';
+          echo "</tr>";
         }
-
       ?>
-    </ul>
+    </table>
   </main>
 
 

@@ -15,9 +15,8 @@ $product->filter_listings_by_date($next_market_day);
 <?php include(SHARED_PATH . '/public_header.php'); ?>
 
 <!-- Begin HTML -->
-<a href="<?php echo url_for('products.php')?>">Back to Product List</a>
-
-  <main>
+  <main class="show">
+    <a href="<?php echo url_for('products.php')?>">Back to Product List</a>
     <dl>
       <dt>Product Name</dt>
       <dd><?php echo $product->product_name; ?></dd>

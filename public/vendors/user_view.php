@@ -19,7 +19,7 @@ $vendor = Vendor::populate_full($id);
 
 <!-- Begin HTML -->
 
-<main>
+<main class="show">
     <dl>
       <dt>Vendor Display Name</dt>
       <dd><?php echo $vendor->vendor_display_name?></dd>

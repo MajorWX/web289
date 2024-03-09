@@ -15,9 +15,8 @@ $vendor = Vendor::populate_full($id);
 
 
 <!-- Begin HTML -->
-<a href="<?php echo url_for('vendors.php')?>">Back to Vendor List</a>
-
-  <main>
+  <main class="show">
+    <a href="<?php echo url_for('vendors.php')?>">Back to Vendor List</a>
     <dl>
       <dt>Vendor Display Name</dt>
       <dd><?php echo $vendor->vendor_display_name?></dd>

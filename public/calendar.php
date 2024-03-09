@@ -15,7 +15,7 @@
 ?>
 <!-- Begin HTML -->
 
-  <main>
+  <main id="calendar">
     <h2>Calendar</h2>
 
     <?php

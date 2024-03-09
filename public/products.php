@@ -18,8 +18,9 @@
 <!-- Begin HTML -->
 
 
-  <main>
+  <main id="product">
     <h2>Products</h2>
+    <h3>Search Products</h3>
     <form>
       <label for="product-category">Product Category: </label>
       <select id="product-category" name="product-category">
@@ -43,7 +44,7 @@
       <input type="submit" value="Search">
     </form>
 
-    <h3>All Products</h3>
+    <h3>Full Products List</h3>
     <?php 
       
       Product::create_product_list($sorted_product_array);

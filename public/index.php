@@ -4,7 +4,7 @@
 
 <!-- Begin HTML -->
 
-  <main>
+  <main id="home">
     <h2>Home Page</h2>
     <section id="about">
       <div>
@@ -39,7 +39,7 @@
       </div>
 
       <div>
-        <a href="#">See Full Calendar</a>
+        <a href="<?php echo url_for('/calendar.php') ?>"><span>See Full Calendar</span></a>
       </div>
     </section>
   </main>

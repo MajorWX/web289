@@ -53,7 +53,8 @@
             <li><a href="<?php echo url_for('/login.php') ?>">Login</a></li>
           <?php } ?>
         </ul>
-        <?php if ($session->is_admin_logged_in()) {?>
+        <?php // What shows up when logged in as an admin 
+        if ($session->is_admin_logged_in()) {?>
           <ul>
             <li><a href="<?php echo url_for('/pending_vendors/list.php') ?>">Pending Vendors</a></li>
             <li><a href="<?php echo url_for('/users/list.php') ?>">Users List</a></li>
