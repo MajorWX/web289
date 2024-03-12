@@ -1,4 +1,9 @@
-<?php require_once('../../private/initialize.php'); ?>
+<?php require_once('../../private/initialize.php'); 
+
+require_admin_login();
+?>
+
+
 <?php $page_title = 'User List'; ?>
 <?php include(SHARED_PATH . '/public_header.php'); ?>
 

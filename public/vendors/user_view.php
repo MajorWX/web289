@@ -25,8 +25,8 @@ $vendor = Vendor::populate_full($id);
       <dd><?php echo $vendor->vendor_display_name?></dd>
       <dt>Description</dt>
       <dd><?php echo $vendor->vendor_desc?></dd>
-      <dt>Contact Info</dt>
-      <dd><?php echo $vendor->contact_info?></dd>
+      <!-- <dt>Contact Info</dt>
+      <dd><?php // echo $vendor->contact_info?></dd> -->
       <dt>Address</dt>
       <dd><?php echo $vendor->address?></dd>
       <dt>City</dt>

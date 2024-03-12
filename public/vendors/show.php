@@ -22,8 +22,8 @@ $vendor = Vendor::populate_full($id);
       <dd><?php echo $vendor->vendor_display_name?></dd>
       <dt>Description</dt>
       <dd><?php echo $vendor->vendor_desc?></dd>
-      <dt>Contact Info</dt>
-      <dd><?php echo $vendor->contact_info?></dd>
+      <!-- <dt>Contact Info</dt>
+      <dd><?php //echo $vendor->contact_info?></dd> -->
       <dt>Address</dt>
       <dd><?php echo $vendor->address?></dd>
       <dt>City</dt>
@@ -44,8 +44,10 @@ $vendor = Vendor::populate_full($id);
       <dt>Vendor Inventory</dt>
       <dd>
         <?php 
-        $sorted_inventory_array = VendorInventory::sort_into_categories($vendor->vendor_inventory);
-        VendorInventory::create_products_table($sorted_inventory_array);
+        if($vendor->vendor_inventory) {
+          $sorted_inventory_array = VendorInventory::sort_into_categories($vendor->vendor_inventory);
+          VendorInventory::create_products_table($sorted_inventory_array);
+        }
         ?>
       </dd>
 

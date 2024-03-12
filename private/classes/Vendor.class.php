@@ -22,6 +22,14 @@ class Vendor extends DatabaseObject {
   public $vendor_inventory = [];
   public $listed_dates = [];
 
+  public function __construct($args=[]){
+    $this->vendor_display_name = $args['vendor_display_name'] ?? '';
+    $this->vendor_desc = $args['vendor_desc'] ?? '';
+    $this->address = $args['address'] ?? '';
+    $this->city = $args['city'] ?? '';
+    $this->vd_state_id = $args['vd_state_id'] ?? '';
+  }
+
   // SQL FUNCTIONS ====================================================
 
   static public function list_all() {
@@ -45,7 +53,43 @@ class Vendor extends DatabaseObject {
     $sql .= "FROM " . static::$table_name . " ";
     $sql .= "WHERE vd_user_id = " . $user_id . ";";
     
-    return static::find_by_sql($sql);
+    $result = static::find_by_sql($sql)[0];
+
+    if($result){
+      return $result;
+    } else {
+      return false;
+    }
+  }
+
+  static public function get_state_array(){
+    $sql = "SELECT * ";
+    $sql .= "FROM states;";
+
+    $result = self::$database->query($sql);
+    if(!$result) {
+      exit("Database query failed.");
+    }
+
+    // Storing Results
+    $state_array = [];
+    // Reading each row
+    while($row = $result->fetch_assoc()) {
+
+    $state_id = '';
+    $state_name = '';
+
+      // Reading each cell
+      foreach($row as $property => $value) {
+        if($property === 'state_id') {
+          $state_id = $value;
+        } elseif($property === 'state_name') {
+          $state_name = $value;
+        }
+      } // End foreach for cells
+      $state_array[$state_id] = $state_name;
+    } // End while for rows
+    return $state_array;
   }
 
   public function populate_state(){

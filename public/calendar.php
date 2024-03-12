@@ -19,7 +19,7 @@
     <h2>Calendar</h2>
 
     <?php
-      $calendarDateArray = CalendarDate::find_all_dates();
+      $calendarDateArray = CalendarDate::find_all_dates_with_vendors();
 
       CalendarDate::create_calendar($calendarDateArray);
     ?>

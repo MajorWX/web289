@@ -18,6 +18,8 @@
         <a href="<?php echo url_for('/index.php') ?>">
           <h1>Reynolds Hill Farmers Market</h1>
         </a>
+        <label for="nav-checkbox" id="nav-trigger">Menu</label>
+        <input type="checkbox" id="nav-checkbox">
         <ul>
           <li><a href="<?php echo url_for('/calendar.php') ?>">Calendar</a></li>
           <li><a href="<?php echo url_for('/vendors.php') ?>">Vendors</a></li>

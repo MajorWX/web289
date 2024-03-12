@@ -27,7 +27,7 @@ class Session {
       $this->last_login = $_SESSION['last_login'] = time();
       $this->role = $_SESSION['role'] = $user->role;
 
-      $active_vendor = Vendor::find_by_user_id($user->user_id)[0];
+      $active_vendor = Vendor::find_by_user_id($user->user_id);
       $this->active_vendor_id = $_SESSION['active_vendor_id'] = $active_vendor->vendor_id;
       $this->active_vendor_name = $_SESSION['active_vendor_name'] = $active_vendor->vendor_display_name;
       $this->is_pending = $_SESSION['is_pending'] = $active_vendor->is_pending;
@@ -81,6 +81,10 @@ class Session {
       return true;
     }
   } 
+
+  public function get_user_id(){
+    return $this->user_id;
+  }
 
   public function message($msg="") {
     if(!empty($msg)) {

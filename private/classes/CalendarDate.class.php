@@ -124,7 +124,7 @@ class CalendarDate extends DatabaseObject {
     return $object_array;
   }
 
-  static public function find_all_dates() {
+  static public function find_all_dates_with_vendors() {
     $month_first_day = static::month_first_day();
 
     $sql = "SELECT c.calendar_id, c.date, v.vendor_display_name ";
