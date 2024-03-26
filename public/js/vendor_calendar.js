@@ -45,4 +45,5 @@ daysWithVendors.forEach(function (el){
   link.textContent = 'Retract availability for this day.';
   link.href = publicURL + '/calendar/delete.php?id=' + vendorID + '&date=' + el.dataset.date;
   el.appendChild(link);
+  el.style.backgroundColor = '#ffc';
 });

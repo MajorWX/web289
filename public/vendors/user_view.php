@@ -7,7 +7,7 @@ $id = $_GET['id'];
 // Checking to make sure only users logged in as this vendor can access this page, unless they are an admin
 if($id != $session->active_vendor_id && !$session->is_admin_logged_in()){
   $session->message('You must be logged in as this vendor to view them as themselves.');
-  redirect_to(url_for('index.php'));
+  redirect_to(url_for('login.php'));
 }
 
 $vendor = Vendor::populate_full($id);
