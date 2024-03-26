@@ -40,7 +40,13 @@
   require_once('database_functions.php');
   require_once('validation_functions.php');
   require_once('classes/Session.class.php');
-
+  require_once('classes/DatabaseObject.class.php');
+  require_once('classes/User.class.php');
+  require_once('classes/CalendarDate.class.php');
+  require_once('classes/Product.class.php');
+  require_once('classes/Vendor.class.php');
+  require_once('classes/VendorInventory.class.php');
+  
   // Autoload Classes
   // Line 36-52
 

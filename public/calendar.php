@@ -20,11 +20,24 @@
 
     <?php
       $calendarDateArray = CalendarDate::find_all_dates_with_vendors();
+      
+      // Debugging
+      // foreach($calendarDateArray as $calendarDate){
+      //   echo $calendarDate->date . " ";
+      //   echo count($calendarDate->listed_vendors) . " ";
+      //   echo "<br>";
+      // }
 
       CalendarDate::create_calendar($calendarDateArray);
     ?>
 
   </main>
+
+  <?php 
+    if($session->has_vendor()) { ?>
+      <script src="<?php echo url_for('/js/vendor_calendar.js')?>" defer></script>
+  <?php } ?>
+
 
 <!-- End HTML -->
 

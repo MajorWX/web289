@@ -12,7 +12,14 @@ function require_admin_login() {
   global $session;
   if(!$session->is_admin_logged_in()) {
     $session->message('This page requires admin access.');
-    redirect_to(url_for(('/login.php')));
+    // If not logged in
+    if(!$session->is_logged_in()) {
+      redirect_to(url_for(('/login.php')));
+    } else {
+      // If logged in
+      redirect_to(url_for(('/index.php')));
+    }
+    
   }
 }
 

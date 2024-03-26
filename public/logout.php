@@ -1,5 +1,6 @@
 <?php
 require_once('../private/initialize.php');
+require_login();
 
 // Log out the member
 $session->logout();

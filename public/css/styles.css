@@ -181,6 +181,18 @@ nav a:hover,
   display: none;
 }
 
+/***** Session Messages *****/
+
+#message {
+  animation: session-blink 3s;
+  border: 2px solid #000;
+  display: inline-block;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 1rem 2rem;
+  padding: .5rem;
+}
+
 /***** Main *****/
 
 main {
@@ -280,6 +292,11 @@ td {
 
 #calendar td {
   min-height: 4rem;
+  padding-bottom: 1rem;
+}
+
+#calendar ul {
+  padding-left: 20px;
 }
 
 #calendar .empty {
@@ -348,6 +365,18 @@ footer {
   margin: 0 auto;
   padding: .5rem 2rem;
   text-align: right;
+}
+
+/***** Animations *****/
+
+@keyframes session-blink {
+  from {
+    background-color: rgb(255, 255, 60);
+  }
+
+  to {
+    background-color: none;
+  }
 }
 
 /***** Media Queries *****/

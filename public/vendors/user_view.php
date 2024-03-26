@@ -6,6 +6,7 @@ $id = $_GET['id'];
 
 // Checking to make sure only users logged in as this vendor can access this page, unless they are an admin
 if($id != $session->active_vendor_id && !$session->is_admin_logged_in()){
+  $session->message('You must be logged in as this vendor to view them as themselves.');
   redirect_to(url_for('index.php'));
 }
 
@@ -47,8 +48,16 @@ $vendor = Vendor::populate_full($id);
       <dt>Vendor Inventory</dt>
       <dd>
         <?php 
-        $sorted_inventory_array = VendorInventory::sort_into_categories($vendor->vendor_inventory);
-        VendorInventory::create_products_table($sorted_inventory_array);
+        if($vendor->vendor_inventory){
+          $sorted_inventory_array = VendorInventory::sort_into_categories($vendor->vendor_inventory);
+
+          if($sorted_inventory_array){
+            VendorInventory::create_products_table($sorted_inventory_array);
+          }
+        }
+        
+
+        
         ?>
       </dd>
 

@@ -138,6 +138,8 @@ class CalendarDate extends DatabaseObject {
     return static::find_listing_by_sql($sql);
   }
 
+  // TO ADD, FIND ALL EMPTY AND FULL DATES
+
   static public function find_by_vendor($vendor_id) {
 
     $sql = "SELECT c.calendar_id, c.date ";
@@ -164,11 +166,89 @@ class CalendarDate extends DatabaseObject {
       $next_market_day = $result[0];
       return $next_market_day;
     } else {
-      echo "There is no calendar date listed";
+      // echo "There is no calendar date listed";
       return false;
     }
     
   }
+
+  static public function find_by_date($date){
+    $sql = "SELECT * FROM calendar ";
+    $sql .= "WHERE date = '" . $date . "';";
+
+    $result = static::find_by_sql($sql);
+
+    if(!empty($result)){
+      $found_date = $result[0];
+      return $found_date;
+    } else {
+      // Report the error
+      return false;
+    }
+  }
+
+  public function find_listing_id($vendor_id){
+
+    $sql = "SELECT listing_id ";
+    $sql .= "FROM calendar_listing ";
+    $sql .= "WHERE li_calendar_id = '" . $this->calendar_id . "' ";
+    $sql .= "AND li_vendor_id = '" . $vendor_id . "' ";
+    $sql .= "LIMIT 1;";
+
+    $result = self::$database->query($sql);
+    if(!$result) {
+      exit("Database query failed. " . $sql);
+    }
+
+    // results into objects
+    $listing_id = false;
+
+    // Reading each row
+    while($row = $result->fetch_assoc()) {
+      // Reading each cell
+      foreach($row as $property => $value) {
+        if($property === 'listing_id') {
+          $listing_id = $value;
+        } 
+      } // End foreach for cells
+    } // End while for rows
+
+    $result->free();
+
+    return $listing_id;
+  }
+
+  public function populate_vendor_list(){
+
+  }
+
+  public function create_new_listing($vendor_id){
+    if(in_array($vendor_id, $this->listed_vendors)) { return false;}
+
+    $this->validate();
+    if(!empty($this->errors)) { return false; }
+
+    $sql = "INSERT INTO calendar_listing (";
+    $sql .= "li_calendar_id, li_vendor_id";
+    $sql .= ") VALUES ('";
+    $sql .= $this->calendar_id . "', '" . $vendor_id;
+    $sql .= "')";
+    $result = self::$database->query($sql);
+    if($result) {
+      $this->listed_vendors[] = $vendor_id;
+    }
+    return $result;
+  }
+
+  public function delete_listing($listing_id) {
+    $sql = "DELETE FROM calendar_listing ";
+    $sql .= "WHERE listing_id='" . self::$database->escape_string($listing_id) . "'  ";
+    $sql .= "LIMIT 1";
+    $result = self::$database->query($sql);
+    return $result;
+  }
+
+
 
   // CALENDAR RENDERING FUNCTIONS =====================================
 
@@ -180,8 +260,14 @@ class CalendarDate extends DatabaseObject {
 
       $year = $explodedDate[0];
       $month = $explodedDate[1];
+      // Turning days with leading 0s into single digit strings
+      if($explodedDate[2] < 10){
+        $explodedDate[2] = substr($explodedDate[2], 1);
+      }
       $day = $explodedDate[2];
 
+      // Debugging
+      // echo $year . "-" . $month . "-" . $day . "<br>";
       $full_calendar[$year][$month][$day] = $calendarDate;
     }
 
@@ -191,9 +277,11 @@ class CalendarDate extends DatabaseObject {
   static public function create_calendar($calendarDateArray) {
     $full_calendar = static::explode_dates($calendarDateArray);
     foreach($full_calendar as $year => $month){
+      // echo '<div value="' . $year . '">';
       echo "<h3>" . $year . "</h3>";
       foreach($month as $month => $days){
-        echo "<table>";
+        echo '<table>';
+        // echo '<table value="' . $month . '">';
         echo "<caption>" . date("F", static::month_first_day($month, $year)) . "</caption>";
         echo "<tr>";
         echo "<th>Monday</th>";
@@ -212,6 +300,8 @@ class CalendarDate extends DatabaseObject {
 
         // Starting week
         echo "<tr>";
+
+        //Adds empty days 
         while($weekday_counter < $starting_weekday) {
           echo '<td class="empty"></td>';
           $weekday_counter++;
@@ -219,13 +309,21 @@ class CalendarDate extends DatabaseObject {
 
         // Day Loop
         while ($day_counter <= $days_in_month) {
-          if($weekday_counter == 1){
+          if($weekday_counter == 1 && $day_counter != 1){
             echo "<tr>";
           }
-          echo "<td>" . $day_counter;
+
+          
           if(array_key_exists($day_counter, $days)){
+            $day_counter_string = $day_counter >= 10 ? $day_counter : '0' . $day_counter;
+            echo '<td class="market_day" data-date="' . $year . '-' . $month . '-' . $day_counter_string . '">' . $day_counter;
             $days[$day_counter]->list_as_day();
+          } else {
+            echo "<td>" . $day_counter;
           }
+
+          echo "</td>";
+
           $weekday_counter++;
           if($weekday_counter > 7){
             echo "</tr>";
@@ -244,6 +342,7 @@ class CalendarDate extends DatabaseObject {
         }
         echo "</table>";
       } // End Month
+      // echo "</div>";
     } // End Year
   }
 
