@@ -8,7 +8,7 @@ $date = $_GET['date'];
 // Checking to make sure only users logged in as this vendor can access this page, unless they are an admin
 if($id != $session->active_vendor_id && !$session->is_admin_logged_in()){
   $session->message("You do not have permission to view this page.");
-  redirect_to(url_for('index.php'));
+  redirect_to(url_for('calendar.php'));
 }
 
 
@@ -20,6 +20,7 @@ if(!$calendarDate){
 }
 
 // POPULATE VENDOR LISTINGS!
+// To check if the vendor is already part of the date
 
 //Create the listing
 

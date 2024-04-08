@@ -1,5 +1,6 @@
 'use strict';
 
+// An array of all <td>s with the market_day class
 let allMarketDays = Array.from(document.querySelectorAll('.market_day'));
 
 const loginButton = document.querySelector('#logged-in');
