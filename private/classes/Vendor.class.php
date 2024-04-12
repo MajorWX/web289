@@ -247,11 +247,7 @@ class Vendor extends DatabaseObject {
     $sql = "SELECT * FROM " . static::$table_name . " ";
     $sql .= "WHERE vendor_id = " . $vendor_id . ";";
 
-    $result = self::$database->query($sql);
-    if(!$result) {
-      exit("Database query failed.");
-    } 
-    $vendor_object = $result[0];
+    $vendor_object = static::find_by_sql($sql)[0];
 
     $vendor_object->populate_state();
     // $vendor_object->populate_user();
