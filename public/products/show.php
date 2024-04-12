@@ -5,9 +5,13 @@
 $product_id = $_GET['id'];
 
 $product = Product::find_by_id($product_id);
-$product->populate_listings();
 $next_market_day = CalendarDate::get_next_market_day();
-$product->filter_listings_by_date($next_market_day);
+
+$product->populate_listings();
+if($next_market_day){
+  $product->filter_listings_by_date($next_market_day);
+}
+
 
 ?>
 

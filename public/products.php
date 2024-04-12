@@ -3,16 +3,36 @@
 <?php include(SHARED_PATH . '/public_header.php'); ?>
 
 <?php 
+  // Getting all products
   $products = Product::find_all_products();
-  $sorted_product_array = Product::sort_into_categories($products);
-  $category_list = Product::get_categories_list($sorted_product_array);
+
+  // Getting the next market day
   $next_market_day = CalendarDate::get_next_market_day();
-  foreach($sorted_product_array as $category_name => $products){
-    foreach($products as $product) {
-      $product->populate_listings();
-      $product->filter_listings_by_date($next_market_day);
-    }
+
+  // Fallback if there is no next market day listed
+  if(!$next_market_day){
+    // Sorting the products into categories
+    $sorted_product_array = Product::sort_into_categories($products);
+  } else {
+    // Populating the number of listings for each product
+    $populated_products = Product::populate_listings_by_date($products, $next_market_day);
+    // Sorting the products into categories
+    $sorted_product_array = Product::sort_into_categories($populated_products);
   }
+  // Getting the list of categories
+  $category_list = Product::get_categories_list($sorted_product_array);
+  
+  // OLD METHOD OF FILTERING that was very SQL query heavy
+  // foreach($sorted_product_array as $category_name => $products){
+    
+  //   foreach($products as $product) {
+
+  //     $product->populate_listings();
+  //     $product->filter_listings_by_date($next_market_day);
+  //   }
+  // }
+
+  // Final Query count, N+3 
 ?>
 
 <!-- Begin HTML -->

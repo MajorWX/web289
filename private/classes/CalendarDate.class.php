@@ -279,7 +279,7 @@ class CalendarDate extends DatabaseObject {
   }
 
   /**
-   * Returns the CalendarDate object corresponding to the next occurring market day, even if that is today (regardless of whether vendors are attending).
+   * Returns the CalendarDate object corresponding to the next occurring market day, even if that is today (regardless of whether vendors are attending). 1 Query
    * 
    * @return CalendarDate|false the next market day
    */
@@ -433,14 +433,55 @@ class CalendarDate extends DatabaseObject {
     // Returns the now populated associative array
     return $calendarDate_by_id;
   } 
+  
+  /**
+   * Gets a list of vendor ids corresponding to vendors appearing on this date. 1 Query
+   * 
+   * @return int[]|false a list of all vendor ids marked as appearing on this date, if there are any.
+   */
+  public function get_vendor_ids(){
+    // Finding all vendor_ids associated with that date
+    $sql = "SELECT li_vendor_id ";
+    $sql .= "FROM calendar_listing ";
+    $sql .= "WHERE li_calendar_id = '" . $this->calendar_id . "';";
+
+    $result = self::$database->query($sql); 
+
+    // Results into list of vendor ids
+    $vendor_ids = [];
+
+     // Reading each row
+    while($row = $result->fetch_assoc()) {
+      $vendor_id = '';
+
+      // Reading each cell
+      foreach($row as $property => $value) {
+        if($property === 'li_vendor_id'){
+          $vendor_id = $value;
+        }
+      } // End foreach for cells
+
+      if($vendor_id !== ''){
+        $vendor_ids[] = $vendor_id;
+      }
+    } // End while for rows
+
+    $result->free();
+
+    if(!empty($vendor_ids)){
+      return $vendor_ids;
+    } else {
+      return false;
+    }
+    
+  }
 
   /**
-   * TO DO RETURN DOCUMENTATION ==============================================================================================
-   * Creates a CalendarDate object based on a date and inserts it into the calendar table.
+   * Creates a CalendarDate object based on a date and inserts it into the calendar table. 1 Query
    * 
    * @param string $date a date formatted to SQL datetime, i.e '2024-4-7'
    * 
-   * 
+   * @return mysqli_result|bool the query result
    */
   static public function create_new_date($date) {
     // Creating a new CalendarDate object
@@ -462,7 +503,9 @@ class CalendarDate extends DatabaseObject {
   }
 
   /**
-   * Inserts this CalendarDate object into the calendar table.
+   * Inserts this CalendarDate object into the calendar table. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
    */
   public function create() {
     // Making sure the date validates
@@ -487,12 +530,11 @@ class CalendarDate extends DatabaseObject {
   }
 
   /**
-   * TO DO RETURN DOCUMENTATION ==============================================================================================
    * Marks a vendor as attending this CalendarDate. Inserts into the calendar_listing table a row with this CalendarDate object's calendar_id and the given vendor_id. 1 Query
    * 
    * @param int $vendor_id The vendor's id as it appears in the vendors table
    * 
-   * 
+   * @return mysqli_result|bool the query result
    */
   public function create_new_listing($vendor_id){
     if(in_array($vendor_id, $this->listed_vendors)) { return false;}
@@ -514,12 +556,11 @@ class CalendarDate extends DatabaseObject {
   }
 
   /**
-   * TO DO RETURN DOCUMENTATION ==============================================================================================
    * Un-marks a vendor, indicating they are no longer attending this CalendarDate. Deletes from the calendar_listing table. 1 Query
    * 
    * @param int $listing_id The listing_id as it appears in the calendar_listing table
    * 
-   * 
+   * @return mysqli_result|bool the query result
    */
   public function delete_listing($listing_id) {
     $sql = "DELETE FROM calendar_listing ";

@@ -5,21 +5,64 @@ class Vendor extends DatabaseObject {
   static protected $table_name = 'vendors';
   static protected $db_columns = ['vendor_id', 'vd_user_id', 'vendor_display_name', 'vendor_desc', 'contact_info', 'address', 'city', 'vd_state_id', 'is_pending'];
 
+  /**
+   * This vendor object's unique vendor_id as it appears in the vendors table.
+   */
   public $vendor_id;
+  /**
+   * The user_id associated with this vendor as it appears in the users table.
+   */
   public $vd_user_id;
+  /**
+   * The vendor's company name.
+   */
   public $vendor_display_name;
+  /**
+   * The description paragraph set by the vendor.
+   */
   public $vendor_desc;
+  /**
+   * DEPRECIATED| The paragraph formatting for the vendor's contact info
+   */
   public $contact_info;
+  /**
+   * The vendor's stated street address.
+   */
   public $address;
+  /**
+   * The vendor's stated city address.
+   */
   public $city;
+  /**
+   * The state_id of the state in this vendor's address as it appears in the states table.
+   */
   public $vd_state_id;
+  /**
+   * A bool showing if this vendor is pending admin review and approval.
+   */
   public $is_pending;
 
+  /**
+   * The string version of the vendor's state.
+   */
   public $state;
+  /**
+   * UNUSED
+   */
   public $user;
 
+  /**
+   * An associative array of all this vendor's phone numbers, see the populate_phones() function.
+   * A list of phones with [phone_id]['phone_number'] and [phone_id]['phone_type']
+   */
   public $phone_numbers = [];
+  /**
+   * A list of this vendor's VendorInventory objects, product listings associated with this vendor.
+   */
   public $vendor_inventory = [];
+  /**
+   * A list of this vendor's CalendarDate objects, dates this vendor has marked as attending.
+   */
   public $listed_dates = [];
 
   public function __construct($args=[]){
@@ -32,29 +75,17 @@ class Vendor extends DatabaseObject {
 
   // SQL FUNCTIONS ====================================================
 
+  /**
+   * Queries the database and finds all vendors that are not listed as pending. 1 Query
+   * 
+   * @return Vendor[]|false the vendors found by the search, if they exist
+   */
   static public function list_all() {
     $sql = "SELECT vendor_id, vendor_display_name ";
     $sql .= "FROM " . static::$table_name . " ";
     $sql .= "WHERE is_pending = FALSE;";
 
-    return static::find_by_sql($sql);
-  }
-
-  static public function find_by_id($vendor_id) {
-    $sql = "SELECT vendor_id, vendor_display_name ";
-    $sql .= "FROM " . static::$table_name . " ";
-    $sql .= "WHERE vendor_id = " . $vendor_id . ";";
-
-    return static::find_by_sql($sql)[0];
-  }
-
-  static public function find_by_user_id($user_id) {
-    $sql = "SELECT vendor_id, vendor_display_name, is_pending ";
-    $sql .= "FROM " . static::$table_name . " ";
-    $sql .= "WHERE vd_user_id = " . $user_id . ";";
-    
-    $result = static::find_by_sql($sql)[0];
-
+    $result = static::find_by_sql($sql);
     if($result){
       return $result;
     } else {
@@ -62,6 +93,53 @@ class Vendor extends DatabaseObject {
     }
   }
 
+  /**
+   * Queries the database and finds the vendor with the given vendor_id. 1 Query
+   * 
+   * @param int $vendor_id the vendor_id to search the database for
+   * 
+   * @return Vendor|false the vendor found by the search, if it exists
+   */
+  static public function find_by_id($vendor_id) {
+    $sql = "SELECT vendor_id, vendor_display_name ";
+    $sql .= "FROM " . static::$table_name . " ";
+    $sql .= "WHERE vendor_id = " . $vendor_id . ";";
+
+    $result = static::find_by_sql($sql);
+    if($result){
+      return $result[0];
+    } else {
+      return false;
+    }
+    
+  }
+
+  /**
+   * Queries the database and finds the vendor associated with a given user_id. 1 Query
+   * 
+   * @param int $user_id the user_id to search the database for
+   * 
+   * @return Vendor|false the vendor found by the search, if it exists
+   */
+  static public function find_by_user_id($user_id) {
+    $sql = "SELECT vendor_id, vendor_display_name, is_pending ";
+    $sql .= "FROM " . static::$table_name . " ";
+    $sql .= "WHERE vd_user_id = " . $user_id . ";";
+    
+    $result = static::find_by_sql($sql);
+
+    if($result){
+      return $result[0];
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Gets all the US states from the states table and returns them in an associative array. 1 Query
+   * 
+   * @return string an associative array of states, Keys: state_ids. Values: state_names
+   */
   static public function get_state_array(){
     $sql = "SELECT * ";
     $sql .= "FROM states;";
@@ -92,6 +170,9 @@ class Vendor extends DatabaseObject {
     return $state_array;
   }
 
+  /**
+   * Populates this vendor's state attribute with a state_name. 1 Query
+   */
   public function populate_state(){
     $sql = "SELECT state_name ";
     $sql .= "FROM states ";
@@ -107,7 +188,10 @@ class Vendor extends DatabaseObject {
     $result->free();
   }
 
-  public function populate_phones(){
+  /**
+   * Populates this vendor's phone_numbers attribute as an associative array [phone_id]['phone_number'] and [phone_id]['phone_type']. 1 Query
+   */
+  public function populate_phones() {
     $sql = "SELECT phone_id, phone_number, phone_type ";
     $sql .= "FROM phone_numbers ";
     $sql .= "WHERE ph_vendor_id =" . $this->vendor_id . ";";
@@ -142,19 +226,32 @@ class Vendor extends DatabaseObject {
     } // End while for rows
   } // End populate_phones()
 
+  /**
+   * Queries the database to find all CalendarDate listings this vendor is attending to populate this Vendor object's listed_dates attribute. 1 Query
+   */
   public function populate_dates(){
     $this->listed_dates = CalendarDate::find_by_vendor($this->vendor_id);
   }
 
+  /**
+   * Populates this vendor's vendor_inventory attribute by querying the database for all VendorInventory listings associated with this vendor. N+1 Queries
+   */
   public function populate_inventory(){
     $this->vendor_inventory = VendorInventory::find_by_vendor($this->vendor_id);
   }
 
+  /**
+   * Creates a Vendor object by querying the database for a given vendor_id and populates as many of its fields as possible. N+4 Queries
+   */
   static public function populate_full($vendor_id) {
     $sql = "SELECT * FROM " . static::$table_name . " ";
     $sql .= "WHERE vendor_id = " . $vendor_id . ";";
 
-    $vendor_object = static::find_by_sql($sql)[0];
+    $result = self::$database->query($sql);
+    if(!$result) {
+      exit("Database query failed.");
+    } 
+    $vendor_object = $result[0];
 
     $vendor_object->populate_state();
     // $vendor_object->populate_user();
@@ -165,6 +262,13 @@ class Vendor extends DatabaseObject {
     return $vendor_object;
   }
 
+  /**
+   * Checks if this vendor is attending a given date. 1 Query
+   * 
+   * @param CalendarDate $given_date the date to check attendance for
+   * 
+   * @return bool whether this vendor is attending
+   */
   public function is_coming_on_date($given_date){
 
     if(empty($this->listed_dates)){
