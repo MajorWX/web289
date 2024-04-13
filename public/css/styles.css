@@ -185,12 +185,16 @@ nav a:hover,
 
 #message {
   animation: session-blink 3s;
+  background-color: #fff;
   border: 2px solid #000;
   display: inline-block;
   font-size: 1.2rem;
   font-weight: bold;
   margin: 1rem 2rem;
   padding: .5rem;
+  position: sticky;
+  top: 2px;
+  z-index: 1;
 }
 
 /***** Main *****/
@@ -270,10 +274,12 @@ td {
 /***** Calendar Page *****/
 
 #calendar table {
+  margin-bottom: 2.5rem;
   width: 100%;
 }
 
 #calendar caption {
+  background-color: #f4f1e3;
   font-size: 2rem;
   font-weight: bold;
   padding: 8px;
@@ -288,6 +294,7 @@ td {
 #calendar td {
   background-color: #fff;
   flex: 1;
+  position: relative;
 }
 
 #calendar td {
@@ -301,6 +308,81 @@ td {
 
 #calendar .empty {
   background-color: #bbb;
+}
+
+/* The new month button */
+#calendar > a {
+  border: 2px solid #000;
+  border-radius: 12px;
+  display: inline-block;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: .5rem;
+}
+
+#calendar > a:hover {
+  background-color: #eaeaea;
+  text-decoration: underline;
+}
+
+/* The Admin view create CalendarDate button */
+
+#calendar .create-button {
+  background-color: #007400;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: bold;
+  padding: 10px;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  text-decoration: none;
+}
+
+#calendar .create-button:hover {
+  background-color: #009400;
+  text-decoration: underline;
+}
+
+/* The Admin view delete CalendarDate button */
+
+#calendar .delete-button {
+  background-color: #740000;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: bold;
+  padding: 10px 13px;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  text-decoration: none;
+}
+
+#calendar .delete-button:hover {
+  background-color: #940000;
+  text-decoration: underline;
+}
+
+/* The Admin view edit CalendarDate listings button */
+
+#calendar .edit-button {
+  background-color: #000074;
+  border-radius: 4px;
+  color: #fff;
+  display: block;
+  font-weight: bold;
+  margin-top: .5rem;
+  padding: 10px;
+  /* position: relative;
+  right: 5px;
+  bottom: 5px; */
+  text-decoration: none;
+  width: fit-content;
+}
+
+#calendar .edit-button:hover {
+  background-color: #000094;
+  text-decoration: underline;
 }
 
 /***** Vendor Page *****/
@@ -439,6 +521,10 @@ footer {
 
   #nav-checkbox:checked ~ ul {
     display: block;
+  }
+
+  #message {
+    top: 185px;
   }
 
   #home section,

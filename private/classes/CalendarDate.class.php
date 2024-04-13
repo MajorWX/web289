@@ -16,7 +16,7 @@ class CalendarDate extends DatabaseObject {
   public $date;
 
   /**
-   * A list of vendor_display_names from the vendors table that have a calendar_listing match with this CalendarDate.
+   * A an associative array of vendors from the vendors table that have a calendar_listing match with this CalendarDate. Keys: vendor_ids. Values: vendor_display_names.
    */
   public $listed_vendors = [];
 
@@ -158,6 +158,7 @@ class CalendarDate extends DatabaseObject {
       // Make a new CalendarDate object
       $object = new static;
 
+      $vendor_id = '';
       $vendor_display_name = '';
       // Reading each cell
       foreach($row as $property => $value) {
@@ -165,18 +166,20 @@ class CalendarDate extends DatabaseObject {
           $object->$property = $value;
         } elseif($property === 'vendor_display_name') {
           $vendor_display_name = $value;
+        } elseif($property === 'vendor_id'){
+          $vendor_id = $value;
         }
       } // End foreach for cells
 
       // if there's already a CalendarDate object with that calendar_id
       if(in_array($object->calendar_id, $existing_ids)) {
         // Add to that CalendarDate object's listed_vendors instead of making a new object
-        $object_array[$object->calendar_id]->listed_vendors[] = $vendor_display_name;
+        $object_array[$object->calendar_id]->listed_vendors[$vendor_id] = $vendor_display_name;
       } else {
         // Add the id to the list of existing ids
         $existing_ids[] = $object->calendar_id;
         // Add the vendor display name to this object
-        $object->listed_vendors[] = $vendor_display_name;
+        $object->listed_vendors[$vendor_id] = $vendor_display_name;
         // Add the object to the object array at the key of its calendar_id
         $object_array[$object->calendar_id] = $object;
       }
@@ -232,7 +235,7 @@ class CalendarDate extends DatabaseObject {
   static public function find_all_dates_with_vendors() {
     $month_first_day = static::month_first_day();
 
-    $sql = "SELECT c.calendar_id, c.date, v.vendor_display_name ";
+    $sql = "SELECT c.calendar_id, c.date, v.vendor_display_name, v.vendor_id ";
     $sql .= "FROM calendar c, calendar_listing li, vendors v ";
     $sql .= "WHERE c.calendar_id = li.li_calendar_id ";
     $sql .= "AND li.li_vendor_id = v.vendor_id ";
@@ -275,7 +278,7 @@ class CalendarDate extends DatabaseObject {
     // Debugging
     // echo $sql;
 
-    return static::find_listing_by_sql($sql);
+    return static::find_date_by_sql($sql);
   }
 
   /**
@@ -379,7 +382,7 @@ class CalendarDate extends DatabaseObject {
     }
 
     // Building the sql query using a two table join
-    $sql = "SELECT li.li_calendar_id, v.vendor_display_name ";
+    $sql = "SELECT li.li_calendar_id, v.vendor_display_name, v.vendor_id ";
     $sql .= "FROM calendar_listing li, vendors v ";
     $sql .= "WHERE li.li_vendor_id = v.vendor_id ";
     $sql .= "AND li.li_calendar_id IN (";
@@ -413,6 +416,7 @@ class CalendarDate extends DatabaseObject {
     // Reading each row
     while($row = $result->fetch_assoc()) {
       $li_calendar_id = '';
+      $vendor_id = '';
       $vendor_display_name = '';
 
       // Reading each cell
@@ -421,11 +425,13 @@ class CalendarDate extends DatabaseObject {
           $vendor_display_name = $value;
         } elseif($property === 'li_calendar_id') {
           $li_calendar_id = $value;
+        } elseif($property === 'vendor_id'){
+          $vendor_id = $value;
         }
       } // End foreach for cells
 
       // Appending the vendor_display_name to the CalendarDate object with the id of $li_
-      $calendarDate_by_id[$li_calendar_id]->listed_vendors[] = $vendor_display_name;
+      $calendarDate_by_id[$li_calendar_id]->listed_vendors[$vendor_id] = $vendor_display_name;
     } // End while for rows
 
     $result->free();
@@ -433,6 +439,14 @@ class CalendarDate extends DatabaseObject {
     // Returns the now populated associative array
     return $calendarDate_by_id;
   } 
+
+  /**
+   * Populates this CalendarDate's vendor list, queries the database. 1 Query
+   */
+  public function populate_this_vendor_list(){
+    $single_date_array[] = $this;
+    $this->listed_vendors = CalendarDate::populate_vendor_list($single_date_array)[$this->calendar_id]->listed_vendors;
+  }
   
   /**
    * Gets a list of vendor ids corresponding to vendors appearing on this date. 1 Query
@@ -526,6 +540,28 @@ class CalendarDate extends DatabaseObject {
     if($result) {
       $this->calendar_id = self::$database->insert_id;
     }
+    return $result;
+  }
+
+  /**
+   * Removes this CalendarDate from the calendar table. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
+  public function delete() {
+    // Removing all calendar_listings with this date from calendar_listings
+    $sql = "DELETE FROM calendar_listing ";
+    $sql .= "WHERE li_calendar_id='" . self::$database->escape_string($this->calendar_id) . "';";
+    $result = self::$database->query($sql);
+    if(!$result) {
+      exit("Database query failed. " . $sql);
+    }
+
+    // Removing this calendar date from calendar
+    $sql = "DELETE FROM " . static::$table_name . " ";
+    $sql .= "WHERE calendar_id='" . self::$database->escape_string($this->calendar_id) . "' ";
+    $sql .= "LIMIT 1";
+    $result = self::$database->query($sql);
     return $result;
   }
 
@@ -662,7 +698,7 @@ class CalendarDate extends DatabaseObject {
             // Adds leading 0s to the day counter for single digit days
             $day_counter_string = $day_counter >= 10 ? $day_counter : '0' . $day_counter;
             // Change the cells class to market day and give it a dataset 'date' value, then print the day number
-            echo '<td class="market_day" data-date="' . $year . '-' . $month . '-' . $day_counter_string . '">' . $day_counter;
+            echo '<td class="market_day" data-date="' . $year . '-' . $month . '-' . $day_counter_string . '"><span>' . $day_counter . '</span>';
 
             // Adds the Market day text and lists out all vendors
             $days[$day_counter]->list_as_day();

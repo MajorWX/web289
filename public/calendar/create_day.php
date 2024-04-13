@@ -19,7 +19,7 @@ if(CalendarDate::find_by_date($date) != false){
 // Create the new market dates
 $result = CalendarDate::create_new_date($date);
 
-if($result === true){
+if($result == true){
   $session->message("You have created the market day: " . $date . " successfully.");
   redirect_to(url_for('calendar.php'));
 } else {

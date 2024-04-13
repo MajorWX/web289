@@ -126,7 +126,7 @@ class VendorInventory extends DatabaseObject {
       $sql .=  $current_id;
 
       // Adding a trailing comma and space if there are more in the list
-      if($$vendor_id_whitelist) { $sql .= ", "; }
+      if($vendor_id_whitelist) { $sql .= ", "; }
     }
 
     // Closing the sql statement
