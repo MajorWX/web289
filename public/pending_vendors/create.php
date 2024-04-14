@@ -12,7 +12,7 @@ if(is_post_request()) {
   $vendor->is_pending = 1;
   $result = $vendor->save();
 
-  if($result === true) {
+  if($result) {
     $new_vendor_id = $vendor->vendor_id;
 
     $session->active_vendor_id = $_SESSION['active_vendor_id'] = $new_vendor_id;
@@ -21,6 +21,8 @@ if(is_post_request()) {
 
     $session->message(`You've submitted your vendor form successfully.`);
     redirect_to(url_for('/index.php'));
+  } else {
+    // Show errors
   }
 } else {
   // display the form

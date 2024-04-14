@@ -2,7 +2,7 @@
 
 <?php 
 
-$id = $_GET['id'];
+$id = h($_GET['id']);
 
 // Checking to make sure only users logged in as this vendor can access this page, unless they are an admin
 if($id != $session->active_vendor_id && !$session->is_admin_logged_in()){
@@ -21,6 +21,8 @@ $vendor = Vendor::populate_full($id);
 <!-- Begin HTML -->
 
 <main class="show">
+
+    <a href="<?php echo url_for('/vendors/edit.php?id=' . h(u($id)));?>" class="edit-button">Edit Vendor Profile</a>
     <dl>
       <dt>Vendor Display Name</dt>
       <dd><?php echo $vendor->vendor_display_name?></dd>
@@ -34,14 +36,13 @@ $vendor = Vendor::populate_full($id);
       <dd><?php echo $vendor->city?></dd>
       <dt>State</dt>
       <dd><?php echo $vendor->state?></dd>
+      
       <dt>Phones</dt>
       
       <?php 
         foreach($vendor->phone_numbers as $phone){
-          echo "<dd>" . ucwords($phone['phone_type']) . ": 
-          (" . substr($phone['phone_number'], 0, 3) . ") " .
-          substr($phone['phone_number'], 3, 3) . "-" .
-          substr($phone['phone_number'], 6, 4) . "</dd>";
+          echo "<dd>" . ucwords($phone['phone_type']) . ": " . Vendor::phone_to_string($phone['phone_number']) . "</dd>";
+          
         }
       ?>
 
@@ -62,6 +63,7 @@ $vendor = Vendor::populate_full($id);
       </dd>
 
       <dt>Upcoming Market Days</dt>
+      <a href="<?php echo url_for('calendar.php'); ?>">Jump to Calendar</a>
       <dd><ul>
         <?php 
           foreach($vendor->listed_dates as $listed_date){

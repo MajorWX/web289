@@ -15,12 +15,12 @@ let a_publicURL = homeLinkURL.substring(0, homeLinkURL.indexOf('/index.php'));
 // let monthMay = createMonthElement(2024, lastMonthValue);
 // console.log(monthMay);
 // main.appendChild(monthMay);
-initPage();
+initPageAdminCalendar();
 
 /**
  * Initializes the page by adding the new month button to the bottom of the main as well as the admin-view CRUD buttons to every day.
  */
-function initPage() {
+function initPageAdminCalendar() {
   // Getting all existing months
   let existingMonths = Array.from(document.querySelectorAll('table'));
   // Adds CRUD buttons to every day in the existing months

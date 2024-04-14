@@ -8,39 +8,40 @@ if(!isset($vendor)) {
 
 <dl>
   <dt>Vendor Display Name</dt>
-  <dd><input type="text" name="vendor[vendor_display_name]" value="<?php echo h($vendor->vendor_display_name); ?>" required/></dd>
+  <dd><input type="text" name="vendor[vendor_display_name]" value="<?php echo h($vendor->vendor_display_name); ?>" required></dd>
 </dl>
 
 <dl>
   <dt>Vendor Description Blurb</dt>
-  <dd><input type="text" name="vendor[vendor_desc]" value="<?php echo h($vendor->vendor_desc); ?>" /></dd>
+  <dd><textarea name="vendor[vendor_desc]" rows="4" cols="50"><?php echo h($vendor->vendor_desc); ?></textarea></dd>
 </dl>
 
 <dl>
   <dt>Address</dt>
-  <dd><input type="text" name="vendor[address]" value="<?php echo h($vendor->address); ?>" /></dd>
+  <dd><input type="text" name="vendor[address]" value="<?php echo h($vendor->address); ?>" required></dd>
 </dl>
 
 <dl>
   <dt>City</dt>
-  <dd><input type="text" name="vendor[city]" value="<?php echo h($vendor->city); ?>" /></dd>
+  <dd><input type="text" name="vendor[city]" value="<?php echo h($vendor->city); ?>" required></dd>
 </dl>
 
 <dl>
   <dt>State</dt>
   <dd>
-    <select name="vendor[vd_state_id]">
+    <select name="vendor[vd_state_id]" required>
     <option value="">Select a state:</option>
       <?php 
         $state_array = Vendor::get_state_array();
 
+        
         foreach($state_array as $state_id => $state_name) {
-          if($vendor->vd_state_id === $state_id){
+          if($vendor->vd_state_id == $state_id){
             $selected_string = ' selected';
           } else {
             $selected_string = '';
           }
-          echo '<option value="' . $state_id .  $selected_string . '">' . $state_name . '</option>';
+          echo '<option value="' . $state_id . '"' . $selected_string . '>' . $state_name . '</option>';
         }
       ?>
     </select>

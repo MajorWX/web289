@@ -38,13 +38,13 @@
   <?php 
     // User view javascript
     if($session->has_vendor()) { ?>
-      <script src="<?php echo url_for('/js/vendor_calendar.js')?>" defer></script>
+      <script src="<?php echo url_for('/js/vendor_calendar.js');?>" defer></script>
   <?php } ?>
 
   <?php 
     // Admin view javascript
     if($session->is_admin_logged_in()) { ?>
-      <script src="<?php echo url_for('/js/admin_calendar.js')?>" defer></script>
+      <script src="<?php echo url_for('/js/admin_calendar.js');?>" defer></script>
   <?php } ?>
   
 

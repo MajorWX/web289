@@ -54,8 +54,17 @@ class Vendor extends DatabaseObject {
   /**
    * An associative array of all this vendor's phone numbers, see the populate_phones() function.
    * A list of phones with [phone_id]['phone_number'] and [phone_id]['phone_type']
+   * Phone types are 'home', 'mobile', and 'work'
    */
   public $phone_numbers = [];
+  
+  /**
+   * An associative array of all vendor phones added in the last edit.
+   * A list of phones with [phone_id]['phone_number'] and [phone_id]['phone_type']
+   * Phone types are 'home', 'mobile', and 'work'
+   */
+  public $new_phone_numbers = [];
+
   /**
    * A list of this vendor's VendorInventory objects, product listings associated with this vendor.
    */
@@ -71,6 +80,25 @@ class Vendor extends DatabaseObject {
     $this->address = $args['address'] ?? '';
     $this->city = $args['city'] ?? '';
     $this->vd_state_id = $args['vd_state_id'] ?? '';
+
+    $phone_number_array = $args['phone_numbers'] ?? [];
+    if(count($phone_number_array) > 0) {
+      foreach($phone_number_array as $phone_id => $phone_attributes) {
+        $this->phone_numbers[$phone_id]['phone_number'] = preg_replace('~\D~', "" , $phone_attributes['phone_number']);
+        echo "Set a phone number: " . $this->phone_numbers[$phone_id]['phone_number'];
+
+        $this->phone_numbers[$phone_id]['phone_type'] = $phone_attributes['phone_type'];
+        echo "Set a phone type: " . $this->phone_numbers[$phone_id]['phone_type'];
+      }
+    }
+
+    $new_phone_number_array = $args['new_phone_numbers'] ?? [];
+    if(count($new_phone_number_array) > 0) {
+      foreach($phone_number_array as $phone_id => $phone_attributes) {
+        $this->new_phone_numbers[$phone_id]['phone_number'] = preg_replace('~\D~', "" , $phone_attributes['phone_number']);
+        $this->new_phone_numbers[$phone_id]['phone_type'] = $phone_attributes['phone_type'];
+      }
+    }
   }
 
   // SQL FUNCTIONS ====================================================
@@ -138,7 +166,7 @@ class Vendor extends DatabaseObject {
   /**
    * Gets all the US states from the states table and returns them in an associative array. 1 Query
    * 
-   * @return string an associative array of states, Keys: state_ids. Values: state_names
+   * @return string[] an associative array of states, Keys: state_ids. Values: state_names
    */
   static public function get_state_array(){
     $sql = "SELECT * ";
@@ -277,6 +305,121 @@ class Vendor extends DatabaseObject {
     }
 
     return in_array($given_date->calendar_id, $listed_date_ids);
+  }
+
+  /**
+   * Saves this vendor object's information to the vendors table. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
+  public function save() {
+    // A new record will not have an ID yet
+    if(isset($this->vendor_id)) {
+      return $this->update();
+    } else {
+      return $this->create();
+    }
+  }
+
+  /**
+   * Creates a new vendor in the the vendors table. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
+  protected function create() {
+    $this->validate();
+    if(!empty($this->errors)) { return false; }
+
+    $attributes = $this->sanitized_attributes();
+    $sql = "INSERT INTO " . static::$table_name . " (";
+    $sql .= join(', ', array_keys($attributes));
+    $sql .= ") VALUES ('";
+    $sql .= join("', '", array_values($attributes));
+    $sql .= "');";
+    $result = self::$database->query($sql);
+    if($result) {
+      $this->vendor_id = self::$database->insert_id;
+    }
+    return $result;
+  }
+
+  /**
+   * Updates an existing vendor in the vendors table. N+1 Queries
+   * 
+   * @return mysqli_result|bool the query result
+   */
+  protected function update() {
+    $this->validate();
+    if(!empty($this->errors)) { return false; }
+
+    $this->update_phones();
+
+    $attributes = $this->sanitized_attributes();
+    $attribute_pairs = [];
+    foreach($attributes as $key => $value) {
+      $attribute_pairs[] = "{$key}='{$value}'";
+    }
+
+    $sql = "UPDATE " . static::$table_name . " SET ";
+    $sql .= join(', ', $attribute_pairs);
+    $sql .= " WHERE vendor_id='" . self::$database->escape_string($this->vendor_id) . "' ";
+    $sql .= "LIMIT 1;";
+    $result = self::$database->query($sql);
+    return $result;
+  }
+
+  /**
+   * Updates the phones table to include all phones in this vendor's phone_numbers and new_phone_numbers attributes. N Queries
+   */
+  protected function update_phones() {
+    // Editing existing phone numbers if any exist
+    if(count($this->phone_numbers) > 0) {
+      foreach($this->phone_numbers as $phone_id => $phone_attributes) {
+        $sql = "UPDATE phone_numbers SET ";
+        $sql .= "phone_number='" . preg_replace('~\D~', "" , $phone_attributes['phone_number']) . "', ";
+        $sql .= "phone_type='" . $phone_attributes['phone_type'] . "' ";
+        $sql .= "WHERE phone_id='" . $phone_id . "' ";
+        $sql .= "LIMIT 1;";
+
+        $result = self::$database->query($sql);
+        if(!$result){
+          exit("Database query failed.");
+        }
+      }
+    }
+
+    // Adding new phone numbers
+    if(count($this->new_phone_numbers) > 0) {
+      foreach($this->new_phone_numbers as $phone_attributes) {
+        $sql = "INSERT INTO phone_numbers (ph_vendor_id, phone_number, phone_type) ";
+        $sql .= "VALUES ('";
+        $sql .= $this->vendor_id . "', '";
+        $sql .= preg_replace('~\D~', "" , $phone_attributes['phone_number']) . "', '";
+        $sql .= $phone_attributes['phone_type'] . "');";
+
+        $result = self::$database->query($sql);
+        if(!$result){
+          exit("Database query failed.");
+        }
+      }
+    }
+  }
+
+  
+
+  // RENDERING FUNCTIONS ================================================
+
+  /**
+   * Formats a 10 digit string of numbers into a phone number. i.e '(123) 456-7890'
+   * 
+   * @param string the 10 digit string of numbers to convert
+   * 
+   * @return string the formatted phone number
+   */
+  static public function phone_to_string($phone_number){
+    return "(" . substr($phone_number, 0, 3) . ") " .
+    substr($phone_number, 3, 3) . "-" .
+    substr($phone_number, 6, 4);
   }
 
 
