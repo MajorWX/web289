@@ -46,7 +46,7 @@ $vendor = Vendor::populate_full($id);
         }
       ?>
 
-      <dt>Vendor Inventory</dt>
+      <dt>Vendor Inventory</dt>      
       <dd>
         <?php 
         if($vendor->vendor_inventory){
@@ -55,12 +55,11 @@ $vendor = Vendor::populate_full($id);
           if($sorted_inventory_array){
             VendorInventory::create_products_table($sorted_inventory_array);
           }
-        }
-        
-
-        
+        }        
         ?>
       </dd>
+      <a href="<?php echo url_for('/vendor_inventory/edit.php?id=' . h(u($id)));?>" class="edit-button">Edit Your Existing Product Inventory Listings</a>
+      
 
       <dt>Upcoming Market Days</dt>
       <a href="<?php echo url_for('calendar.php'); ?>">Jump to Calendar</a>

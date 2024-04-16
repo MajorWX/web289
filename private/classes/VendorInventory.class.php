@@ -104,7 +104,7 @@ class VendorInventory extends DatabaseObject {
    * Queries the database and gets all VendorInventory objects associated with a given product and a list of valid vendor ids. Does not populate the VendorInventory vendor properties. 1 Query
    * 
    * @param int $product_id the product_id of the product to search for
-   * @param int[]  $vendor_ids t
+   * @param int[]  $vendor_ids the vendor_ids to filter the search on
    * 
    * @return VendorInventory[]|false all listings associated with the given product, each with a populated vendor attributed
    */
@@ -145,6 +145,89 @@ class VendorInventory extends DatabaseObject {
   } // End find_by_product_with_wl()
 
 
+  /**
+   * Queries the database and changes the VendorInventory listings in the vendor_inventory table. N Queries
+   * 
+   * @param VendorInventory[] $changed_listings the list of VendorInventory objects to be changed in the database
+   * 
+   * @param Vendor $error_vendor the vendor to give all errors to 
+   * 
+   * @return mysqli_result[]|bool[] the query result
+   */
+  static public function update_changes($changed_listings, $error_vendor) {
+    // Validating all VendorInventory objects, storing any errors in the $error_vendor error array
+    foreach($changed_listings as $inventory_listing) {
+      $inventory_listing->validate();
+      if(!empty($inventory_listing->errors)) { array_push($error_vendor->errors, $inventory_listing->errors); }
+    }
+
+    // Ending the function early if there are any errors
+    if(!empty($error_vendor->errors)) { return false; }
+
+    $result_array = [];
+
+    foreach($changed_listings as $inventory_listing) {
+      $result_array[] = $inventory_listing->update();
+    }
+
+    return $result_array;
+  }
+
+  /**
+   * Updates an existing inventory_listing in the vendor_inventory table. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
+  protected function update() {
+    $this->validate();
+    if(!empty($this->errors)) { return false; }
+
+    $attributes = $this->sanitized_attributes();
+    $attribute_pairs = [];
+    foreach($attributes as $key => $value) {
+      $attribute_pairs[] = "{$key}='{$value}'";
+    }
+
+    $sql = "UPDATE " . static::$table_name . " SET ";
+    $sql .= join(', ', $attribute_pairs);
+    $sql .= " WHERE inventory_id='" . self::$database->escape_string($this->inventory_id) . "' ";
+    $sql .= "LIMIT 1;";
+    $result = self::$database->query($sql);
+    return $result;
+  }
+
+
+  /**
+   * Deletes existing inventory_listings from the vendor_inventory table. N Queries
+   * 
+   * @param VendorInventory[] $listings_to_delete the list of VendorInventory objects to be deleted from the database
+   * 
+   * @return mysqli_result[]|bool[] the query result
+   */
+  static public function delete_changes($listings_to_delete) {
+    $result_array = [];
+
+    foreach($listings_to_delete as $inventory_listing) {
+      $result_array[] = $inventory_listing->delete();
+    }
+
+    return $result_array;
+  }
+
+  public function delete() {
+    $sql = "DELETE FROM " . static::$table_name . " ";
+    $sql .= "WHERE inventory_id='" . self::$database->escape_string($this->inventory_id) . "' ";
+    $sql .= "LIMIT 1";
+    $result = self::$database->query($sql);
+    return $result;
+
+    // After deleting, the instance of the object will still
+    // exist, even though the database record does not.
+    // This can be useful, as in:
+    //   echo $user->first_name . " was deleted.";
+    // but, for example, we can't call $user->update() after
+    // calling $user->delete().
+  }
 
   // VENDOR RENDERING FUNCTIONS =====================================================
 
@@ -153,16 +236,33 @@ class VendorInventory extends DatabaseObject {
    * 
    * @param VendorInventory[] $vendor_inventory_array an unsorted list of VendorInventory objects
    * 
-   * @return VendorInventory[][] an associative array, [category_name][simple list of product listings with that category]
+   * @return VendorInventory[][] an associative array, [category_name][an associative array of inventory listings Keys:inventory_ids. Values:VendorInventory Objects.]
    */
   static public function sort_into_categories($vendor_inventory_array) {
     $sorted_inventory_array = [];
 
     foreach($vendor_inventory_array as $inventory_listing){
-      $sorted_inventory_array[$inventory_listing->product->category_name][] = $inventory_listing;
+      $sorted_inventory_array[$inventory_listing->product->category_name][$inventory_listing->inventory_id] = $inventory_listing;
     }
 
     return $sorted_inventory_array;
+  }
+
+  /**
+   * Sorts an unorganized list of VendorInventory objects into an associative array with the inventory_id as keys to each VendorInventory object.
+   * 
+   * @param VendorInventory[] $vendor_inventory_array an unsorted list of VendorInventory objects
+   * 
+   * @return VendorInventory[] an associative array of inventory listings Keys:inventory_ids. Values:VendorInventory Objects.
+   */
+  static public function sort_by_listing_id($vendor_inventory_array) {
+    $sorted_by_id = [];
+
+    foreach($vendor_inventory_array as $inventory_listing){
+      $sorted_by_id[$inventory_listing->inventory_id] = $inventory_listing;
+    }
+
+    return $sorted_by_id;
   }
 
   /**
@@ -171,7 +271,6 @@ class VendorInventory extends DatabaseObject {
    * @param VendorInventory[][] $sorted_inventory_array an associative array from the static sort_into_categories() function
    */
   static public function create_products_table($sorted_inventory_array) {
-
     echo "<table>";
     echo "<tr>";
     echo "<th>Product Name</th>";
@@ -196,6 +295,57 @@ class VendorInventory extends DatabaseObject {
     } // End loop for categories
     echo "</table>";
   } // End create_products_table()
+
+
+  /**
+   * 
+   * 
+   * @param VendorInventory[][] $sorted_inventory_array an associative array from the static sort_into_categories() function
+   */
+  static public function create_edit_vendor_inventory_table($sorted_inventory_array) {
+
+    // Starting the table
+    echo "<table>";
+    echo "<tr>";
+    echo "<th>Product Name</th>";
+    echo "<th>Listed Price</th>";
+    echo "<th>In Stock</th>";
+    echo "<th>Mark Listing for Deletion</th>";
+    echo "</tr>";
+
+    // Loop for categories
+    foreach($sorted_inventory_array as $category => $products){
+      echo "<tr>";
+      echo '<td class="product-category" colspan="4">' . $category . '</td>';
+      echo "</tr>";
+
+      // Loop for each listing
+      foreach($products as $inventory_listing){
+        echo "<tr>";
+        // The Product name
+        echo "<td>" . $inventory_listing->product->product_name . "</td>";
+
+        // The Listing Price field
+        echo "<td>$";
+        echo '<input type="number" name="inventory[' . $inventory_listing->inventory_id . '][listing_price]" value="' . $inventory_listing->listing_price . '" min="0" step="0.01" required>';
+        echo "</td>";
+
+        // The In Stock field
+        echo "<td>";
+        $in_stock_string = ($inventory_listing->in_stock > 0) ? ' checked' : '';
+        echo '<input type="checkbox" name="inventory[' . $inventory_listing->inventory_id . '][in_stock]"' . $in_stock_string . '>';
+        echo "</td>";
+
+        // The deletion field
+        echo "<td>";
+        echo '<input type="checkbox" name="inventory[' . $inventory_listing->inventory_id . '][delete]">';
+        echo "</td>";
+
+        echo "</tr>";
+      } // End loop for each listing
+    } // End loop for categories
+    echo "</table>";
+  }
 
   /**
    * Filters a list of VendorInventory objects to only include vendors that are showing up on a given date. N Queries
@@ -242,6 +392,69 @@ class VendorInventory extends DatabaseObject {
         echo "</tr>";
     }
     echo "</table>";
+  }
+
+  /**
+   * Takes in an array of VendorInventory objects and the arguments from the /vendor_inventory/edit form and returns an array of VendorInventory objects to update.
+   * 
+   * @param VendorInventory[] $vendor_inventory_array the list of VendorInventory objects to be filtered
+   * @param mixed $form_values the form results of $_POST['inventory'] in /vendor_inventory/edit
+   * 
+   * @return VendorInventory[] the VendorInventory objects that don't match the forms, in an associative array with Keys:inventory_ids. Values: VendorInventory objects
+   */
+  static public function get_listing_changes($vendor_inventory_array, $form_values) {
+    $sorted_by_id = static::sort_by_listing_id($vendor_inventory_array);
+    $changed_listings = [];
+
+    // Going through every id value of the form_values and comparing them to the ids in the vendor_inventory_array
+    foreach($form_values as $inventory_id => $changes_array) {
+      // Checking if the VendorInventory is marked for deletion.
+      if(array_key_exists('delete', $changes_array)){
+        continue;
+      } 
+      // Checking if the listing price changed
+      elseif($sorted_by_id[$inventory_id]->listing_price != $changes_array['listing_price']) {
+        $changed_listings[$inventory_id] = $sorted_by_id[$inventory_id];
+        continue;
+      }
+      // Checking if the in_stock bool changed
+      elseif(($sorted_by_id[$inventory_id]->in_stock > 0) != (array_key_exists('in_stock', $changes_array))) {
+        $changed_listings[$inventory_id] = $sorted_by_id[$inventory_id];
+        continue;
+      }
+    } // End foreach 
+
+    // Setting the values of the Vendor Inventory objects
+    foreach($changed_listings as $inventory_id => $inventory_object) {
+      $inventory_object->listing_price = $form_values[$inventory_id]['listing_price'];
+      $inventory_object->in_stock = (array_key_exists('in_stock', $form_values[$inventory_id])) ? 1 : 0;
+    }
+
+    // Returning the array of changed objects
+    return $changed_listings;
+  }
+
+  /**
+   * Takes in an array of VendorInventory objects and the arguments from the /vendor_inventory/edit form and returns an array of VendorInventory objects to add.
+   * 
+   * @param VendorInventory[] $vendor_inventory_array the list of VendorInventory objects to be filtered
+   * @param mixed $form_values the form results of $_POST['inventory'] in /vendor_inventory/edit
+   * 
+   * @return VendorInventory[] the VendorInventory objects that have been marked as ready for deletion, in an associative array with Keys:inventory_ids. Values: VendorInventory objects
+   */
+  static public function get_listing_deletions($vendor_inventory_array, $form_values) {
+    $sorted_by_id = static::sort_by_listing_id($vendor_inventory_array);
+    $listings_to_delete = [];
+
+    // Going through every id value of the form_values and looking for the delete value
+    foreach($form_values as $inventory_id => $changes_array) {
+      // Checking if the VendorInventory is marked for deletion.
+      if(array_key_exists('delete', $changes_array)){
+        $listings_to_delete[$inventory_id] = $sorted_by_id[$inventory_id];
+      } 
+    }
+
+    return $listings_to_delete;
   }
 
 }

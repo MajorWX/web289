@@ -344,7 +344,7 @@ class Vendor extends DatabaseObject {
   }
 
   /**
-   * Updates an existing vendor in the vendors table. N+1 Queries
+   * Updates an existing vendor in the vendors table. 1 Query
    * 
    * @return mysqli_result|bool the query result
    */
@@ -404,8 +404,6 @@ class Vendor extends DatabaseObject {
       }
     }
   }
-
-  
 
   // RENDERING FUNCTIONS ================================================
 

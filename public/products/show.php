@@ -29,7 +29,11 @@ if($next_market_day){
       <dt>Vendor Listings</dt>
       <dd>
         <?php 
-          VendorInventory::create_vendor_table($product->inventory_listings);
+          if($product->inventory_listings) {
+            VendorInventory::create_vendor_table($product->inventory_listings);
+          } else {
+            echo "We couldn't find any vendors listed as carrying " . $product->product_name . " on the next market day: " . $next_market_day->date . ".";
+          }          
         ?>
       </dd>
     </dl>

@@ -135,6 +135,8 @@ class Product extends DatabaseObject {
    * Filters this Product object's inventory_listings attribute to only include listings involving vendors marked as attending a given date. N Queries
    */
   public function filter_listings_by_date($given_date){
+    if(!$this->inventory_listings) { return;}
+
     $unfiltered_listings = $this->inventory_listings;
     $filtered_listings = VendorInventory::filter_vendors_by_date($unfiltered_listings, $given_date);
     $this->inventory_listings = $filtered_listings;
@@ -223,7 +225,8 @@ class Product extends DatabaseObject {
         echo '<a href="' . url_for('/products/show.php') . '?id=' . $product->product_id . '">';
         echo "<div>";
         echo "<p>" . $product->product_name . "</p>";
-        echo "<p>" . count($product->inventory_listings) . " listings</p>";
+        $listing_count = ($product->inventory_listings) ? count($product->inventory_listings) : 0;
+        echo "<p>" . $listing_count . " listings</p>";
         echo "</div>"; 
         // IMAGE GOES HERE
         echo "</a>"; // End product
