@@ -58,7 +58,8 @@ $vendor = Vendor::populate_full($id);
         }        
         ?>
       </dd>
-      <a href="<?php echo url_for('/vendor_inventory/edit.php?id=' . h(u($id)));?>" class="edit-button">Edit Your Existing Product Inventory Listings</a>
+      <a href="<?php echo url_for('/vendor_inventory/edit.php?id=' . h(u($id)));?>" class="edit-button">Edit Your Existing Product Listings</a>
+      <a href="<?php echo url_for('/vendor_inventory/create.php?id=' . h(u($id)));?>" class="create-button">Create a New Product Listing</a>
       
 
       <dt>Upcoming Market Days</dt>

@@ -245,6 +245,7 @@ class VendorInventory extends DatabaseObject {
       $sorted_inventory_array[$inventory_listing->product->category_name][$inventory_listing->inventory_id] = $inventory_listing;
     }
 
+    ksort($sorted_inventory_array);
     return $sorted_inventory_array;
   }
 

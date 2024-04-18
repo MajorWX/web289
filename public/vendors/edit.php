@@ -57,7 +57,7 @@
   <script src="<?php echo url_for('/js/vendor_add_phones.js'); ?>" defer></script>
 
   <main>
-    <a href="<?php echo url_for('/vendors/user_view.php?id=' . h(u($id)));?>">Back to Vendor User view</a>
+    <a href="<?php echo url_for('/vendors/user_view.php?id=' . h(u($id)));?>">Back to Vendor User Page</a>
     <h2>Edit Vendor: <?php echo $vendor->vendor_display_name?></h2>
 
     <?php echo display_errors($vendor->errors); ?>

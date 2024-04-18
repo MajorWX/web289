@@ -37,7 +37,7 @@
 
   <?php 
     // User view javascript
-    if($session->has_vendor()) { ?>
+    if($session->has_vendor() && !$session->is_pending) { ?>
       <script src="<?php echo url_for('/js/vendor_calendar.js');?>" defer></script>
   <?php } ?>
 

@@ -250,7 +250,10 @@ main {
 
 /***** Table *****/
 
-table, th, td, caption {
+table,
+th,
+td,
+caption {
   border: 2px solid black;
   margin: 2px;
   padding: 2px;
@@ -259,6 +262,10 @@ table, th, td, caption {
 th {
   margin-top: 0;
   min-width: 60px;
+}
+
+main:not(#calendar) th {
+  padding: 1rem;
 }
 
 td {
@@ -296,6 +303,10 @@ td {
   flex: 1;
   position: relative;
 }
+
+/* #calendar th {
+  pa
+} */
 
 #calendar td {
   min-height: 4rem;
@@ -387,9 +398,9 @@ td {
 
 /***** Vendor Page *****/
 
-#vendor th {
+/* #vendor th {
   padding: 1rem;
-}
+} */
 
 #vendor td {
   padding: .5rem;
@@ -418,6 +429,10 @@ td {
   padding: 1rem;
 }
 
+#product div a:not(:first-of-type) {
+  margin-left: .5rem;
+}
+
 /***** Show Pages *****/
 
 dt {
@@ -425,9 +440,9 @@ dt {
   margin: 1rem 0 .5rem;
 }
 
-.show th {
+/* .show th {
   padding: 1rem;
-}
+} */
 
 .show td {
   padding: .5rem;
@@ -457,6 +472,23 @@ dt {
 
 .show .edit-button:hover {
   background-color: #000094;
+  text-decoration: underline;
+}
+
+.show .create-button {
+  background-color: #007400;
+  border-radius: 4px;
+  color: #fff;
+  display: block;
+  font-weight: bold;
+  margin-top: .5rem;
+  padding: 10px;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.show .create-button:hover {
+  background-color: #009400;
   text-decoration: underline;
 }
 

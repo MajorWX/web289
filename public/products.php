@@ -40,6 +40,13 @@
 
   <main id="product">
     <h2>Products</h2>
+
+    <?php 
+      // Admin View
+      if($session->is_admin_logged_in()) { ?>
+        <a href="<?php echo url_for('/products/create_category.php'); ?>" class="edit-button">Create New Product Category</a>
+      <?php  }
+    ?>
     <h3>Search Products</h3>
     <form>
       <label for="product-category">Product Category: </label>

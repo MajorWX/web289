@@ -86,7 +86,7 @@ class Product extends DatabaseObject {
       } // End foreach for cells
       $category_list[$category_id] = $category_name;
     }// End while for rows
-
+    asort($category_list);
     return $category_list;
   } // End find_all_categories()
 
@@ -170,8 +170,29 @@ class Product extends DatabaseObject {
     return $populated_products;
   }
 
+  /**
+   * Creates a new category in the product_categories table. 1 Query
+   * 
+   * @param string $category_name the name of the category to be created.
+   * 
+   * @return mysqli_result|bool the query result
+   */
+  static public function create_category($category_name) {
+    $category_name = h($category_name);
 
+    $sql = "INSERT INTO product_categories (";
+    $sql .= "category_name) VALUES ('";
+    $sql .= $category_name . "')";
 
+    $result = self::$database->query($sql);
+    if($result) {
+      return $result;
+    } else {
+      return false;
+    }
+  }
+
+  // RENDERING FUNCTIONS ==============================================
 
   /**
    * Turns an unsorted list of Product objects and sorts them into an associative array keyed with category_names.
@@ -187,12 +208,9 @@ class Product extends DatabaseObject {
       $sorted_product_array[$product->category_name][] = $product;
     }
 
+    ksort($sorted_product_array);
     return $sorted_product_array;
   }
-
-
-
-  // RENDERING FUNCTIONS ==============================================
 
   /**
    * Reads a sorted associative array of Product objects and creates an associative array of categories from them with the number of products in each category.
@@ -255,8 +273,27 @@ class Product extends DatabaseObject {
     $category_list = static::find_all_categories();
 
     foreach($category_list as $category_id => $category_name){
-      echo '<option value="' . $category_name . '"></option>';
+      echo '<option value="'. $category_id .'">' . $category_name . '</option>';
     }
+  }
+
+  /**
+   * Turns an unsorted list of Product objects and sorts them into an associative array keyed with product_name.
+   * 
+   * @param Product[] $product_array an unsorted list of Product objects
+   * 
+   * @return Product[] an array of Product objects with their keys equal to their product_name
+   */
+  static public function sort_by_product_name($product_array) {
+    $sorted_by_name = [];
+
+    // Going through each product and assigning it to an associative array with its product name as the key
+    foreach($product_array as $product) {
+      $sorted_by_name[$product->product_name] = $product;
+    }
+
+    // Returning the sorted associative array
+    return $sorted_by_name;
   }
 }
 
