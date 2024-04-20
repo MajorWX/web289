@@ -46,7 +46,7 @@ if (is_post_request()) {
   // Getting the product from the form
   $form_product = $_POST['product'];
   $form_product_name = h(ucwords($form_product['product_name']));
-  $form_product_category_id = h($form_product['category_id']);
+  $form_product_category_id = h($form_product['prd_category_id']);
 
   // Seeing if the product name already exists
   if(array_key_exists($form_product_name, $sorted_by_name)){
@@ -68,7 +68,7 @@ if (is_post_request()) {
       $result = $new_listing->save();
 
       if($result) {
-        $session->message("You've created a new product listing successfully.");
+        $session->message("You've created a new product listing for " . $form_product_name . " successfully.");
         redirect_to(url_for('/vendors/user_view.php?id=' . $id));
       } else {
         // Show Errors
@@ -93,7 +93,7 @@ if (is_post_request()) {
 
       $result = $new_listing->save();
       if($result) {
-        $session->message("You've created a new product listing successfully.");
+        $session->message("You've created a new product listing for " . $form_product_name . " successfully.");
         redirect_to(url_for('/vendors/user_view.php?id=' . $id));
       } else {
         // Error with storing the VendorInventory
@@ -125,7 +125,7 @@ if (is_post_request()) {
 
   <form action="<?php echo url_for('/vendor_inventory/create.php?id=' . h(u($id))); ?>" method="post">
     <dl>
-      <dt>Product Name</dt>
+      <dt>Product Name (plural)</dt>
       <dd>
         <input type="text" name="product[product_name]" value="<?php echo (isset($new_listing->product->product_name)) ? $new_listing->product->product_name : "" ; ?>" list="product-suggestions" required>
         <datalist id="product-suggestions">
@@ -138,7 +138,7 @@ if (is_post_request()) {
 
       <dt>Category</dt>
       <dd>
-        <select name="product[category_id]" required>
+        <select name="product[prd_category_id]" required>
           <option value="">Select a Category: </option>
           <?php Product::create_category_datalist(); ?>
         </select>

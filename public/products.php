@@ -41,12 +41,6 @@
   <main id="product">
     <h2>Products</h2>
 
-    <?php 
-      // Admin View
-      if($session->is_admin_logged_in()) { ?>
-        <a href="<?php echo url_for('/products/create_category.php'); ?>" class="edit-button">Create New Product Category</a>
-      <?php  }
-    ?>
     <h3>Search Products</h3>
     <form>
       <label for="product-category">Product Category: </label>
@@ -73,8 +67,16 @@
 
     <h3>Full Products List</h3>
     <?php 
+      // Admin View
+      if($session->is_admin_logged_in()) { ?>
+        <a href="<?php echo url_for('/products/create_category.php'); ?>" class="edit-button">Create New Product Category</a>
+        <a href="<?php echo url_for('/products/create.php') ; ?>" class="create-button">Create a New Product</a>
+        <?php
+        Product::create_admin_crud_table($sorted_product_array);
+      } else {
+        Product::create_product_list($sorted_product_array);
+      }
       
-      Product::create_product_list($sorted_product_array);
     ?>
 
   </main>

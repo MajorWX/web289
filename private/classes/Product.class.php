@@ -192,6 +192,64 @@ class Product extends DatabaseObject {
     }
   }
 
+  /**
+   * Stores this product in the products table.
+   * 
+   * @return mysqli_result|bool the query result
+   */
+  public function save() {
+    // A new record will not have an ID yet
+    if(isset($this->product_id)) {
+      return $this->update();
+    } else {
+      return $this->create();
+    }
+  }
+
+  /**
+   * Updates an existing row in the products table with this product's information.
+   * 
+   * @return mysqli_result|bool the query result
+   */
+  protected function update() {
+    $this->validate();
+    if(!empty($this->errors)) { return false; }
+
+    $attributes = $this->sanitized_attributes();
+    $attribute_pairs = [];
+    foreach($attributes as $key => $value) {
+      $attribute_pairs[] = "{$key}='{$value}'";
+    }
+
+    $sql = "UPDATE " . static::$table_name . " SET ";
+    $sql .= join(', ', $attribute_pairs);
+    $sql .= " WHERE product_id='" . self::$database->escape_string($this->product_id) . "' ";
+    $sql .= "LIMIT 1";
+    $result = self::$database->query($sql);
+    return $result;
+  }
+
+  /**
+   * Deletes this product from the products table, and any vendor inventory listings that use this product. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
+  public function delete() {
+    $sql = "DELETE FROM " . static::$table_name . " ";
+    $sql .= "WHERE product_id='" . self::$database->escape_string($this->product_id) . "' ";
+    $sql .= "LIMIT 1";
+    $result = self::$database->query($sql);
+    return $result;
+
+    // After deleting, the instance of the object will still
+    // exist, even though the database record does not.
+    // This can be useful, as in:
+    //   echo $user->first_name . " was deleted.";
+    // but, for example, we can't call $user->update() after
+    // calling $user->delete().
+  }
+
+
   // RENDERING FUNCTIONS ==============================================
 
   /**
@@ -230,7 +288,7 @@ class Product extends DatabaseObject {
   }
 
   /**
-   * Displays the products by HTML content to the page, displayed under the category headings.
+   * Displays the products by printing HTML content to the page, displayed under the category headings.
    * 
    * @param Product[][] $sorted_product_array an associative array from the static sort_into_categories() function
    */
@@ -240,7 +298,7 @@ class Product extends DatabaseObject {
       echo "<div>";
       echo "<h4>" . $category_name . "</h4>";
       foreach($products as $product){
-        echo '<a href="' . url_for('/products/show.php') . '?id=' . $product->product_id . '">';
+        echo '<a href="' . url_for('/products/show.php' . '?id=' . $product->product_id) . '">';
         echo "<div>";
         echo "<p>" . $product->product_name . "</p>";
         $listing_count = ($product->inventory_listings) ? count($product->inventory_listings) : 0;
@@ -295,6 +353,70 @@ class Product extends DatabaseObject {
     // Returning the sorted associative array
     return $sorted_by_name;
   }
-}
+
+
+  /**
+   * Displays the products by printing an HTML table to the page, with CRUD links included.
+   * 
+   * @param Product[][] $sorted_product_array an associative array from the static sort_into_categories() function
+   */
+  static public function create_admin_crud_table($sorted_product_array) {
+
+    // Create initial table
+    echo "<table>";
+    echo "<tr>";
+    echo "<th>Product Name</th>";
+    echo "<th>Number of Listings</th>";
+    // Show Product Details
+    echo "<th></th>";
+    // Edit Product
+    echo "<th></th>";
+    // Delete Product
+    echo "<th></th>";
+    echo "</tr>";
+
+    // Loop for categories
+    foreach($sorted_product_array as $category => $products) {
+      echo "<tr>";
+      echo '<td class="product-category" colspan="5">' . $category . '</td>';
+      echo "</tr>";
+
+      // Loop for each listing
+      foreach($products as $product) {
+        echo "<tr>";
+        // Product Name
+        echo "<td>" . $product->product_name . "</td>";
+        // Number of Listings
+        echo "<td>" . (($product->inventory_listings) ? count($product->inventory_listings) : 0) . "</td>";
+        // Link to details
+        echo '<td><a href="' . url_for('/products/show.php' . '?id=' . $product->product_id) . '">Details</a></td>';
+        // Link to edit product
+        echo '<td><a href="' . url_for('/products/edit.php' . '?id=' . $product->product_id) . '">Edit</a></td>';
+        // Link to delete product
+        echo '<td><a href="' . url_for('/products/delete.php' . '?id=' . $product->product_id) . '">Delete</a></td>';
+        echo "</tr>";
+      } // End loop for each product
+    } // End loop for each category
+    echo "</table>";
+  } // End create_admin_crud_table()
+
+  /**
+   * Prints all categories as option tags for a datalist, uses the given product to select one of the categories. 1 Query
+   * 
+   * @param Product $product the existing product to select the category of
+   */
+  static public function create_category_datalist_edit($product){
+    $category_list = static::find_all_categories();
+
+    foreach($category_list as $category_id => $category_name){
+      echo '<option value="'. $category_id . '"' .
+      (($product->prd_category_id == $category_id) ? ' selected' : '')
+      . '>' . $category_name . '</option>';
+    }
+  }
+
+
+
+} // End Product Class
 
 ?>

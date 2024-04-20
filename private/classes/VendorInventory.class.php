@@ -286,7 +286,7 @@ class VendorInventory extends DatabaseObject {
       echo "</tr>";
 
       // Loop for each listing
-      foreach($products as $inventory_listing){
+      foreach($products as $inventory_listing) {
         echo "<tr>";
         echo "<td>" . $inventory_listing->product->product_name . "</td>";
         echo "<td>$" . $inventory_listing->listing_price . "</td>";

@@ -21,7 +21,7 @@
 
   // If the vendor object hasn't been made, redirect
   if(!$vendor) {
-    $session->message('Could not find a vendor with vendor_id of ' . $id);
+    $session->message('Could not find a vendor with a vendor_id of ' . $id);
     redirect_to(url_for('index.php'));
   }
 
@@ -58,7 +58,8 @@
 
   <main>
     <a href="<?php echo url_for('/vendors/user_view.php?id=' . h(u($id)));?>">Back to Vendor User Page</a>
-    <h2>Edit Vendor: <?php echo $vendor->vendor_display_name?></h2>
+
+    <h2>Edit Vendor: <?php echo $vendor->vendor_display_name; ?></h2>
 
     <?php echo display_errors($vendor->errors); ?>
 
@@ -117,6 +118,5 @@
 
 
 <!-- End HTML -->
-
 
 <?php include(SHARED_PATH . '/public_footer.php'); ?>

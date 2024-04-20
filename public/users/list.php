@@ -1,6 +1,8 @@
 <?php require_once('../../private/initialize.php'); 
 
 require_admin_login();
+$users = User::find_all();
+
 ?>
 
 
@@ -12,10 +14,31 @@ require_admin_login();
 
 
   <main>
-    Stub
-    <a href="<?php echo url_for('/users/show.php') ?>">Read</a>
-    <a href="<?php echo url_for('/users/edit.php') ?>">Update</a>
-    <a href="<?php echo url_for('/users/delete.php') ?>">Delete</a>
+
+    <h2>User List</h2>
+      <table>
+        <tr>
+          <th>User ID</th>
+          <th>Display Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+
+      <?php foreach($users as $user) {?>
+          <tr>
+            <td><?php echo $user->user_id; ?></td>
+            <td><?php echo $user->display_name; ?></td>
+            <td><?php echo $user->email; ?></td>
+            <td><?php echo $user->role; ?></td>
+            <td><a href="<?php echo url_for('/users/show.php?id=' . $user->user_id); ?>">View</a></td>
+            <td><a href="<?php echo url_for('/users/edit.php?id=' . $user->user_id); ?>">Edit</a></td>
+            <td><a href="<?php echo url_for('/users/delete.php?id=' . $user->user_id); ?>">Delete</a></td>
+          </tr>
+      <?php } ?>
+      </table>
   </main>
 
 

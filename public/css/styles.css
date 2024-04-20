@@ -203,6 +203,43 @@ main {
   padding: 1rem 2rem;
 }
 
+main:not(#calendar) .edit-button {
+  background-color: #000074;
+  border-radius: 4px;
+  color: #fff;
+  display: block;
+  font-weight: bold;
+  margin-top: .5rem;
+  padding: 10px;
+  /* position: relative;
+  right: 5px;
+  bottom: 5px; */
+  text-decoration: none;
+  width: fit-content;
+}
+
+main:not(#calendar) .edit-button:hover {
+  background-color: #000094;
+  text-decoration: underline;
+}
+
+main:not(#calendar) .create-button {
+  background-color: #007400;
+  border-radius: 4px;
+  color: #fff;
+  display: block;
+  font-weight: bold;
+  margin-top: .5rem;
+  padding: 10px;
+  text-decoration: none;
+  width: fit-content;
+}
+
+main:not(#calendar) .create-button:hover {
+  background-color: #009400;
+  text-decoration: underline;
+}
+
 /***** Home *****/
 
 #home section {
@@ -455,7 +492,7 @@ dt {
   text-align: center;
 }
 
-.show .edit-button {
+/* .show .edit-button {
   background-color: #000074;
   border-radius: 4px;
   color: #fff;
@@ -463,9 +500,6 @@ dt {
   font-weight: bold;
   margin-top: .5rem;
   padding: 10px;
-  /* position: relative;
-  right: 5px;
-  bottom: 5px; */
   text-decoration: none;
   width: fit-content;
 }
@@ -490,7 +524,7 @@ dt {
 .show .create-button:hover {
   background-color: #009400;
   text-decoration: underline;
-}
+} */
 
 /***** Edit Page *****/
 
