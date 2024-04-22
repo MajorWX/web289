@@ -22,13 +22,21 @@ class User extends DatabaseObject {
     $this->confirm_password = $args['confirm_password'] ?? '';
   }
 
-
   public function set_hashed_password() {
     $this->hashed_password = password_hash($this->password, PASSWORD_BCRYPT);
   }
 
   public function verify_password($password) {
     return password_verify($password, $this->hashed_password);
+  }
+
+  public function save() {
+    // A new record will not have an ID yet
+    if(isset($this->user_id)) {
+      return $this->update();
+    } else {
+      return $this->create();
+    }
   }
 
   protected function create() {
@@ -43,7 +51,36 @@ class User extends DatabaseObject {
     } else {
       $this->password_required = false;
     }
-    return parent::update();
+    $this->validate();
+    if(!empty($this->errors)) { return false; }
+
+    $attributes = $this->sanitized_attributes();
+    $attribute_pairs = [];
+    foreach($attributes as $key => $value) {
+      $attribute_pairs[] = "{$key}='{$value}'";
+    }
+
+    $sql = "UPDATE " . static::$table_name . " SET ";
+    $sql .= join(', ', $attribute_pairs);
+    $sql .= " WHERE user_id='" . self::$database->escape_string($this->user_id) . "' ";
+    $sql .= "LIMIT 1";
+    $result = self::$database->query($sql);
+    return $result;
+  }
+
+  public function delete() {
+    $sql = "DELETE FROM " . static::$table_name . " ";
+    $sql .= "WHERE user_id='" . self::$database->escape_string($this->user_id) . "' ";
+    $sql .= "LIMIT 1";
+    $result = self::$database->query($sql);
+    return $result;
+
+    // After deleting, the instance of the object will still
+    // exist, even though the database record does not.
+    // This can be useful, as in:
+    //   echo $user->first_name . " was deleted.";
+    // but, for example, we can't call $user->update() after
+    // calling $user->delete().
   }
 
   protected function validate() {
@@ -106,6 +143,27 @@ class User extends DatabaseObject {
       return array_shift($obj_array);
     } else {
       return false;
+    }
+  }
+  
+  /**
+   * Get this user's role and prints it as full words rather than just a character.
+   * 
+   * @return string the role as full
+   */
+  public function role_to_string() {
+    switch ($this->role) {
+      case 's':
+        return 'Super Admin';
+        break;
+      case 'a':
+        return 'Admin';
+        break;
+      case 'm':
+        return 'User';
+        break;
+      default:
+        return 'ERROR: INVALID ROLE CHARACTER';
     }
   }
 }

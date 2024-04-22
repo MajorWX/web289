@@ -7,7 +7,7 @@ if(!isset($vendor)) {
 ?>
 
 <dl>
-  <dt>Vendor Display Name</dt>
+  <dt>Vendor Display Name*</dt>
   <dd><input type="text" name="vendor[vendor_display_name]" value="<?php echo h($vendor->vendor_display_name); ?>" required></dd>
 </dl>
 
@@ -17,17 +17,17 @@ if(!isset($vendor)) {
 </dl>
 
 <dl>
-  <dt>Address</dt>
+  <dt>Address*</dt>
   <dd><input type="text" name="vendor[address]" value="<?php echo h($vendor->address); ?>" required></dd>
 </dl>
 
 <dl>
-  <dt>City</dt>
+  <dt>City*</dt>
   <dd><input type="text" name="vendor[city]" value="<?php echo h($vendor->city); ?>" required></dd>
 </dl>
 
 <dl>
-  <dt>State</dt>
+  <dt>State*</dt>
   <dd>
     <select name="vendor[vd_state_id]" required>
     <option value="">Select a state:</option>

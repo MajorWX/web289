@@ -1,9 +1,9 @@
-<?php 
-require_once('../../private/initialize.php'); 
+<?php
+require_once('../../private/initialize.php');
 
 require_login();
 
-if(is_post_request()) {
+if (is_post_request()) {
 
   // Create record using post parameters
   $args = $_POST['vendor'];
@@ -12,7 +12,7 @@ if(is_post_request()) {
   $vendor->is_pending = 1;
   $result = $vendor->save();
 
-  if($result) {
+  if ($result) {
     $new_vendor_id = $vendor->vendor_id;
 
     $session->active_vendor_id = $_SESSION['active_vendor_id'] = $new_vendor_id;
@@ -41,20 +41,26 @@ if(is_post_request()) {
 <!-- Begin HTML -->
 
 
-  <main>
-    <h2>Vendor Application</h2>
-    <?php echo display_errors($vendor->errors); ?>
+<main>
+  <h2>Vendor Application</h2>
+  
+  <?php
+  if ($session->is_admin_logged_in()) { ?>
+    <a href="<?php echo url_for('/pending_vendors/list.php') ?>">Back to Pending Vendor List</a>
+  <?php
+  }
+  ?>
 
-    <form action="<?php echo url_for('/pending_vendors/create.php');?>" method="post">
-      
-      <?php include('../vendors/form_fields.php'); ?>
+  <?php echo display_errors($vendor->errors); ?>
 
-      <div id="operations">
-        <input type="submit" value="Submit Application" />
-      </div>
-    </form>
+  <form action="<?php echo url_for('/pending_vendors/create.php'); ?>" method="post">
 
-  </main>
+    <?php include('../vendors/form_fields.php'); ?>
+
+    <input type="submit" value="Submit Application" />
+  </form>
+
+</main>
 
 
 <!-- End HTML -->

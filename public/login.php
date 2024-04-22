@@ -50,7 +50,7 @@ if(is_post_request()) {
     <input type="text" name="display_name" value="<?php echo h($display_name); ?>" required><br>
     Password:<br>
     <input type="password" name="password" value="" required><br>
-    <input type="submit" name="submit" value="Submit" >
+    <input type="submit" name="submit" value="Log in" >
   </form>
 
 </main>

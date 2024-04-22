@@ -122,6 +122,24 @@ class Vendor extends DatabaseObject {
   }
 
   /**
+   * Queries the database and finds all vendors that are listed as pending. 1 Query
+   * 
+   * @return Vendor[]|false the vendors found by the search, if they exist
+   */
+  static public function find_all_pending() {
+    $sql = "SELECT vendor_id, vendor_display_name ";
+    $sql .= "FROM " . static::$table_name . " ";
+    $sql .= "WHERE is_pending = TRUE;";
+
+    $result = static::find_by_sql($sql);
+    if($result){
+      return $result;
+    } else {
+      return false;
+    }
+  }
+
+  /**
    * Queries the database and finds the vendor with the given vendor_id. 1 Query
    * 
    * @param int $vendor_id the vendor_id to search the database for
@@ -129,7 +147,8 @@ class Vendor extends DatabaseObject {
    * @return Vendor|false the vendor found by the search, if it exists
    */
   static public function find_by_id($vendor_id) {
-    $sql = "SELECT vendor_id, vendor_display_name ";
+    // $sql = "SELECT vendor_id, vendor_display_name ";
+    $sql = "SELECT * ";
     $sql .= "FROM " . static::$table_name . " ";
     $sql .= "WHERE vendor_id = " . $vendor_id . ";";
 
@@ -404,6 +423,19 @@ class Vendor extends DatabaseObject {
       }
     }
   }
+
+  /**
+   * 
+   */
+  public function delete() {
+    $sql = "DELETE FROM " . static::$table_name . " ";
+    $sql .= "WHERE vendor_id='" . self::$database->escape_string($this->vendor_id) . "' ";
+    $sql .= "LIMIT 1";
+    $result = self::$database->query($sql);
+    return $result;
+  }
+
+
 
   // RENDERING FUNCTIONS ================================================
 

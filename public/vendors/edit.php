@@ -71,10 +71,12 @@
         <dt>Existing Phones</dt>
         <?php 
           foreach($vendor->phone_numbers as $phone_id => $phone_attributes){
+            // Phone Number
             echo '<dd>';
             echo '<span>Phone Number: </span>';
             echo '<input type="text" name="vendor[phone_numbers][' . $phone_id . "][phone_number]" . '" value="' . Vendor::phone_to_string($phone_attributes['phone_number']) . '">';
 
+            // Phone Type
             echo ' <span>Phone Type: </span>';
             echo '<select name="vendor[phone_numbers][' . $phone_id . "][phone_type]" . '">';
             echo '<option value="">Select a phone type:</option>';
@@ -100,6 +102,8 @@
             echo '>Work</option>';
 
             echo '</select>';
+
+            // Deletion
             echo '</dd>';
           }
         ?>

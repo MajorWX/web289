@@ -32,7 +32,7 @@ $users = User::find_all();
             <td><?php echo $user->user_id; ?></td>
             <td><?php echo $user->display_name; ?></td>
             <td><?php echo $user->email; ?></td>
-            <td><?php echo $user->role; ?></td>
+            <td><?php echo $user->role_to_string(); ?></td>
             <td><a href="<?php echo url_for('/users/show.php?id=' . $user->user_id); ?>">View</a></td>
             <td><a href="<?php echo url_for('/users/edit.php?id=' . $user->user_id); ?>">Edit</a></td>
             <td><a href="<?php echo url_for('/users/delete.php?id=' . $user->user_id); ?>">Delete</a></td>

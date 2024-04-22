@@ -1,6 +1,7 @@
 <?php
 
-class Session {
+class Session
+{
   private $user_id;
   public $display_name;
   private $last_login;
@@ -10,14 +11,16 @@ class Session {
   public $is_pending;
 
 
-  public const MAX_LOGIN_AGE = 60*60*24; // 1 day
+  public const MAX_LOGIN_AGE = 60 * 60 * 24; // 1 day
 
-  public function __construct() {
+  public function __construct()
+  {
     session_start();
     $this->check_stored_login();
   }
-  public function login($user) {
-    if($user){
+  public function login($user)
+  {
+    if ($user) {
 
       session_regenerate_id();
       $_SESSION['user_id'] = $user->user_id;
@@ -28,33 +31,41 @@ class Session {
       $this->role = $_SESSION['role'] = $user->role;
 
       $active_vendor = Vendor::find_by_user_id($user->user_id);
-      if($active_vendor){
+      if ($active_vendor) {
         $this->active_vendor_id = $_SESSION['active_vendor_id'] = $active_vendor->vendor_id;
         $this->active_vendor_name = $_SESSION['active_vendor_name'] = $active_vendor->vendor_display_name;
         $this->is_pending = $_SESSION['is_pending'] = $active_vendor->is_pending;
       } else {
-        $_SESSION['active_vendor_id'] = null;
-        $_SESSION['active_vendor_name'] = null;
-        $_SESSION['is_pending'] = null;
+        $this->active_vendor_id = $_SESSION['active_vendor_id'] = null;
+        $this->active_vendor_name = $_SESSION['active_vendor_name'] = null;
+        $this->is_pending = $_SESSION['is_pending'] = null;
       }
-      
     }
     return true;
   }
 
-  public function is_logged_in() {
+  public function is_logged_in()
+  {
     return isset($this->user_id) && $this->last_login_is_recent();
   }
 
-  public function is_admin_logged_in() {
+  public function is_admin_logged_in()
+  {
     return $this->is_logged_in() && ($this->role == 'a' || $this->role == 's');
   }
 
-  public function has_vendor() {
+  public function is_super_admin_logged_in()
+  {
+    return $this->is_logged_in() && ($this->role == 's');
+  }
+
+  public function has_vendor()
+  {
     return isset($this->active_vendor_id);
   }
 
-  public function logout() {
+  public function logout()
+  {
     unset($_SESSION['user_id']);
     unset($_SESSION['display_name']);
     unset($_SESSION['last_login']);
@@ -67,7 +78,7 @@ class Session {
   }
 
   private function check_stored_login() {
-    if(isset($_SESSION['user_id'])) {
+    if (isset($_SESSION['user_id'])) {
       $this->user_id = $_SESSION['user_id'];
       $this->display_name = $_SESSION['display_name'];
       $this->last_login = $_SESSION['last_login'];
@@ -79,22 +90,32 @@ class Session {
     }
   }
 
-  private function last_login_is_recent() {
-    if(!isset($this->last_login)) {
+  private function last_login_is_recent()
+  {
+    if (!isset($this->last_login)) {
       return false;
-    } else if(($this->last_login + self::MAX_LOGIN_AGE) < time()) {
+    } else if (($this->last_login + self::MAX_LOGIN_AGE) < time()) {
       return false;
     } else {
       return true;
     }
-  } 
+  }
 
-  public function get_user_id(){
+  public function get_user_id()
+  {
     return $this->user_id;
   }
 
-  public function message($msg="") {
-    if(!empty($msg)) {
+  public function no_application()
+  {
+    $this->active_vendor_id = $_SESSION['active_vendor_id'] = null;
+    $this->active_vendor_name = $_SESSION['active_vendor_name'] = null;
+    $this->is_pending = $_SESSION['is_pending'] = null;
+  }
+
+  public function message($msg = "")
+  {
+    if (!empty($msg)) {
       // This is a set message
       $_SESSION['message'] = $msg;
       return true;
@@ -104,10 +125,8 @@ class Session {
     }
   }
 
-  public function clear_message() {
+  public function clear_message()
+  {
     unset($_SESSION['message']);
   }
 }
-
-
-?>

@@ -120,13 +120,12 @@ header nav ul:first-of-type li a {
   padding: .5rem 1rem;
 }
 
-#logged-in span {
+/* #logged-in span {
   filter: drop-shadow(3px 3px 1px #000);
   height: min-content;
-  /* padding-bottom: 3px; */
   margin-right: 6px;
   margin-bottom: 4px;
-}
+} */
 
 #logged-in a {
   /* align-self: flex-end; */
@@ -237,6 +236,23 @@ main:not(#calendar) .create-button {
 
 main:not(#calendar) .create-button:hover {
   background-color: #009400;
+  text-decoration: underline;
+}
+
+main:not(#calendar) .delete-button {
+  background-color: #740000;
+  border-radius: 4px;
+  color: #fff;
+  display: block;
+  font-weight: bold;
+  margin-top: .5rem;
+  padding: 10px;
+  text-decoration: none;
+  width: fit-content;
+}
+
+main:not(#calendar) .delete-button:hover {
+  background-color: #940000;
   text-decoration: underline;
 }
 

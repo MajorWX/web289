@@ -28,7 +28,7 @@
           <!-- What shows up when logged in -->
           <?php if ($session->is_logged_in()) { ?> 
             <li id="logged-in">
-              <span>User: <?php echo $session->display_name; ?></span>
+              <a href="<?php echo url_for('/users/show.php?id=' . $session->get_user_id()); ?>"><span>User: <?php echo $session->display_name; ?></span></a>
               <!-- What shows up if user is an approved vendor -->
               <?php // Add && !$session->is_admin_logged_in()
                 if($session->has_vendor() && !$session->is_pending ){
