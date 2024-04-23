@@ -32,4 +32,5 @@ if($result === true){
   redirect_to(url_for('calendar.php'));
 } else {
   // Show Errors
+  echo "Could not mark you as available for " . $date . ".";
 }

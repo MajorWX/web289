@@ -31,11 +31,27 @@
     // Create record using post parameters
     $args = $_POST['vendor'];
     $vendor->merge_attributes($args);
-    $result = $vendor->save();
+    $vendor_result = $vendor->save();
+
+    // Uploading the image, if it exists
+    if(strlen($_FILES["profile_image"]["name"]) > 0) {
+      var_dump($_FILES["profile_image"]);
+      $new_profile_image = new Image;
+      $new_profile_image->im_user_id = $session->get_user_id();
+      $new_profile_image->im_vendor_id = $vendor->vendor_id;
+      $new_profile_image->image_purpose = "profile";
+
+      $image_result = $new_profile_image->upload($_FILES["profile_image"]);
+      array_push($vendor->errors, ...$new_profile_image->errors);
+    } else {
+      $image_result = true;
+    }
+
+    $result = $vendor_result && $image_result;
 
     if($result) {
       $session->message('Modified vendor: "' . $vendor->vendor_display_name . '" successfully.');
-      redirect_to(url_for('/vendors/user_view.php?id=' . $id));
+      //redirect_to(url_for('/vendors/user_view.php?id=' . $id));
     } else {
       // show errors
     }
@@ -63,7 +79,8 @@
 
     <?php echo display_errors($vendor->errors); ?>
 
-    <form action="<?php echo url_for('/vendors/edit.php?id=' . h(u($id))); ?>" method="post">
+
+    <form action="<?php echo url_for('/vendors/edit.php?id=' . h(u($id))); ?>" method="post" enctype="multipart/form-data">
 
       <?php include('form_fields.php'); ?>
 
@@ -114,6 +131,13 @@
       <dl class="new-phones">
         <dt>New Phones</dt>
         <a>Click to add a phone.</a>
+      </dl>
+
+      <dl>
+        <dt>Upload A Profile Image</dt>
+        <dd>
+          <input type="file" name="profile_image">
+        </dd>
       </dl>
 
       <input type="submit" value="Edit Vendor">
