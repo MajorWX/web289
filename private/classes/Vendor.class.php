@@ -1,6 +1,7 @@
 <?php
 
-class Vendor extends DatabaseObject {
+class Vendor extends DatabaseObject
+{
 
   static protected $table_name = 'vendors';
   static protected $db_columns = ['vendor_id', 'vd_user_id', 'vendor_display_name', 'vendor_desc', 'contact_info', 'address', 'city', 'vd_state_id', 'is_pending'];
@@ -57,7 +58,7 @@ class Vendor extends DatabaseObject {
    * Phone types are 'home', 'mobile', and 'work'
    */
   public $phone_numbers = [];
-  
+
   /**
    * An associative array of all vendor phones added in the last edit.
    * A list of phones with [phone_id]['phone_number'] and [phone_id]['phone_type']
@@ -74,31 +75,32 @@ class Vendor extends DatabaseObject {
    */
   public $listed_dates = [];
 
-  public function __construct($args=[]){
+  public function __construct($args = [])
+  {
     $this->vendor_display_name = $args['vendor_display_name'] ?? '';
     $this->vendor_desc = $args['vendor_desc'] ?? '';
     $this->address = $args['address'] ?? '';
     $this->city = $args['city'] ?? '';
     $this->vd_state_id = $args['vd_state_id'] ?? '';
 
-    $phone_number_array = $args['phone_numbers'] ?? [];
-    if(count($phone_number_array) > 0) {
-      foreach($phone_number_array as $phone_id => $phone_attributes) {
-        $this->phone_numbers[$phone_id]['phone_number'] = preg_replace('~\D~', "" , $phone_attributes['phone_number']);
-        echo "Set a phone number: " . $this->phone_numbers[$phone_id]['phone_number'];
+    // $phone_number_array = $args['phone_numbers'] ?? [];
+    // if(count($phone_number_array) > 0) {
+    //   foreach($phone_number_array as $phone_id => $phone_attributes) {
+    //     $this->phone_numbers[$phone_id]['phone_number'] = preg_replace('~\D~', "" , $phone_attributes['phone_number']);
+    //     echo "Set a phone number: " . $this->phone_numbers[$phone_id]['phone_number'];
 
-        $this->phone_numbers[$phone_id]['phone_type'] = $phone_attributes['phone_type'];
-        echo "Set a phone type: " . $this->phone_numbers[$phone_id]['phone_type'];
-      }
-    }
+    //     $this->phone_numbers[$phone_id]['phone_type'] = $phone_attributes['phone_type'];
+    //     echo "Set a phone type: " . $this->phone_numbers[$phone_id]['phone_type'];
+    //   }
+    // }
 
-    $new_phone_number_array = $args['new_phone_numbers'] ?? [];
-    if(count($new_phone_number_array) > 0) {
-      foreach($phone_number_array as $phone_id => $phone_attributes) {
-        $this->new_phone_numbers[$phone_id]['phone_number'] = preg_replace('~\D~', "" , $phone_attributes['phone_number']);
-        $this->new_phone_numbers[$phone_id]['phone_type'] = $phone_attributes['phone_type'];
-      }
-    }
+    // $new_phone_number_array = $args['new_phone_numbers'] ?? [];
+    // if(count($new_phone_number_array) > 0) {
+    //   foreach($phone_number_array as $phone_id => $phone_attributes) {
+    //     $this->new_phone_numbers[$phone_id]['phone_number'] = preg_replace('~\D~', "" , $phone_attributes['phone_number']);
+    //     $this->new_phone_numbers[$phone_id]['phone_type'] = $phone_attributes['phone_type'];
+    //   }
+    // }
   }
 
 
@@ -114,13 +116,14 @@ class Vendor extends DatabaseObject {
    * 
    * @return Vendor[]|false the vendors found by the search, if they exist
    */
-  static public function list_all() {
+  static public function list_all()
+  {
     $sql = "SELECT vendor_id, vendor_display_name ";
     $sql .= "FROM " . static::$table_name . " ";
     $sql .= "WHERE is_pending = FALSE;";
 
     $result = static::find_by_sql($sql);
-    if($result){
+    if ($result) {
       return $result;
     } else {
       return false;
@@ -132,13 +135,14 @@ class Vendor extends DatabaseObject {
    * 
    * @return Vendor[]|false the vendors found by the search, if they exist
    */
-  static public function find_all_pending() {
+  static public function find_all_pending()
+  {
     $sql = "SELECT vendor_id, vendor_display_name ";
     $sql .= "FROM " . static::$table_name . " ";
     $sql .= "WHERE is_pending = TRUE;";
 
     $result = static::find_by_sql($sql);
-    if($result){
+    if ($result) {
       return $result;
     } else {
       return false;
@@ -152,19 +156,19 @@ class Vendor extends DatabaseObject {
    * 
    * @return Vendor|false the vendor found by the search, if it exists
    */
-  static public function find_by_id($vendor_id) {
+  static public function find_by_id($vendor_id)
+  {
     // $sql = "SELECT vendor_id, vendor_display_name ";
     $sql = "SELECT * ";
     $sql .= "FROM " . static::$table_name . " ";
     $sql .= "WHERE vendor_id = " . $vendor_id . ";";
 
     $result = static::find_by_sql($sql);
-    if($result){
+    if ($result) {
       return $result[0];
     } else {
       return false;
     }
-    
   }
 
   /**
@@ -174,14 +178,36 @@ class Vendor extends DatabaseObject {
    * 
    * @return Vendor|false the vendor found by the search, if it exists
    */
-  static public function find_by_user_id($user_id) {
+  static public function find_by_user_id($user_id)
+  {
     $sql = "SELECT vendor_id, vendor_display_name, is_pending ";
     $sql .= "FROM " . static::$table_name . " ";
     $sql .= "WHERE vd_user_id = " . $user_id . ";";
-    
+
     $result = static::find_by_sql($sql);
 
-    if($result){
+    if ($result) {
+      return $result[0];
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Queries the database and finds the vendor with the given vendor_display_name. 1 Query
+   * 
+   * @param string $vendor_display_name the vendor_display_name to search the database for
+   * 
+   * @return Vendor|false the vendor found by the search, if it exists
+   */
+  static public function find_by_vendor_name($vendor_display_name)
+  {
+    $sql = "SELECT * ";
+    $sql .= "FROM " . static::$table_name . " ";
+    $sql .= "WHERE vendor_display_name= '" . $vendor_display_name . "';";
+
+    $result = static::find_by_sql($sql);
+    if ($result) {
       return $result[0];
     } else {
       return false;
@@ -193,28 +219,29 @@ class Vendor extends DatabaseObject {
    * 
    * @return string[] an associative array of states, Keys: state_ids. Values: state_names
    */
-  static public function get_state_array(){
+  static public function get_state_array()
+  {
     $sql = "SELECT * ";
     $sql .= "FROM states;";
 
     $result = self::$database->query($sql);
-    if(!$result) {
+    if (!$result) {
       exit("Database query failed.");
     }
 
     // Storing Results
     $state_array = [];
     // Reading each row
-    while($row = $result->fetch_assoc()) {
+    while ($row = $result->fetch_assoc()) {
 
-    $state_id = '';
-    $state_name = '';
+      $state_id = '';
+      $state_name = '';
 
       // Reading each cell
-      foreach($row as $property => $value) {
-        if($property === 'state_id') {
+      foreach ($row as $property => $value) {
+        if ($property === 'state_id') {
           $state_id = $value;
-        } elseif($property === 'state_name') {
+        } elseif ($property === 'state_name') {
           $state_name = $value;
         }
       } // End foreach for cells
@@ -226,13 +253,14 @@ class Vendor extends DatabaseObject {
   /**
    * Populates this vendor's state attribute with a state_name. 1 Query
    */
-  public function populate_state(){
+  public function populate_state()
+  {
     $sql = "SELECT state_name ";
     $sql .= "FROM states ";
     $sql .= "WHERE state_id = " . $this->vd_state_id . ";";
 
     $result = self::$database->query($sql);
-    if(!$result) {
+    if (!$result) {
       exit("Database query failed.");
     }
 
@@ -244,32 +272,33 @@ class Vendor extends DatabaseObject {
   /**
    * Populates this vendor's phone_numbers attribute as an associative array [phone_id]['phone_number'] and [phone_id]['phone_type']. 1 Query
    */
-  public function populate_phones() {
+  public function populate_phones()
+  {
     $sql = "SELECT phone_id, phone_number, phone_type ";
     $sql .= "FROM phone_numbers ";
     $sql .= "WHERE ph_vendor_id =" . $this->vendor_id . ";";
 
     $result = self::$database->query($sql);
-    if(!$result) {
+    if (!$result) {
       exit("Database query failed.");
     }
 
     // Storing Results
 
     // Reading each row
-    while($row = $result->fetch_assoc()) {
+    while ($row = $result->fetch_assoc()) {
 
       $phone_id = '';
       $phone_number = '';
       $phone_type = '';
 
       // Reading each cell
-      foreach($row as $property => $value) {
-        if($property === 'phone_id') {
+      foreach ($row as $property => $value) {
+        if ($property === 'phone_id') {
           $phone_id = $value;
-        } elseif($property === 'phone_number') {
+        } elseif ($property === 'phone_number') {
           $phone_number = $value;
-        }elseif($property === 'phone_type') {
+        } elseif ($property === 'phone_type') {
           $phone_type = $value;
         }
       } // End foreach for cells
@@ -282,21 +311,24 @@ class Vendor extends DatabaseObject {
   /**
    * Queries the database to find all CalendarDate listings this vendor is attending to populate this Vendor object's listed_dates attribute. 1 Query
    */
-  public function populate_dates(){
+  public function populate_dates()
+  {
     $this->listed_dates = CalendarDate::find_by_vendor($this->vendor_id);
   }
 
   /**
    * Populates this vendor's vendor_inventory attribute by querying the database for all VendorInventory listings associated with this vendor. N+1 Queries
    */
-  public function populate_inventory(){
+  public function populate_inventory()
+  {
     $this->vendor_inventory = VendorInventory::find_by_vendor($this->vendor_id);
   }
 
   /**
    * Creates a Vendor object by querying the database for a given vendor_id and populates as many of its fields as possible. N+4 Queries
    */
-  static public function populate_full($vendor_id) {
+  static public function populate_full($vendor_id)
+  {
     $sql = "SELECT * FROM " . static::$table_name . " ";
     $sql .= "WHERE vendor_id = " . $vendor_id . ";";
 
@@ -318,14 +350,15 @@ class Vendor extends DatabaseObject {
    * 
    * @return bool whether this vendor is attending
    */
-  public function is_coming_on_date($given_date){
+  public function is_coming_on_date($given_date)
+  {
 
-    if(empty($this->listed_dates)){
+    if (empty($this->listed_dates)) {
       $this->populate_dates();
     }
 
     $listed_date_ids = [];
-    foreach($this->listed_dates as $date){
+    foreach ($this->listed_dates as $date) {
       $listed_date_ids[] = $date->calendar_id;
     }
 
@@ -337,9 +370,10 @@ class Vendor extends DatabaseObject {
    * 
    * @return mysqli_result|bool the query result
    */
-  public function save() {
+  public function save()
+  {
     // A new record will not have an ID yet
-    if(isset($this->vendor_id)) {
+    if (isset($this->vendor_id)) {
       return $this->update();
     } else {
       return $this->create();
@@ -347,13 +381,66 @@ class Vendor extends DatabaseObject {
   }
 
   /**
+   * Makes sure that this vendor has a unique display name and all of its phone numbers are valid.
+   * 
+   * @return array all errors that were discovered during validation
+   */
+  public function validate()
+  {
+    $this->errors = [];
+
+    // Setting the display name to title case and trimming white space
+    $this->vendor_display_name = ucwords(trim($this->vendor_display_name));
+
+    // Validating the vendor display name
+    if (!has_length($this->vendor_display_name, array('min' => 6, 'max' => 50))) {
+      $this->errors[] = "Vendor display name must be between 6 and 50 characters.";
+    } else if (!Vendor::has_unique_vendor_name($this->vendor_display_name, $this->vendor_id ?? 0)) {
+      $this->errors[] = "Vendor display name must be unique, try another.";
+    }
+
+    // Validating phone numbers
+    if (count($this->phone_numbers) > 0) {
+      foreach ($this->phone_numbers as $phone_id => $phone_attributes) {
+        // Removing non-digit characters and using html special chars
+        $this->phone_numbers[$phone_id]['phone_number'] = $phone_attributes['phone_number'] = h(preg_replace('~\D~', "", $phone_attributes['phone_number']));
+
+        // Making sure the phone number is 10 digits
+        if(!has_length_exactly($phone_attributes['phone_number'], 10)) {
+          $this->errors[] = "Phone Number: " . $phone_attributes['phone_number'] . " is wrong size, must have exactly 10 digits.";
+        }
+      }
+    }
+
+    return $this->errors;
+  }
+
+  /**
+   * Checks if there is a user with a given display name, other than the user associated with the provided user_id
+   * 
+   * @param string $display_name the user's display name to check for
+   * @param int $current_id [OPTIONAL] the id of the user currently being checked
+   * 
+   * @return bool if the display name is unique
+   */
+  static public function has_unique_vendor_name($vendor_display_name, $vendor_id = "0")
+  {
+    $vendor = Vendor::find_by_vendor_name($vendor_display_name);
+    return ($vendor === false || $vendor->vendor_id == $vendor_id);
+  }
+
+
+  /**
    * Creates a new vendor in the the vendors table. 1 Query
    * 
    * @return mysqli_result|bool the query result
    */
-  protected function create() {
+  protected function create()
+  {
     $this->validate();
-    if(!empty($this->errors)) { return false; }
+    if (!empty($this->errors)) {
+      return false;
+    }
 
     $attributes = $this->sanitized_attributes();
     $sql = "INSERT INTO " . static::$table_name . " (";
@@ -362,7 +449,7 @@ class Vendor extends DatabaseObject {
     $sql .= join("', '", array_values($attributes));
     $sql .= "');";
     $result = self::$database->query($sql);
-    if($result) {
+    if ($result) {
       $this->vendor_id = self::$database->insert_id;
     }
     return $result;
@@ -373,15 +460,18 @@ class Vendor extends DatabaseObject {
    * 
    * @return mysqli_result|bool the query result
    */
-  protected function update() {
+  protected function update()
+  {
     $this->validate();
-    if(!empty($this->errors)) { return false; }
+    if (!empty($this->errors)) {
+      return false;
+    }
 
     $this->update_phones();
 
     $attributes = $this->sanitized_attributes();
     $attribute_pairs = [];
-    foreach($attributes as $key => $value) {
+    foreach ($attributes as $key => $value) {
       $attribute_pairs[] = "{$key}='{$value}'";
     }
 
@@ -396,34 +486,50 @@ class Vendor extends DatabaseObject {
   /**
    * Updates the phones table to include all phones in this vendor's phone_numbers and new_phone_numbers attributes. N Queries
    */
-  protected function update_phones() {
-    // Editing existing phone numbers if any exist
-    if(count($this->phone_numbers) > 0) {
-      foreach($this->phone_numbers as $phone_id => $phone_attributes) {
+  protected function update_phones()
+  {
+    // Checking for existing phone numbers
+    if (count($this->phone_numbers) > 0) {
+      // Editing existing phone numbers
+      foreach ($this->phone_numbers as $phone_id => $phone_attributes) {
         $sql = "UPDATE phone_numbers SET ";
-        $sql .= "phone_number='" . preg_replace('~\D~', "" , $phone_attributes['phone_number']) . "', ";
-        $sql .= "phone_type='" . $phone_attributes['phone_type'] . "' ";
-        $sql .= "WHERE phone_id='" . $phone_id . "' ";
+        $sql .= "phone_number='" . self::$database->escape_string($phone_attributes['phone_number']) . "', ";
+        $sql .= "phone_type='" . self::$database->escape_string($phone_attributes['phone_type']) . "' ";
+        $sql .= "WHERE phone_id='" . self::$database->escape_string($phone_id) . "' ";
         $sql .= "LIMIT 1;";
 
         $result = self::$database->query($sql);
-        if(!$result){
+        if (!$result) {
           exit("Database query failed.");
+        }
+      }
+
+      // Deleting phone numbers marked for deletion
+      foreach ($this->phone_numbers as $phone_id => $phone_attributes) {
+        if (array_key_exists('delete', $phone_attributes)) {
+          $sql = "DELETE FROM phone_numbers ";
+          $sql .= "WHERE phone_id='" . self::$database->escape_string($phone_id) . "' ";
+          $sql .= "LIMIT 1;";
+
+          $result = self::$database->query($sql);
+          if (!$result) {
+            exit("Database query failed.");
+          }
         }
       }
     }
 
     // Adding new phone numbers
-    if(count($this->new_phone_numbers) > 0) {
-      foreach($this->new_phone_numbers as $phone_attributes) {
+    if (count($this->new_phone_numbers) > 0) {
+      foreach ($this->new_phone_numbers as $phone_attributes) {
         $sql = "INSERT INTO phone_numbers (ph_vendor_id, phone_number, phone_type) ";
         $sql .= "VALUES ('";
-        $sql .= $this->vendor_id . "', '";
-        $sql .= preg_replace('~\D~', "" , $phone_attributes['phone_number']) . "', '";
-        $sql .= $phone_attributes['phone_type'] . "');";
+        $sql .= self::$database->escape_string($this->vendor_id) . "', '";
+        $sql .= self::$database->escape_string($phone_attributes['phone_number']) . "', '";
+        $sql .= self::$database->escape_string($phone_attributes['phone_type']) . "');";
 
         $result = self::$database->query($sql);
-        if(!$result){
+        if (!$result) {
           exit("Database query failed.");
         }
       }
@@ -435,7 +541,8 @@ class Vendor extends DatabaseObject {
    * 
    * @return mysqli_result|bool the query result
    */
-  public function delete() {
+  public function delete()
+  {
     $sql = "DELETE FROM " . static::$table_name . " ";
     $sql .= "WHERE vendor_id='" . self::$database->escape_string($this->vendor_id) . "' ";
     $sql .= "LIMIT 1";
@@ -458,11 +565,10 @@ class Vendor extends DatabaseObject {
    * 
    * @return string the formatted phone number
    */
-  static public function phone_to_string($phone_number){
+  static public function phone_to_string($phone_number)
+  {
     return "(" . substr($phone_number, 0, 3) . ") " .
-    substr($phone_number, 3, 3) . "-" .
-    substr($phone_number, 6, 4);
+      substr($phone_number, 3, 3) . "-" .
+      substr($phone_number, 6, 4);
   }
 }
-
-?>

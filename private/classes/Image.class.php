@@ -198,7 +198,7 @@ class Image extends DatabaseObject {
   }
 
   /**
-   * Removes a row from the images table based on this image's image_id. 1 Query
+   * Removes a row from the images table based on this image's image_id, then removes the file 1 Query
    * 
    * @return mysqli_result|bool the query result
    */
@@ -207,7 +207,11 @@ class Image extends DatabaseObject {
     $sql .= "WHERE image_id='" . self::$database->escape_string($this->image_id) . "' ";
     $sql .= "LIMIT 1";
     $result = self::$database->query($sql);
-    return $result;
+    if($result) {
+      $unlink_result = unlink(Image::$target_dir . $this->content);
+    }
+
+    return $result && $unlink_result;
 
     // After deleting, the instance of the object will still
     // exist, even though the database record does not.

@@ -74,7 +74,6 @@ if($vendor_images) {
       <?php 
         foreach($vendor->phone_numbers as $phone){
           echo "<dd>" . ucwords($phone['phone_type']) . ": " . Vendor::phone_to_string($phone['phone_number']) . "</dd>";
-          
         }
       ?>
 
