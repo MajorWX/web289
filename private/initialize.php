@@ -47,6 +47,7 @@
   require_once('classes/Product.class.php');
   require_once('classes/Vendor.class.php');
   require_once('classes/VendorInventory.class.php');
+  require_once('classes/Image.class.php');
   
   // Autoload Classes
   // Line 36-52

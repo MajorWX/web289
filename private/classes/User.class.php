@@ -5,13 +5,44 @@ class User extends DatabaseObject {
   static protected $table_name = "users";
   static protected $db_columns = ['user_id', 'display_name', 'hashed_password', 'email', 'role'];
 
+  /**
+   * This user's id, as it appears in the users table.
+   */
   public $user_id;
+
+  /**
+   * This user's display name.
+   */
   public $display_name;
+
+  /**
+   * This user's email.
+   */
   public $email;
+
+  /**
+   * A character describing this user's role: s=Super Admin, a=Admin, m=User.
+   */
   public $role;
+
+  /**
+   * A hashed version of this user's password.
+   */
   protected $hashed_password;
+
+  /**
+   * This user's password as provided by the password field in a form.
+   */
   public $password;
+
+  /**
+   * This user's password as provided by the confirm password field in a form, used to match with the password field to prevent mistyping.
+   */
   public $confirm_password;
+
+  /**
+   * A bool that prevents a user from being stored to the database if it does not have a valid un-hashed password.
+   */
   protected $password_required = true;
 
   public function __construct($args=[]){
@@ -22,14 +53,29 @@ class User extends DatabaseObject {
     $this->confirm_password = $args['confirm_password'] ?? '';
   }
 
+  /**
+   * Takes the un-hashed password attribute of this user object, hashes it, and stores the hashed password.
+   */
   public function set_hashed_password() {
     $this->hashed_password = password_hash($this->password, PASSWORD_BCRYPT);
   }
 
+  /**
+   * Checks if a given password matches this user object's hashed password.
+   * 
+   * @param string $password the password to check
+   * 
+   * @return bool if the given password matches the hashed password
+   */
   public function verify_password($password) {
     return password_verify($password, $this->hashed_password);
   }
 
+  /**
+   * Determines if this user already exists in the users table and then stores it in a new or existing row. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
   public function save() {
     // A new record will not have an ID yet
     if(isset($this->user_id)) {
@@ -39,11 +85,35 @@ class User extends DatabaseObject {
     }
   }
 
+  /**
+   * Creates a new row in the users table based on this user. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
   protected function create() {
     $this->set_hashed_password();
-    return parent::create();
+
+    $this->validate();
+    if(!empty($this->errors)) { return false; }
+
+    $attributes = $this->sanitized_attributes();
+    $sql = "INSERT INTO " . static::$table_name . " (";
+    $sql .= join(', ', array_keys($attributes));
+    $sql .= ") VALUES ('";
+    $sql .= join("', '", array_values($attributes));
+    $sql .= "')";
+    $result = self::$database->query($sql);
+    if($result) {
+      $this->user_id = self::$database->insert_id;
+    }
+    return $result;
   }
 
+  /**
+   * Modifies an existing row in the users table based on this user. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
   protected function update() {
     if($this->password != '') {
       $this->set_hashed_password();
@@ -68,6 +138,11 @@ class User extends DatabaseObject {
     return $result;
   }
 
+  /**
+   * Removes a row from the users table based on this user's user_id. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
   public function delete() {
     $sql = "DELETE FROM " . static::$table_name . " ";
     $sql .= "WHERE user_id='" . self::$database->escape_string($this->user_id) . "' ";
@@ -83,13 +158,18 @@ class User extends DatabaseObject {
     // calling $user->delete().
   }
 
+  /**
+   * Makes sure that this user has a valid email, a valid and unique display name, a valid role, and a valid password if required.
+   * 
+   * @return array all errors that were discovered during validation
+   */
   protected function validate() {
     $this->errors = [];
   
     if(is_blank($this->email)) {
       $this->errors[] = "Email cannot be blank.";
     } elseif (!has_length($this->email, array('max' => 255))) {
-      $this->errors[] = "Last name must be less than 255 characters.";
+      $this->errors[] = "Email must be less than 255 characters.";
     } elseif (!has_valid_email_format($this->email)) {
       $this->errors[] = "Email must be a valid format.";
     }
@@ -135,6 +215,13 @@ class User extends DatabaseObject {
     return $this->errors;
   }
 
+  /**
+   * Queries the user table and finds the user object with a given display name. 1 Query
+   * 
+   * @param string $display_name the display name to search for
+   * 
+   * @return User|bool the user found by the query, if it exists
+   */
   static public function find_by_display_name($display_name){
     $sql = "SELECT * FROM " . static::$table_name . " ";
     $sql .= "WHERE display_name='" . self::$database->escape_string($display_name) . "'";
@@ -166,6 +253,6 @@ class User extends DatabaseObject {
         return 'ERROR: INVALID ROLE CHARACTER';
     }
   }
-}
+} // End User class
 
 ?>

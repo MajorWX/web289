@@ -101,7 +101,13 @@ class Vendor extends DatabaseObject {
     }
   }
 
+
+
+
   // SQL FUNCTIONS ====================================================
+
+
+
 
   /**
    * Queries the database and finds all vendors that are not listed as pending. 1 Query
@@ -425,7 +431,9 @@ class Vendor extends DatabaseObject {
   }
 
   /**
+   * Removes a row from the vendors table based on this vendor's id. 1 Query
    * 
+   * @return mysqli_result|bool the query result
    */
   public function delete() {
     $sql = "DELETE FROM " . static::$table_name . " ";
@@ -437,7 +445,11 @@ class Vendor extends DatabaseObject {
 
 
 
+
   // RENDERING FUNCTIONS ================================================
+
+
+
 
   /**
    * Formats a 10 digit string of numbers into a phone number. i.e '(123) 456-7890'
@@ -451,8 +463,6 @@ class Vendor extends DatabaseObject {
     substr($phone_number, 3, 3) . "-" .
     substr($phone_number, 6, 4);
   }
-
-
 }
 
 ?>

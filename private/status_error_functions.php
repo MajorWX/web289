@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Restricts access to the page only to users who have logged in. Redirects to the login page if the user is not logged in.
+ */
 function require_login() {
   global $session;
   if(!$session->is_logged_in()) {
@@ -8,6 +11,9 @@ function require_login() {
   }
 }
 
+/**
+ * Restricts access to the page only to users who have logged in. Redirects to the home page if the user is logged in but not an admin. Redirects to the login page if the user is not logged in.
+ */
 function require_admin_login() {
   global $session;
   if(!$session->is_admin_logged_in()) {
@@ -23,7 +29,13 @@ function require_admin_login() {
   }
 }
 
-
+/**
+ * Turns an array of arrays into a single printable string that contains a list of errors in html tags.
+ * 
+ * @param array $errors the errors to be printed
+ * 
+ * @return string the printable string of html tags
+ */
 function display_errors($errors=array()) {
   $output = '';
   if(!empty($errors)) {
@@ -39,6 +51,11 @@ function display_errors($errors=array()) {
   return $output;
 }
 
+/**
+ * Gets the session message and clears it.
+ * 
+ * @return string|void The message found in the session data, if it exists
+ */
 function get_and_clear_session_message() {
   if(isset($_SESSION['message']) && $_SESSION['message'] != '') {
     $msg = $_SESSION['message'];
@@ -47,6 +64,11 @@ function get_and_clear_session_message() {
   }
 }
 
+/**
+ * Gets the session message and returns it as a printable string with html tags.
+ * 
+ * @return string|void the message in html tags, if it exists
+ */
 function display_session_message() {
   $msg = get_and_clear_session_message();
   if(isset($msg) && $msg != '') {

@@ -214,6 +214,11 @@ class VendorInventory extends DatabaseObject {
     return $result_array;
   }
 
+  /**
+   * Removes a row from the vendor_inventory table based on this inventory listing's inventory_id. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
   public function delete() {
     $sql = "DELETE FROM " . static::$table_name . " ";
     $sql .= "WHERE inventory_id='" . self::$database->escape_string($this->inventory_id) . "' ";
@@ -299,7 +304,7 @@ class VendorInventory extends DatabaseObject {
 
 
   /**
-   * 
+   * Used in vendor_inventory/edit.php. Prints a table of form inputs for editing several of a vendor's inventory at once.
    * 
    * @param VendorInventory[][] $sorted_inventory_array an associative array from the static sort_into_categories() function
    */

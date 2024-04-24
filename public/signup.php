@@ -12,7 +12,6 @@ if (is_post_request()) {
   $result = $user->save();
 
   if ($result === true) {
-    $new_user_id = $user->user_id;
     $session->message(`You've signed up successfully.`);
     $session->login($user);
     redirect_to(url_for('/index.php'));

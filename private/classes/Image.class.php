@@ -5,20 +5,60 @@ class Image extends DatabaseObject {
   static protected $table_name = 'images';
   static protected $db_columns = ['image_id', 'im_user_id', 'content', 'upload_date', 'alt_text', 'im_vendor_id', 'im_product_id', 'image_purpose'];
 
+  /**
+   * This image's id as it corresponds to the images table.
+   */
   public $image_id;
+
+  /**
+   * The id of this image's uploader as it corresponds to the user table.
+   */
   public $im_user_id;
+
+  /**
+   * The name of this image's filename within the images upload folder as designated by the target_dir attribute.
+   */
   public $content;
+
+  /**
+   * The date this image was uploaded.
+   */
   public $upload_date;
+
+  /**
+   * This image's text to be printed in the alt text field of HTML img tags.
+   */
   public $alt_text;
+
+  /**
+   * The id of the vendor associated with this image, as it corresponds to the vendors table.
+   */
   public $im_vendor_id;
+
+  /**
+   * The id of the product associated with this image, as it corresponds to the products table.
+   */
   public $im_product_id;
+
+  /**
+   * A string describing this image's purpose, used to filter for images that should appear at certain places.
+   */
   public $image_purpose;
 
-  public $user_uploader;
-
+  /**
+   * The path from the Image.class.php file to the image upload folder.
+   */
   static public $target_dir = '../../public/images/uploads/';
+
+  /**
+   * The public path to the image upload folder.
+   */
   static public $public_image_path = '/images/uploads/';
-  static public $file_size_limit = 5000000;
+
+  /**
+   * The maximum size of a valid uploaded file, in bytes.
+   */
+  static public $file_size_limit = 8000000; // 8 MB
 
 
 
@@ -98,6 +138,11 @@ class Image extends DatabaseObject {
     return empty($this->errors);
   }
 
+  /**
+   * Determines if this object already exists in the database and then stores it in a new or existing row. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
   public function save() {
     // A new record will not have an ID yet
     if(isset($this->image_id)) {
@@ -107,6 +152,11 @@ class Image extends DatabaseObject {
     }
   }
 
+  /**
+   * Creates a new row in the images table based on this image. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
   protected function create() {
     $this->validate();
     if(!empty($this->errors)) { return false; }
@@ -124,6 +174,11 @@ class Image extends DatabaseObject {
     return $result;
   }
 
+  /**
+   * Modifies an existing row in the images table based on this image. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
   protected function update() {
     $this->validate();
     if(!empty($this->errors)) { return false; }
@@ -140,6 +195,26 @@ class Image extends DatabaseObject {
     $sql .= "LIMIT 1";
     $result = self::$database->query($sql);
     return $result;
+  }
+
+  /**
+   * Removes a row from the images table based on this image's image_id. 1 Query
+   * 
+   * @return mysqli_result|bool the query result
+   */
+  public function delete() {
+    $sql = "DELETE FROM " . static::$table_name . " ";
+    $sql .= "WHERE image_id='" . self::$database->escape_string($this->image_id) . "' ";
+    $sql .= "LIMIT 1";
+    $result = self::$database->query($sql);
+    return $result;
+
+    // After deleting, the instance of the object will still
+    // exist, even though the database record does not.
+    // This can be useful, as in:
+    //   echo $user->first_name . " was deleted.";
+    // but, for example, we can't call $user->update() after
+    // calling $user->delete().
   }
 
   /**
