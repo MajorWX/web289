@@ -29,6 +29,15 @@ if(!$vendor) {
 $vendor_images = Image::find_by_vendor($vendor_id);
 if($vendor_images) {
   $profile_images = Image::filter_by_purpose($vendor_images, "profile");
+  $inventory_images = Image::filter_by_purpose($vendor_images, "inventory");
+
+  // Sorting the images for the vendor_inventory by their product id
+  if($inventory_images) {
+    $inventory_images_by_product_id = [];
+    foreach($inventory_images as $image) {
+      $inventory_images_by_product_id[$image->im_product_id] = $image;
+    }
+  }
 }
 
 
@@ -84,7 +93,7 @@ if($vendor_images) {
           $sorted_inventory_array = VendorInventory::sort_into_categories($vendor->vendor_inventory);
 
           if($sorted_inventory_array){
-            VendorInventory::create_products_table($sorted_inventory_array);
+            VendorInventory::create_products_table($sorted_inventory_array, $inventory_images_by_product_id ?? []);
           }
         }        
         ?>
@@ -103,6 +112,8 @@ if($vendor_images) {
         ?>
       </ul></dd>
     </dl>
+
+    <a href="<?php echo url_for('/vendors/delete.php?id=' . $vendor_id);?>" class="delete-button">Delete Vendor Account</a>
   </main>
 
 <!-- End HTML -->

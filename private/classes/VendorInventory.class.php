@@ -28,13 +28,24 @@ class VendorInventory extends DatabaseObject {
 
   /**
    * The vendor object associated with this inventory listing.
+   * @var Vendor
    */
   public $vendor;
 
   /**
    * The product object associated with this inventory listing.
+   * @var Product
    */
   public $product;
+
+  /**
+   * The image associated with this inventory listing.
+   * @var Image
+   */
+  public $image;
+
+
+
 
   // SQL FUNCTIONS =====================================================
 
@@ -234,6 +245,8 @@ class VendorInventory extends DatabaseObject {
     // calling $user->delete().
   }
 
+
+
   // VENDOR RENDERING FUNCTIONS =====================================================
 
   /**
@@ -275,10 +288,19 @@ class VendorInventory extends DatabaseObject {
    * Prints each product listing as a row in an HTML table, with each product category dividing up the table.
    * 
    * @param VendorInventory[][] $sorted_inventory_array an associative array from the static sort_into_categories() function
+   * @param Image[] $inventory_images_by_product_id an associative array of images with keys of their product ids
    */
-  static public function create_products_table($sorted_inventory_array) {
+  static public function create_products_table($sorted_inventory_array, $inventory_images_by_product_id = []) {
+    $has_images = false;
+    if(count($inventory_images_by_product_id) > 0) {
+      $has_images = true;
+    }
+
     echo "<table>";
     echo "<tr>";
+    if($has_images) {
+      echo "<th>Product Image</th>";
+    }
     echo "<th>Product Name</th>";
     echo "<th>Listed Price</th>";
     echo "<th>In Stock</th>";
@@ -287,12 +309,19 @@ class VendorInventory extends DatabaseObject {
     // Loop for categories
     foreach($sorted_inventory_array as $category => $products){
       echo "<tr>";
-      echo '<td class="product-category" colspan="3">' . $category . '</td>';
+      echo '<td class="product-category" colspan="'. (($has_images) ? 4 : 3) .'">' . $category . '</td>';
       echo "</tr>";
 
       // Loop for each listing
       foreach($products as $inventory_listing) {
         echo "<tr>";
+        if($has_images) {
+          echo "<td>";
+          if(array_key_exists($inventory_listing->inv_product_id, $inventory_images_by_product_id)) {
+            $inventory_images_by_product_id[$inventory_listing->inv_product_id]->print_image(200, 200);
+          }
+          echo "</td>";
+        }
         echo "<td>" . $inventory_listing->product->product_name . "</td>";
         echo "<td>$" . $inventory_listing->listing_price . "</td>";
         echo "<td>" . ($inventory_listing->in_stock ? "Yes" : "No") . "</td>";

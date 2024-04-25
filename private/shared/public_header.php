@@ -60,7 +60,7 @@
           <ul>
             <li><a href="<?php echo url_for('/pending_vendors/list.php') ?>">Pending Vendors</a></li>
             <li><a href="<?php echo url_for('/users/list.php') ?>">Users List</a></li>
-            <li><a href="<?php echo url_for('image_upload.php') ?>">Image Upload</a></li>
+            <li><a href="<?php echo url_for('/images/list.php') ?>">Image List</a></li>
           </ul>
         <?php } ?>
       </nav>

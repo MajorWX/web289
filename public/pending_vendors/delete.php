@@ -1,6 +1,4 @@
 <?php require_once('../../private/initialize.php');
-require_login();
-
 $vendor_id = $_GET['id'];
 
 // Making sure there is a get value for the id

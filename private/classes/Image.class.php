@@ -198,7 +198,7 @@ class Image extends DatabaseObject {
   }
 
   /**
-   * Removes a row from the images table based on this image's image_id, then removes the file 1 Query
+   * Removes a row from the images table based on this image's image_id, then removes the file. 1 Query
    * 
    * @return mysqli_result|bool the query result
    */
@@ -235,20 +235,34 @@ class Image extends DatabaseObject {
     return static::find_by_sql($sql);
   }
 
+  /**
+   * Finds the image object with a given image_id. 1 Query
+   * 
+   * @param int $image_id the id of the image to filter by
+   * 
+   * @return Image|bool the image object found by this search, if it exists.
+   */
+  static public function find_by_id($image_id) {
+    $sql = "SELECT * FROM " . static::$table_name . " ";
+    $sql .= "WHERE image_id = '" . $image_id . "';";
 
+    return static::find_by_sql($sql)[0];
+  }
 
   // RENDERING FUNCTIONS ==============================================
 
 
 
   /**
-   * Prints the image to the HTML page.
+   * Prints the image to the HTML page with echo.
    * 
    * @param int $max_width the maximum width the image can have, shrinking the image to fit.
    * @param int $max_height the maximum height the image can have, shrinking the image to fit.
    * @param bool $grow [optional] if the image is allowed to increase in size to fit its constraints, defaults to true.
    */
   public function print_image($max_width, $max_height, $grow=true) {
+    if(!file_exists(Image::$target_dir . $this->content)) { return false;}
+
     // Getting the current image size.
     $image_size = getimagesize(Image::$target_dir . $this->content);
     if(!$image_size) { return false; }

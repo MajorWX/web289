@@ -68,13 +68,16 @@ if (is_post_request()) {
 
   // Uploading the new profile image, if it exists
   if (strlen($_FILES["profile_image"]["name"]) > 0) {
-    var_dump($_FILES["profile_image"]);
+    // Creating the new profile image and setting its attributes
     $new_profile_image = new Image;
     $new_profile_image->im_user_id = $session->get_user_id();
     $new_profile_image->im_vendor_id = $vendor->vendor_id;
     $new_profile_image->image_purpose = "profile";
 
+    // Uploading the image
     $new_image_result = $new_profile_image->upload($_FILES["profile_image"]);
+
+    // Merging the errors
     array_push($vendor->errors, ...$new_profile_image->errors);
   } else {
     $new_image_result = true;
