@@ -27,6 +27,7 @@ if(!$vendor) {
 
 // Fetching all images
 $vendor_images = Image::find_by_vendor($vendor_id);
+
 if($vendor_images) {
   $profile_images = Image::filter_by_purpose($vendor_images, "profile");
   $inventory_images = Image::filter_by_purpose($vendor_images, "inventory");

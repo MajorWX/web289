@@ -211,7 +211,12 @@ class Image extends DatabaseObject {
       $unlink_result = unlink(Image::$target_dir . $this->content);
     }
 
-    return $result && $unlink_result;
+    if($result && $unlink_result) {
+      return $result;
+    } else {
+      return false;
+    }
+    
 
     // After deleting, the instance of the object will still
     // exist, even though the database record does not.

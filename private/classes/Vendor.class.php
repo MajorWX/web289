@@ -68,6 +68,7 @@ class Vendor extends DatabaseObject
 
   /**
    * A list of this vendor's VendorInventory objects, product listings associated with this vendor.
+   * @var VendorInventory[]
    */
   public $vendor_inventory = [];
   /**

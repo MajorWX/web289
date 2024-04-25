@@ -215,10 +215,24 @@ class VendorInventory extends DatabaseObject {
    * 
    * @return mysqli_result[]|bool[] the query result
    */
-  static public function delete_changes($listings_to_delete) {
+  static public function delete_changes($listings_to_delete, $inventory_images_by_product_id = []) {
+    // Checking for image array
+    $has_images = false;
+    if(count($inventory_images_by_product_id) > 0) {
+      $has_images = true;
+    }
+
     $result_array = [];
 
     foreach($listings_to_delete as $inventory_listing) {
+      // Checking if this inventory listing has any images to delete
+      if($has_images) {
+        if(array_key_exists($inventory_listing->inv_product_id, $inventory_images_by_product_id)) { 
+          $result_array[] = $inventory_images_by_product_id[$inventory_listing->inv_product_id]->delete;
+        }
+      }
+
+      // Deleting the inventory listing itself
       $result_array[] = $inventory_listing->delete();
     }
 
@@ -291,6 +305,7 @@ class VendorInventory extends DatabaseObject {
    * @param Image[] $inventory_images_by_product_id an associative array of images with keys of their product ids
    */
   static public function create_products_table($sorted_inventory_array, $inventory_images_by_product_id = []) {
+    // Checking for image array
     $has_images = false;
     if(count($inventory_images_by_product_id) > 0) {
       $has_images = true;
@@ -315,6 +330,8 @@ class VendorInventory extends DatabaseObject {
       // Loop for each listing
       foreach($products as $inventory_listing) {
         echo "<tr>";
+
+        // The image column, if it exists
         if($has_images) {
           echo "<td>";
           if(array_key_exists($inventory_listing->inv_product_id, $inventory_images_by_product_id)) {
@@ -322,6 +339,7 @@ class VendorInventory extends DatabaseObject {
           }
           echo "</td>";
         }
+
         echo "<td>" . $inventory_listing->product->product_name . "</td>";
         echo "<td>$" . $inventory_listing->listing_price . "</td>";
         echo "<td>" . ($inventory_listing->in_stock ? "Yes" : "No") . "</td>";
@@ -336,12 +354,13 @@ class VendorInventory extends DatabaseObject {
    * Used in vendor_inventory/edit.php. Prints a table of form inputs for editing several of a vendor's inventory at once.
    * 
    * @param VendorInventory[][] $sorted_inventory_array an associative array from the static sort_into_categories() function
+   * @param Image[] $inventory_images_by_product_id an associative array of images with keys of their product ids
    */
-  static public function create_edit_vendor_inventory_table($sorted_inventory_array) {
-
+  static public function create_edit_vendor_inventory_table($sorted_inventory_array, $inventory_images_by_product_id = []) {
     // Starting the table
     echo "<table>";
     echo "<tr>";
+    echo "<th>Product Image</th>";
     echo "<th>Product Name</th>";
     echo "<th>Listed Price</th>";
     echo "<th>In Stock</th>";
@@ -351,12 +370,28 @@ class VendorInventory extends DatabaseObject {
     // Loop for categories
     foreach($sorted_inventory_array as $category => $products){
       echo "<tr>";
-      echo '<td class="product-category" colspan="4">' . $category . '</td>';
+      echo '<td class="product-category" colspan="5">' . $category . '</td>';
       echo "</tr>";
 
       // Loop for each listing
-      foreach($products as $inventory_listing){
+      foreach($products as $inventory_listing) {
         echo "<tr>";
+
+        // The image column
+        echo "<td>";
+
+        // See if this product id has an image
+        if(array_key_exists($inventory_listing->inv_product_id, $inventory_images_by_product_id)) {
+          $inventory_images_by_product_id[$inventory_listing->inv_product_id]->print_image(200, 200);
+          echo '<br><label>Mark image for deletion: </label>';
+          echo '<input type="checkbox" name="delete_image[' . $inventory_listing->inv_product_id . ']">';
+        } else {
+          echo '<input type="file" name="' . $inventory_listing->inv_product_id . '">';
+        }
+
+        echo "</td>";
+        
+
         // The Product name
         echo "<td>" . $inventory_listing->product->product_name . "</td>";
 
