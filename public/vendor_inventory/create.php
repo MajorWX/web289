@@ -144,7 +144,7 @@ if (is_post_request()) {
     <dl>
       <dt>Product Name (plural)</dt>
       <dd>
-        <input type="text" name="product[product_name]" value="<?php echo (isset($new_listing->product->product_name)) ? $new_listing->product->product_name : "" ; ?>" list="product-suggestions" required>
+        <input type="text" name="product[product_name]" value="<?php echo (isset($new_listing->product->product_name)) ? $new_listing->product->product_name : '' ; ?>" list="product-suggestions" required>
         <datalist id="product-suggestions">
           <?php
             Product::create_datalist($sorted_product_array);

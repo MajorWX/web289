@@ -22,17 +22,15 @@
   // Getting the list of categories
   $category_list = Product::get_categories_list($sorted_product_array);
   
-  // OLD METHOD OF FILTERING that was very SQL query heavy
-  // foreach($sorted_product_array as $category_name => $products){
-    
-  //   foreach($products as $product) {
+  // Getting all product images
+  $product_images = Image::find_by_purpose('inventory');
 
-  //     $product->populate_listings();
-  //     $product->filter_listings_by_date($next_market_day);
-  //   }
-  // }
-
-  // Final Query count, N+3 
+  if($product_images) {
+    // Storing the product images by product id
+    $images_sorted_by_product_id = Image::sort_images_by_product_id($product_images);
+    // Selecting one image per product to show
+    $selected_images_by_product_id = Image::randomly_select_image_per_product($images_sorted_by_product_id);
+  }
 ?>
 
 <!-- Begin HTML -->
@@ -72,9 +70,9 @@
         <a href="<?php echo url_for('/products/create_category.php'); ?>" class="edit-button">Create New Product Category</a>
         <a href="<?php echo url_for('/products/create.php') ; ?>" class="create-button">Create a New Product</a>
         <?php
-        Product::create_admin_crud_table($sorted_product_array);
+        Product::create_admin_crud_table($sorted_product_array, $selected_images_by_product_id ?? []);
       } else {
-        Product::create_product_list($sorted_product_array);
+        Product::create_product_list($sorted_product_array, $selected_images_by_product_id ?? []);
       }
       
     ?>

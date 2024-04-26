@@ -291,15 +291,31 @@ class Product extends DatabaseObject {
    * Displays the products by printing HTML content to the page, displayed under the category headings.
    * 
    * @param Product[][] $sorted_product_array an associative array from the static sort_into_categories() function
+   * @param Image[] $selected_images_by_product_id [OPTIONAL] an associative array of images keyed by product ids to be displayed
    */
-  static public function create_product_list($sorted_product_array){
+  static public function create_product_list($sorted_product_array, $selected_images_by_product_id=[]){
+    $has_images = false;
+    if(count($selected_images_by_product_id) > 0) {
+      $has_images = true;
+    }
 
     foreach($sorted_product_array as $category_name => $products){
-      echo "<div>";
+      echo '<div class="product-group">';
       echo "<h4>" . $category_name . "</h4>";
       foreach($products as $product){
         echo '<a href="' . url_for('/products/show.php' . '?id=' . $product->product_id) . '">';
         echo "<div>";
+        // Printing the image
+        if($has_images) {
+          echo '<div class="product-image">';
+          if(array_key_exists($product->product_id, $selected_images_by_product_id)) {
+            $selected_images_by_product_id[$product->product_id]->print_image(200, 200);
+          } else {
+            Image::print_placeholder(200, 200);
+          }
+          echo '</div>';
+        }
+
         echo "<p>" . $product->product_name . "</p>";
         $listing_count = ($product->inventory_listings) ? count($product->inventory_listings) : 0;
         echo "<p>" . $listing_count . " listings</p>";
@@ -359,12 +375,22 @@ class Product extends DatabaseObject {
    * Displays the products by printing an HTML table to the page, with CRUD links included.
    * 
    * @param Product[][] $sorted_product_array an associative array from the static sort_into_categories() function
+   * @param Image[] $selected_images_by_product_id [OPTIONAL] an associative array of images keyed by product ids to be displayed
    */
-  static public function create_admin_crud_table($sorted_product_array) {
+  static public function create_admin_crud_table($sorted_product_array, $selected_images_by_product_id=[]) {
+    $has_images = false;
+    if(count($selected_images_by_product_id) > 0) {
+      $has_images = true;
+    }
 
     // Create initial table
     echo "<table>";
     echo "<tr>";
+    // Image Column
+    if ($has_images) {
+      echo "<th></th>";
+    }
+
     echo "<th>Product Name</th>";
     echo "<th>Number of Listings</th>";
     // Show Product Details
@@ -378,12 +404,24 @@ class Product extends DatabaseObject {
     // Loop for categories
     foreach($sorted_product_array as $category => $products) {
       echo "<tr>";
-      echo '<td class="product-category" colspan="5">' . $category . '</td>';
+      echo '<td class="product-category" colspan="' . ($has_images ? 6 : 5) . '">' . $category . '</td>';
       echo "</tr>";
 
       // Loop for each listing
       foreach($products as $product) {
         echo "<tr>";
+
+        // Product image
+        if($has_images) {
+          echo "<td>";
+          if(array_key_exists($product->product_id, $selected_images_by_product_id)) {
+            $selected_images_by_product_id[$product->product_id]->print_image(200, 200);
+          } else {
+            Image::print_placeholder(200, 200);
+          }
+          echo "</td>";
+        }
+
         // Product Name
         echo "<td>" . $product->product_name . "</td>";
         // Number of Listings

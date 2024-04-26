@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Prints out the full URL for a provided filepath in the public folder.
+ * Gets the full URL for a provided filepath in the public folder.
  * 
  * @param string $script_path the path from the public folder to a given file
  * 
@@ -13,6 +13,24 @@ function url_for($script_path) {
     $script_path = "/" . $script_path;
   }
   return WWW_ROOT . $script_path;
+}
+
+/**
+ * Gets the relative path to the public folder.
+ * 
+ * @return string the relative path from the current file to the public folder
+ */
+function path_to_public() {
+  $current_location = $_SERVER['REQUEST_URI'];
+  $path_here_from_public = substr(strstr($current_location, '/public/'), 8);
+  $num_folders = substr_count($path_here_from_public, '/');
+  $path_back_to_public = '';
+  $counter = 0;
+  while($counter < $num_folders) {
+    $path_back_to_public .= '../';
+    $counter++;
+  }
+  return $path_back_to_public;
 }
 
 /**

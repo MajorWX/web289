@@ -11,6 +11,11 @@ body {
   margin: 0;
 }
 
+img {
+  height: auto;
+  max-width: 100%;
+}
+
 /***** Wrapper *****/
 
 #wrapper {
@@ -202,6 +207,10 @@ main {
   padding: 1rem 2rem;
 }
 
+main input[type="submit"] {
+  margin-top: .5rem;
+}
+
 main:not(#calendar) .edit-button {
   background-color: #000074;
   border-radius: 4px;
@@ -312,6 +321,10 @@ caption {
   padding: 2px;
 }
 
+table {
+  margin-top: .5rem;
+}
+
 th {
   margin-top: 0;
   min-width: 60px;
@@ -322,7 +335,7 @@ main:not(#calendar) th {
 }
 
 td {
-  padding-left: 6px;
+  padding: 2px 6px;
   vertical-align: top;
 }
 
@@ -467,23 +480,35 @@ td {
   top: -9999px;
 }
 
+#product .product-group {
+  column-gap: .5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  row-gap: 1rem;
+}
+
 #product h4 {
   background-color: #327b36;
   color: #fff;
   filter: drop-shadow(3px 3px 1px #000);
   font-size: 1.3rem;
+  grid-column: 1 / -1;
   padding: 1rem;
+  position: sticky;
+  top: 2px;
 }
 
-#product div a {
+#product .product-group a {
   border: 2px solid black;
   border-radius: 8px;
   display: inline-block;
   padding: 1rem;
+  margin: 0 auto;
+  max-width: 236px;
 }
 
-#product div a:not(:first-of-type) {
-  margin-left: .5rem;
+#product .product-image {
+  min-height: 203px;
 }
 
 /***** Show Pages *****/
@@ -668,6 +693,10 @@ footer {
 
   #message {
     top: 185px;
+  }
+
+  #product h4 {
+    top: 147px;
   }
 
   #home section,

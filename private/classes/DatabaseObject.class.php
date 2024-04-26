@@ -43,7 +43,7 @@ class DatabaseObject {
    * 
    * @param string $sql the SQL statement to query the database.
    * 
-   * @return static[] a list of instances of the class that called this function
+   * @return static[]|bool a list of instances of the class that called this function, if they exist
    */
   static public function find_by_sql($sql) {
     $result = self::$database->query($sql);
@@ -59,7 +59,11 @@ class DatabaseObject {
 
     $result->free();
 
-    return $object_array;
+    if(count($object_array) > 0){
+      return $object_array;
+    } else {
+      return false;
+    }
   }
 
   /**
