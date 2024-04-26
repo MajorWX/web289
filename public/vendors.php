@@ -15,8 +15,10 @@ $is_admin_view = $session->is_admin_logged_in();
 
 <!-- Begin HTML -->
 
+<script src="<?php echo url_for('/js/search_vendor.js');?>" defer></script>
 
 <main id="vendor">
+
   <h2>Vendors</h2>
 
   <h3>Search Vendors</h3>
@@ -53,7 +55,7 @@ $is_admin_view = $session->is_admin_logged_in();
     <?php
     foreach ($vendors as $vendor) {
       echo "<tr>";
-      echo "<td>" . $vendor->vendor_display_name . "</td>";
+      echo '<td class="vendor-display-name">' . $vendor->vendor_display_name . '</td>';
       echo '<td><a href="' . url_for('/vendors/show.php?id=' . $vendor->vendor_id) . '">View Details</a></td>';
 
       // Admin specific vendor CRUD links
