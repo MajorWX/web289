@@ -1,8 +1,12 @@
 "use strict";
 
+// The search bar element
 let vendorSearchBar = document.getElementById('vendor-search');
+// All table cells containing the vendors' display name
 let vendorDisplayNameCells = Array.from(document.querySelectorAll('.vendor-display-name'));
+// All rows that are visible
 let visibleRows = [];
+// All rows that are hidden by the search
 let hiddenRows = [];
 
 initPageVendorSearch();
@@ -23,6 +27,10 @@ function initPageVendorSearch() {
 
   // Adding the event listener to the search bar that triggers the filtering of vendor rows
   vendorSearchBar.addEventListener('keyup', handleVendorSearch);
+
+  // Preventing the php search from occurring
+  let form = document.querySelector('form');
+  form.addEventListener('submit', (evt) => evt.preventDefault());
 }
 
 /**
@@ -33,13 +41,16 @@ function handleVendorSearch() {
   let searchQuery = vendorSearchBar.value.trim().toLowerCase();
 
   if(searchQuery.length > 0) {
+    // Find all rows to show and hide, based on their vendor name
     let rowsToHide = visibleRows.filter((row) => !row['vendorName'].includes(searchQuery));
     let rowsToShow = hiddenRows.filter((row) => row['vendorName'].includes(searchQuery));
 
-    rowsToHide.forEach((row) => {hideRow(row)});
-    rowsToShow.forEach((row) => {showRow(row)});
+    // Hide the rows to hide, show the rows to be shown
+    rowsToHide.forEach((row) => hideRow(row));
+    rowsToShow.forEach((row) => showRow(row));
   } else {
-    hiddenRows.forEach((row) => {showRow(row)});
+    // If there is no search query, show all rows
+    [...hiddenRows].forEach((row) => showRow(row));
   }
 }
 
@@ -50,7 +61,7 @@ function handleVendorSearch() {
  */
 function hideRow(vendorRow) {
   let rowIndex = visibleRows.indexOf(vendorRow);
-  visibleRows.slice(rowIndex, rowIndex+1);
+  visibleRows.splice(rowIndex, 1);
   vendorRow['rowElement'].style.display = 'none';
   hiddenRows.push(vendorRow);
 }
@@ -58,10 +69,11 @@ function hideRow(vendorRow) {
 /**
  * Shows the provided object, making it become visible and moving it to the visibleRows array
  * 
- * @param {Object} vendorRow -the row object created in the initialize function to be shown
+ * @param {Object} vendorRow - the row object created in the initialize function to be shown
  */
 function showRow(vendorRow) {
   let rowIndex = hiddenRows.indexOf(vendorRow);
-  visibleRows.slice(rowIndex, rowIndex+1);
+  hiddenRows.splice(rowIndex, 1);
   vendorRow['rowElement'].style.display = 'table-row';
+  visibleRows.push(vendorRow);
 }

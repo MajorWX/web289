@@ -403,13 +403,13 @@ class Product extends DatabaseObject {
 
     // Loop for categories
     foreach($sorted_product_array as $category => $products) {
-      echo "<tr>";
+      echo '<tr class="category-row">';
       echo '<td class="product-category" colspan="' . ($has_images ? 6 : 5) . '">' . $category . '</td>';
       echo "</tr>";
 
       // Loop for each listing
       foreach($products as $product) {
-        echo "<tr>";
+        echo '<tr class="product-row">';
 
         // Product image
         if($has_images) {

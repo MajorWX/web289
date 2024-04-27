@@ -3,6 +3,20 @@
 // Fetching all vendors
 $vendors = Vendor::list_all();
 
+// PHP Filtering fall back
+if(is_post_request()) {
+  // Filtering by vendor name if it's set
+  if(!is_blank($_POST['vendor-search'])){
+    $vendor_search_query = strtolower(trim($_POST['vendor-search']));
+    $filtered_vendors = [];
+    foreach($vendors as $vendor) {
+      if(str_contains(strtolower($vendor->vendor_display_name), $vendor_search_query)) {$filtered_vendors[] = $vendor; }
+    }
+    $vendors = $filtered_vendors;
+  }
+}
+
+
 // Checking if the session is an admin to load the CRUD features later in the page
 $is_admin_view = $session->is_admin_logged_in();
 
@@ -22,7 +36,7 @@ $is_admin_view = $session->is_admin_logged_in();
   <h2>Vendors</h2>
 
   <h3>Search Vendors</h3>
-  <form>
+  <form action="<?php echo url_for('vendors.php'); ?>" method="post">
     <input type="text" name="vendor-search" id="vendor-search" list="vendor-suggestions">
     <datalist id="vendor-suggestions">
       <?php

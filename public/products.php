@@ -6,6 +6,31 @@
   // Getting all products
   $products = Product::find_all_products();
 
+  // PHP Filtering fall back
+  if(is_post_request()) {
+    // Filtering by the product name if it's set
+    if(!is_blank($_POST['product-search'])) {
+      $product_search_query = strtolower(trim($_POST['product-search']));
+      $filtered_products = [];
+      foreach($products as $product) {
+        if(str_contains(strtolower($product->product_name), $product_search_query)) {$filtered_products[] = $product;}
+      }
+      $products = $filtered_products;
+    }
+
+    // Filtering by the category if it's set
+    if(!is_blank($_POST['product-category'])) {
+      $product_category_query = strtolower(trim($_POST['product-category']));
+      $filtered_products = [];
+      foreach($products as $product) {
+        if(strtolower($product->category_name) == $product_category_query) {$filtered_products[] = $product;}
+      }
+      $products = $filtered_products;
+    }
+    
+  }
+
+
   // Getting the next market day
   $next_market_day = CalendarDate::get_next_market_day();
 
@@ -34,16 +59,24 @@
 ?>
 
 <!-- Begin HTML -->
-
+<?php 
+  // If the user isn't an admin, use search_products.js
+  if(!$session->is_admin_logged_in()) { ?>
+    <script src="<?php echo url_for('/js/search_products.js');?>" defer></script>
+    <?php
+  } else { ?>
+    <script src="<?php echo url_for('/js/search_products_admin.js');?>" defer></script>
+    <?php
+  }
+?>
 
   <main id="product">
     <h2>Products</h2>
 
     <h3>Search Products</h3>
-    <form>
+    <form action="<?php echo url_for('products.php'); ?>" method="post">
       <label for="product-category">Product Category: </label>
       <select id="product-category" name="product-category">
-        <!-- Populate each <option></option> with php-->
         <option value="">Select a category:</option>
         <?php 
           foreach($category_list as $category_name => $product_count){
@@ -55,7 +88,6 @@
       <label for="product-search">Search Term: </label>
       <input type="text" name="product-search" id="product-search" list="product-suggestions">
       <datalist id="product-suggestions">
-        <!-- Populate each <option></option> with php-->
           <?php 
             Product::create_datalist($sorted_product_array);
           ?>
@@ -65,13 +97,15 @@
 
     <h3>Full Products List</h3>
     <?php 
-      // Admin View
-      if($session->is_admin_logged_in()) { ?>
+      
+      if($session->is_admin_logged_in()) { 
+        // Admin View ?>
         <a href="<?php echo url_for('/products/create_category.php'); ?>" class="edit-button">Create New Product Category</a>
         <a href="<?php echo url_for('/products/create.php') ; ?>" class="create-button">Create a New Product</a>
         <?php
         Product::create_admin_crud_table($sorted_product_array, $selected_images_by_product_id ?? []);
       } else {
+        // Public view
         Product::create_product_list($sorted_product_array, $selected_images_by_product_id ?? []);
       }
       
