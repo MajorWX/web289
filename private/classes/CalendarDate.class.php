@@ -5,6 +5,14 @@ class CalendarDate extends DatabaseObject {
   static protected $table_name = 'calendar';
   static protected $db_columns = ['calendar_id', 'date'];
 
+  static public $market_hours = ['Monday' => '9am-7pm',
+  'Tuesday' => '9am-7pm',
+  'Wednesday' => '9am-7pm',
+  'Thursday' => '9am-7pm',
+  'Friday' => '9am-9pm',
+  'Saturday' => '9am-9pm',
+  'Sunday' => '12pm-9pm'];
+
   /**
    * The CalendarDate's id value within the calendar table.
    */
@@ -71,14 +79,29 @@ class CalendarDate extends DatabaseObject {
    * 
    * @return string This CalendarDate object's date as part of a sentence
    */
-  public function print_date(){
+  public function print_date() {
     $explodedDate = explode('-', $this->date);
 
     $year = $explodedDate[0];
     $month = $explodedDate[1];
     $day = $explodedDate[2];
 
-    return date('F, jS', mktime(0, 0, 0, $month, $day, $year));
+    return date('l, F jS', mktime(0, 0, 0, $month, $day, $year));
+  }
+
+  /**
+   * Get the market hour schedule for this CalendarDate object.
+   * 
+   * @return string the market hours
+   */
+  public function print_market_hours() {
+    $explodedDate = explode('-', $this->date);
+
+    $year = $explodedDate[0];
+    $month = $explodedDate[1];
+    $day = $explodedDate[2];
+
+    return static::$market_hours[date('l', mktime(0, 0, 0, $month, $day, $year))];
   }
 
   /**
@@ -132,6 +155,34 @@ class CalendarDate extends DatabaseObject {
     $firstDay = static::month_first_day($monthNumber, $year);
     $daysInMonth = date('t', $firstDay);
     return $daysInMonth;
+  }
+
+  /**
+   * Checks if a given CalendarDate object corresponds to today.
+   * 
+   * @return bool if the CalendarDate object is today
+   */
+  public function is_today() {
+    date_default_timezone_set('America/New_York');
+    $explodedDate = explode('-', $this->date);
+
+    $year = $explodedDate[0];
+    $month = $explodedDate[1];
+    if($explodedDate[2] < 10){
+      $explodedDate[2] = substr($explodedDate[2], 1);
+    }
+    $day = $explodedDate[2];
+
+    $explodedToday = explode('-', date("Y-m-d"));
+
+    $todayYear = $explodedToday[0];
+    $todayMonth = $explodedToday[1];
+    if($explodedToday[2] < 10){
+      $explodedToday[2] = substr($explodedToday[2], 1);
+    }
+    $todayDay = $explodedToday[2];
+
+    return ($year == $todayYear && $month == $todayMonth && $day == $todayDay);
   }
 
   // SQL FUNCTIONS =====================================================
@@ -287,6 +338,7 @@ class CalendarDate extends DatabaseObject {
    * @return CalendarDate|false the next market day
    */
   static public function get_next_market_day() {
+    date_default_timezone_set('America/New_York');
     $sql = "SELECT * FROM calendar ";
     $sql .= "WHERE date >= '" . date("Y-m-d") . "' ";
     $sql .= "ORDER BY date ";
@@ -297,6 +349,30 @@ class CalendarDate extends DatabaseObject {
     if(!empty($result)){
       $next_market_day = $result[0];
       return $next_market_day;
+    } else {
+      // echo "There is no calendar date listed";
+      return false;
+    }
+    
+  }
+
+  /**
+   * Returns the CalendarDate object corresponding to the second to next occurring market day (regardless of whether vendors are attending). 1 Query
+   * 
+   * @return CalendarDate|false the second to next market day
+   */
+  static public function get_upcoming_market_day() {
+    date_default_timezone_set('America/New_York');
+    $sql = "SELECT * FROM calendar ";
+    $sql .= "WHERE date >= '" . date("Y-m-d") . "' ";
+    $sql .= "ORDER BY date ";
+    $sql .= "LIMIT 2;";
+
+    $result = static::find_by_sql($sql);
+
+    if(!empty($result)){
+      $upcoming_market_day = $result[1];
+      return $upcoming_market_day;
     } else {
       // echo "There is no calendar date listed";
       return false;
@@ -756,13 +832,42 @@ class CalendarDate extends DatabaseObject {
     }
   }
 
-
-  // SQL
-  // SELECT calendar_id, date, vendor_display_name
-  // FROM calendar c, calender_listing li, vendors v
-  // WHERE c.calendar_id = li.li_calendar_id
-  //   AND li.li_vendor_id = v.vendor_id
-  //   AND (after day)
+  /**
+   * Reduces the listed vendors of the provided calendar dates to a given amount.
+   * 
+   * @param CalendarDate[] $calendarDateArray an unorganized array of CalendarDate objects with populated vendors
+   * @param int $number_of_vendors the maximum number of vendors to reduce the CalendarDates listed vendors to.
+   */
+  static public function randomly_select_featured_vendors($calendarDateArray, $number_of_vendors) {
+    foreach($calendarDateArray as $calendarDate) {
+      $vendors = $calendarDate->listed_vendors;
+      // If there aren't any vendors, just continue to the next calendarDate
+      if(!$vendors) { continue; }
+      // If there aren't enough vendors in the array to exclude any, don't do anything
+      if(count($vendors) <= $number_of_vendors) {
+        // Everyone is featured! Yaaaay!
+      } 
+      // Otherwise go through and keep randomly selecting vendors until the count is met
+      else {
+        $selected_vendors = [];
+        $num_vendors_selected = 0;
+        while($num_vendors_selected < $number_of_vendors) {
+          $vendor_ids = array_keys($vendors);
+          // Randomly choose a vendor in the array
+          $selected_index = $vendor_ids[random_int(0, count($vendor_ids)-1)];
+          // Remove the vendor from the array
+          $selected_vendor = $vendors[$selected_index];
+          unset($vendors[$selected_index]);
+          // Add the vendor to the list of selected vendors
+          $selected_vendors[$selected_index] = $selected_vendor;
+          // Increment the counter
+          $num_vendors_selected++;
+        }
+        // Store the selected vendors in the calendarDate
+        $calendarDate->listed_vendors = $selected_vendors;
+      }
+    }
+  } 
 
 }
 
