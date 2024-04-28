@@ -83,7 +83,8 @@ if(is_post_request()) {
     if ($session->is_super_admin_logged_in()) { ?>
       <dt>User Role<dt>
       <dd>
-        <select name="user[role]" required>
+        <label for="user-role">User Role: </label>
+        <select id="user-role" name="user[role]" required>
           <option value="">Select a Role: </option>
           <option value="m" <?php echo ($user->role == 'm') ? 'selected' : ''; ?>>User</option>
           <option value="a" <?php echo ($user->role == 'a') ? 'selected' : ''; ?>>Admin</option>

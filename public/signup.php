@@ -48,12 +48,18 @@ if (is_post_request()) {
           <li>must contain at least 1 number</li>
           <li>must contain at least 1 symbol</li>
         </ul>
-        <dd><input type="password" name="user[password]" value="" required></dd>
+        <dd>
+          <label for="password">Password: </label>
+          <input type="password" id="password" name="user[password]" value="" required>
+        </dd>
       </dl>
 
       <dl>
         <dt>Confirm Password</dt>
-        <dd><input type="password" name="user[confirm_password]" value="" required></dd>
+        <dd>
+          <label for="confirm-password">Confirm Password: </label>
+          <input type="password" id="confirm-password" name="user[confirm_password]" value="" required>
+        </dd>
       </dl>
 
       <div id="operations">

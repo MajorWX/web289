@@ -1,14 +1,17 @@
 'use strict';
 
-// An array of all <td>s with the market_day class
-// let allDays = Array.from(document.querySelectorAll('td'));
+// An array of all anchor tags that link to show.php
 let allShowLinks = Array.from(document.querySelectorAll('.show-link'));
+
+// The popup menu and the screen covering
 let outer = document.querySelector('#outer');
 let inner = document.querySelector('#inner');
 
 initPageCalendarResponse();
 
-
+/**
+ * Initializes the page by adding event listeners to the show links and the popup menu's screen covering, as well as styling the links' cursors
+ */
 function initPageCalendarResponse() {
   // Adding a click event to all show links and styling their cursor if they have no content
   allShowLinks.forEach((element) => {
@@ -24,6 +27,11 @@ function initPageCalendarResponse() {
   outer.addEventListener('click', () => outer.style.display = 'none');
 }
 
+/**
+ * Opens up the popup display of the clicked on cell.
+ * 
+ * @param {Event} evt - The Event triggering this function
+ */
 function handleShowClick(evt) {
   evt.preventDefault();
   let parentCell = this.parentElement;

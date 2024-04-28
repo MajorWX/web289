@@ -37,6 +37,7 @@ $is_admin_view = $session->is_admin_logged_in();
 
   <h3>Search Vendors</h3>
   <form action="<?php echo url_for('vendors.php'); ?>" method="post">
+    <label for="vendor-search">Search Term: </label>
     <input type="text" name="vendor-search" id="vendor-search" list="vendor-suggestions">
     <datalist id="vendor-suggestions">
       <?php

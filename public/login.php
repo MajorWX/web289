@@ -46,10 +46,11 @@ if(is_post_request()) {
   <?php echo display_errors($errors); ?>
 
   <form action="login.php" method="post">
-    Display Name:<br>
-    <input type="text" name="display_name" value="<?php echo h($display_name); ?>" required><br>
-    Password:<br>
-    <input type="password" name="password" value="" required><br>
+    <label for="display-name">Display Name:</label><br>
+    <input type="text" id="display-name" name="display_name" value="<?php echo h($display_name); ?>" required><br>
+    
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" value="" required><br>
     <input type="submit" name="submit" value="Log in" >
   </form>
 

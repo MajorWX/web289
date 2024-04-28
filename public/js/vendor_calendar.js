@@ -9,11 +9,6 @@ let vendorPage = loginButton.querySelectorAll('a')[1].href;
 let vendorID = vendorPage.substring(vendorPage.indexOf('=') + 1);
 let publicURL = vendorPage.substring(0, vendorPage.indexOf('/vendors'));
 
-// console.log("test");
-// console.log(vendorName);
-// console.log(vendorID);
-// console.log(publicURL);
-
 // Find days with vendors and without
 let daysWithVendors = [];
 let daysWithoutVendors = [];

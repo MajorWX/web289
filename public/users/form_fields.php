@@ -7,8 +7,14 @@ if (!isset($user)) {
 ?>
 
 <dt>Display Name</dt>
-<dd><input type="text" name="user[display_name]" value="<?php echo h($user->display_name); ?>" required></dd>
+<dd>
+  <label for="display-name">Display Name: </label>
+  <input type="text" id="display-name" name="user[display_name]" value="<?php echo h($user->display_name); ?>" required>
+</dd>
 
 
 <dt>Email</dt>
-<dd><input type="text" name="user[email]" value="<?php echo h($user->email); ?>" required></dd>
+<dd>
+  <label for="email">Email: </label>
+  <input type="text" id="email" name="user[email]" value="<?php echo h($user->email); ?>" required>
+</dd>

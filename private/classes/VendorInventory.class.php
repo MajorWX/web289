@@ -383,10 +383,11 @@ class VendorInventory extends DatabaseObject {
         // See if this product id has an image
         if(array_key_exists($inventory_listing->inv_product_id, $inventory_images_by_product_id)) {
           $inventory_images_by_product_id[$inventory_listing->inv_product_id]->print_image(200, 200);
-          echo '<br><label>Mark image for deletion: </label>';
-          echo '<input type="checkbox" name="delete_image[' . $inventory_listing->inv_product_id . ']">';
+          echo '<br><label for="delete-' . $inventory_listing->inv_product_id . '">Mark Image for Deletion: </label>';
+          echo '<input type="checkbox" id="delete-' . $inventory_listing->inv_product_id . '" name="delete_image[' . $inventory_listing->inv_product_id . ']">';
         } else {
-          echo '<input type="file" name="' . $inventory_listing->inv_product_id . '">';
+          echo '<label for="upload-image-' . $inventory_listing->inv_product_id . '">Upload Image: </label>';
+          echo '<input type="file" id="upload-image-' . $inventory_listing->inv_product_id . '" name="' . $inventory_listing->inv_product_id . '">';
         }
 
         echo "</td>";
@@ -396,8 +397,8 @@ class VendorInventory extends DatabaseObject {
         echo "<td>" . $inventory_listing->product->product_name . "</td>";
 
         // The Listing Price field
-        echo "<td>$";
-        echo '<input type="number" name="inventory[' . $inventory_listing->inventory_id . '][listing_price]" value="' . $inventory_listing->listing_price . '" min="0" step="0.01" required>';
+        echo "<td>";
+        echo '$<input type="number" name="inventory[' . $inventory_listing->inventory_id . '][listing_price]" value="' . $inventory_listing->listing_price . '" min="0" step="0.01" required>';
         echo "</td>";
 
         // The In Stock field

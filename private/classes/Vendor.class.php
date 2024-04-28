@@ -4,7 +4,7 @@ class Vendor extends DatabaseObject
 {
 
   static protected $table_name = 'vendors';
-  static protected $db_columns = ['vendor_id', 'vd_user_id', 'vendor_display_name', 'vendor_desc', 'contact_info', 'address', 'city', 'vd_state_id', 'is_pending'];
+  static protected $db_columns = ['vendor_id', 'vd_user_id', 'vendor_display_name', 'vendor_desc', 'address', 'city', 'vd_state_id', 'zip', 'is_pending'];
 
   /**
    * This vendor object's unique vendor_id as it appears in the vendors table.
@@ -23,10 +23,6 @@ class Vendor extends DatabaseObject
    */
   public $vendor_desc;
   /**
-   * DEPRECIATED| The paragraph formatting for the vendor's contact info
-   */
-  public $contact_info;
-  /**
    * The vendor's stated street address.
    */
   public $address;
@@ -38,6 +34,10 @@ class Vendor extends DatabaseObject
    * The state_id of the state in this vendor's address as it appears in the states table.
    */
   public $vd_state_id;
+  /**
+   * The zip code of this vendor's address.
+   */
+  public $zip;
   /**
    * A bool showing if this vendor is pending admin review and approval.
    */
@@ -83,6 +83,7 @@ class Vendor extends DatabaseObject
     $this->address = $args['address'] ?? '';
     $this->city = $args['city'] ?? '';
     $this->vd_state_id = $args['vd_state_id'] ?? '';
+    $this->zip = $args['zip'] ?? '';
 
     // $phone_number_array = $args['phone_numbers'] ?? [];
     // if(count($phone_number_array) > 0) {
@@ -159,7 +160,6 @@ class Vendor extends DatabaseObject
    */
   static public function find_by_id($vendor_id)
   {
-    // $sql = "SELECT vendor_id, vendor_display_name ";
     $sql = "SELECT * ";
     $sql .= "FROM " . static::$table_name . " ";
     $sql .= "WHERE vendor_id = " . $vendor_id . ";";

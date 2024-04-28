@@ -2,11 +2,11 @@
 
 <?php 
 
-$id = $_GET['id'];
-$date = $_GET['date'];
+$vendor_id = h($_GET['id']);
+$date = h($_GET['date']);
 
 // Checking to make sure only users logged in as this vendor can access this page, unless they are an admin
-if($id != $session->active_vendor_id && !$session->is_admin_logged_in()){
+if($vendor_id != $session->active_vendor_id && !$session->is_admin_logged_in()){
   $session->message("You do not have permission to edit attendance for that vendor.");
   redirect_to(url_for('calendar.php'));
 }
@@ -25,7 +25,7 @@ if(!$calendarDate){
 
 //Create the listing
 
-$result = $calendarDate->create_new_listing($id);
+$result = $calendarDate->create_new_listing($vendor_id);
 
 if($result === true){
   $session->message("You have marked your availability for: " . $date . " successfully.");

@@ -19,6 +19,9 @@ let hiddenProducts = [];
 
 initPageProductSearchAdmin();
 
+/**
+ * Initializes the page by assigning rows of the table as either category headers or products and placing them into their arrays, as well as adding event listeners to the search form
+ */
 function initPageProductSearchAdmin() {
   // Getting all table row elements
   let tableRows = Array.from(document.getElementsByTagName('tr'));

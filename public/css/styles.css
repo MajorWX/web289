@@ -269,6 +269,12 @@ main:not(#calendar) .delete-button:hover {
   max-width: none;
 }
 
+dd label {
+  left: -9999px;
+  position: absolute;
+  top: -9999px;
+}
+
 /***** Home *****/
 
 #home section {
@@ -546,7 +552,8 @@ td {
 
 /***** Products Page *****/
 
-#product label {
+#product label,
+#vendor label {
   left: -9999px;
   position: absolute;
   top: -9999px;

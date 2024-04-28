@@ -47,7 +47,8 @@ if (is_post_request()){
     <dl>
       <dt>Category Name</dt>
       <dd>
-        <input type="text" name="category_name" vale="<?php echo (isset($category_name)) ? $category_name : '' ; ?>" required>
+        <label for="category-name">Category Name: </label>
+        <input type="text" id="category-name" name="category_name" vale="<?php echo (isset($category_name)) ? $category_name : '' ; ?>" required>
       </dd>
     </dl>
 

@@ -125,12 +125,12 @@ if (is_post_request()) {
       foreach ($vendor->phone_numbers as $phone_id => $phone_attributes) {
         // Phone Number
         echo '<dd>';
-        echo '<span>Phone Number: </span>';
-        echo '<input type="text" name="vendor[phone_numbers][' . $phone_id . "][phone_number]" . '" value="' . Vendor::phone_to_string($phone_attributes['phone_number']) . '">';
+        echo '<label for="phone-' . $phone_id . '-number">Phone Number: </label>';
+        echo '<input type="text" id="phone-' . $phone_id . '-number" name="vendor[phone_numbers][' . $phone_id . '][phone_number]' . '" value="' . Vendor::phone_to_string($phone_attributes['phone_number']) . '">';
 
         // Phone Type
-        echo ' <span>Phone Type: </span>';
-        echo '<select name="vendor[phone_numbers][' . $phone_id . '][phone_type]">';
+        echo ' <label for="phone-' . $phone_id . '-type">Phone Type: </label>';
+        echo '<select id="phone-' . $phone_id . '-type" name="vendor[phone_numbers][' . $phone_id . '][phone_type]">';
         echo '<option value="">Select a phone type:</option>';
 
         $phone_type = $phone_attributes['phone_type'];
@@ -156,8 +156,8 @@ if (is_post_request()) {
         echo '</select>';
 
         // Deletion
-        echo ' <span>Mark For Deletion: </span>';
-        echo '<input type="checkbox" name="vendor[phone_numbers][' . $phone_id . '][delete]">';
+        echo ' <label for="phone-' . $phone_id . '-delete">Mark For Deletion: </label>';
+        echo '<input type="checkbox" id="phone-' . $phone_id . '-delete" name="vendor[phone_numbers][' . $phone_id . '][delete]">';
 
         echo '</dd>';
       }
@@ -179,9 +179,8 @@ if (is_post_request()) {
         foreach ($profile_images as $profile_image) {
           $profile_image->print_image(600, 400);
           echo '<br>';
-          echo '<p>Mark Above Image For Deletion: ';
-          echo '<input type="checkbox" name="delete_profile_image['. $profile_image->image_id .']">';
-          echo '</p>';
+          echo '<label for="image-'. $profile_image->image_id .'-delete">Mark Above Image For Deletion: </label>';
+          echo '<input type="checkbox" id="image-'. $profile_image->image_id .'-delete" name="delete_profile_image['. $profile_image->image_id .']">';
         }
         ?>
       </dl>
@@ -201,7 +200,8 @@ if (is_post_request()) {
           <li>Will be scaled to fit.</li>
         </ul>
         <dd>
-          <input type="file" name="profile_image">
+          <label for="profile-image"></label>
+          <input type="file" id="profile-image" name="profile_image">
         </dd>
       </dl>
     <?php

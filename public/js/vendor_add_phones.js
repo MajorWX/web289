@@ -15,6 +15,9 @@ function initPageVendorPhone() {
   newPhoneButton.addEventListener('click', handleNewPhoneClick);
 }
 
+/**
+ * Creates a new phone form when the new phone button is clicked.
+ */
 function handleNewPhoneClick() {
   // Gets the link element triggering this function
   let old_link = this;
@@ -75,6 +78,9 @@ function handleNewPhoneClick() {
   cancel_button.addEventListener('click', handleCancelPhoneClick);
 }
 
+/**
+ * Deletes this new phone form when the cancel button is clicked.
+ */
 function handleCancelPhoneClick() {
   // Gets the link element triggering this function
   let old_cancel_button = this;

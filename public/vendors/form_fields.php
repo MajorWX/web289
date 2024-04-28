@@ -8,28 +8,41 @@ if(!isset($vendor)) {
 
 <dl>
   <dt>Vendor Display Name*</dt>
-  <dd><input type="text" name="vendor[vendor_display_name]" value="<?php echo h($vendor->vendor_display_name); ?>" required></dd>
+  <dd>
+    <label for="display-name">Vendor Display Name*: </label>
+    <input type="text" id="display-name" name="vendor[vendor_display_name]" value="<?php echo h($vendor->vendor_display_name); ?>" required>
+  </dd>
 </dl>
 
 <dl>
   <dt>Vendor Description Blurb</dt>
-  <dd><textarea name="vendor[vendor_desc]" rows="4" cols="50"><?php echo h($vendor->vendor_desc); ?></textarea></dd>
+  <dd>
+    <label for="vendor-desc">Vendor Description Blurb: </label>
+    <textarea id="vendor-desc" name="vendor[vendor_desc]" rows="4" cols="50"><?php echo h($vendor->vendor_desc); ?></textarea>
+  </dd>
 </dl>
 
 <dl>
-  <dt>Address*</dt>
-  <dd><input type="text" name="vendor[address]" value="<?php echo h($vendor->address); ?>" required></dd>
+  <dt>Street Address*</dt>
+  <dd>
+    <label for="address">Street Address*: </label>
+    <input type="text" id="address" name="vendor[address]" value="<?php echo h($vendor->address); ?>" required>
+  </dd>
 </dl>
 
 <dl>
   <dt>City*</dt>
-  <dd><input type="text" name="vendor[city]" value="<?php echo h($vendor->city); ?>" required></dd>
+  <dd>
+    <label for="city">City*: </label>
+    <input type="text" id="city" name="vendor[city]" value="<?php echo h($vendor->city); ?>" required>
+  </dd>
 </dl>
 
 <dl>
   <dt>State*</dt>
   <dd>
-    <select name="vendor[vd_state_id]" required>
+    <label for="state">State*: </label>
+    <select id="state" name="vendor[vd_state_id]" required>
     <option value="">Select a state:</option>
       <?php 
         $state_array = Vendor::get_state_array();
@@ -45,5 +58,13 @@ if(!isset($vendor)) {
         }
       ?>
     </select>
+  </dd>
+</dl>
+
+<dl>
+  <dt>Zip Code*</dt>
+  <dd>
+    <label for="zip">Zip Code*: </label>
+    <input type="text" id="zip" name="vendor[zip]" value="<?php echo h($vendor->zip); ?>" required>
   </dd>
 </dl>

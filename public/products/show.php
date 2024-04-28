@@ -2,7 +2,7 @@
 
 <?php
 
-$product_id = $_GET['id'];
+$product_id = h($_GET['id']);
 
 // Making sure there is a get value for the id
 if (!isset($_GET['id'])) {

@@ -68,12 +68,14 @@ if (is_post_request()) {
     <dl>
       <dt>Product Name (plural)</dt>
       <dd>
-        <input type="text" name="product[product_name]" value="<?php echo   $new_product->product_name; ?>" required>
+        <label for="product-name">Product Name (plural): </label>
+        <input type="text" id="product-name" name="product[product_name]" value="<?php echo   $new_product->product_name; ?>" required>
       </dd>
 
       <dt>Category</dt>
       <dd>
-        <select name="product[prd_category_id]" required>
+        <labeL for="product-category">Category: </labeL>
+        <select id="product-category" name="product[prd_category_id]" required>
           <option value="">Select a Category: </option>
           <?php Product::create_category_datalist_edit($new_product); ?>
         </select>

@@ -144,7 +144,8 @@ if (is_post_request()) {
     <dl>
       <dt>Product Name (plural)</dt>
       <dd>
-        <input type="text" name="product[product_name]" value="<?php echo (isset($new_listing->product->product_name)) ? $new_listing->product->product_name : '' ; ?>" list="product-suggestions" required>
+        <label for="product-name">Product Name (plural): </label>
+        <input type="text" id="product-name" name="product[product_name]" value="<?php echo (isset($new_listing->product->product_name)) ? $new_listing->product->product_name : '' ; ?>" list="product-suggestions" required>
         <datalist id="product-suggestions">
           <?php
             Product::create_datalist($sorted_product_array);
@@ -154,7 +155,8 @@ if (is_post_request()) {
 
       <dt>Category</dt>
       <dd>
-        <select name="product[prd_category_id]" required>
+        <label for="product-category">Category: </label>
+        <select id="product-category" name="product[prd_category_id]" required>
           <option value="">Select a Category: </option>
           <?php Product::create_category_datalist(); ?>
         </select>
@@ -162,12 +164,14 @@ if (is_post_request()) {
 
       <dt>Listing Price</dt>
       <dd>
-        $<input type="number" name="listing[listing_price]" value="<?php echo (isset($new_listing->listing_price)) ? $new_listing->listing_price : 0.00; ?>" min="0" step="0.01" required>
+        <label for="listing-price">Listing Price: </label>
+        $<input type="number" id="listing-price" name="listing[listing_price]" value="<?php echo (isset($new_listing->listing_price)) ? $new_listing->listing_price : 0.00; ?>" min="0" step="0.01" required>
       </dd>
 
       <dt>In Stock</dt>
       <dd>
-        <input type="checkbox" name="listing[in_stock]" 
+        <label for="in-stock">In Stock: </label>
+        <input type="checkbox" id="in-stock" name="listing[in_stock]" 
         <?php if(!isset($new_listing->in_stock)) { echo "checked"; 
         } else {echo ($new_listing->in_stock > 0) ? "checked": "" ; } ?>
         >
@@ -182,7 +186,8 @@ if (is_post_request()) {
           <li>Will be scaled to fit.</li>
         </ul>
         <dd>
-          <input type="file" name="listing_image">
+          <label for="listing-image">Product Image: </label>
+          <input type="file" id="listing-image" name="listing_image">
         </dd>
     </dl>
 

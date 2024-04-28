@@ -6,15 +6,6 @@ let homeLink = document.getElementsByTagName('header')[0].querySelector('a');
 let homeLinkURL = homeLink.href;
 let a_publicURL = homeLinkURL.substring(0, homeLinkURL.indexOf('/index.php'));
 
-// console.log(main);
-// let monthApril = getLastMonth();
-// console.log(monthApril);
-// let lastMonthValue = monthApril.dataset.date;
-// console.log(lastMonthValue);
-// lastMonthValue = lastMonthValue.substring(lastMonthValue.length - 2);
-// let monthMay = createMonthElement(2024, lastMonthValue);
-// console.log(monthMay);
-// main.appendChild(monthMay);
 initPageAdminCalendar();
 
 /**
@@ -36,10 +27,6 @@ function initPageAdminCalendar() {
   // Reading the first four characters of the month table's data-date attribute to get the numerical value of that year
   let lastYearValue = lastMonthElement.dataset.date
   lastYearValue = lastYearValue.substring(0, 4);
-
-  // DEBUG
-  // console.log("Last month value ", lastMonthValue);
-  // console.log("Last year value ", lastYearValue);
 
   // Converting PHP's month(1-12) to JavaScript's month(0-11)
   if(lastMonthValue > 11){
@@ -340,6 +327,13 @@ function addAdminDeleteButton(tableCellElement, year, month){
   dayContentDiv.appendChild(newLink);
 }
 
+/**
+ * Creates a button that links to calendar edit_listings.php.
+ * 
+ * @param {Element} tableCellElement - the table cell containing the date
+ * @param {int} year - the year of the given date
+ * @param {int} month - the month of the given date
+ */
 function addAdminEditButton(tableCellElement, year, month){
   // Getting this table cell's date
   let day = tableCellElement.querySelector('span').textContent;
