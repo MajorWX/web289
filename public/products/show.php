@@ -53,7 +53,7 @@ if ($product_images) {
   <h2>Product Listings: <?php echo $product->product_name; ?></h2>
 
   <?php
-  if ($selected_images) {
+  if (isset($selected_images)) {
     // Maybe add a div around the images for styling
     foreach ($selected_images as $image) {
       $image->print_image(400, 400);

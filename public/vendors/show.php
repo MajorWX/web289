@@ -59,10 +59,7 @@ if ($vendor_images) {
     <dt>Vendor Display Name</dt>
     <dd><?php echo $vendor->vendor_display_name; ?></dd>
     <dt>Description</dt>
-    <dd><?php echo $vendor->vendor_desc; ?></dd>
-    <!-- <dt>Contact Info</dt>
-      <dd><?php //echo $vendor->contact_info
-          ?></dd> -->
+    <dd><?php echo (!is_blank($vendor->vendor_desc)) ? $vendor->vendor_desc : 'This vendor does not currently have a description.'; ?></dd>
     <dt>Address</dt>
     <dd><?php echo $vendor->address; ?></dd>
     <dt>City</dt>
@@ -74,8 +71,12 @@ if ($vendor_images) {
     <dt>Phones</dt>
 
     <?php
-    foreach ($vendor->phone_numbers as $phone) {
-      echo "<dd>" . ucwords($phone['phone_type']) . ": " . Vendor::phone_to_string($phone['phone_number']) . "</dd>";
+    if (count($vendor->phone_numbers) > 0) {
+      foreach ($vendor->phone_numbers as $phone) {
+        echo "<dd>" . ucwords($phone['phone_type']) . ": " . Vendor::phone_to_string($phone['phone_number']) . "</dd>";
+      }
+    } else {
+      echo '<dd>This vendor does not currently have any listed phone numbers.</dd>';
     }
     ?>
 
@@ -85,6 +86,8 @@ if ($vendor_images) {
       if ($vendor->vendor_inventory) {
         $sorted_inventory_array = VendorInventory::sort_into_categories($vendor->vendor_inventory);
         VendorInventory::create_products_table($sorted_inventory_array, $inventory_images_by_product_id ?? []);
+      } else {
+        echo '<p>This vendor does not currently have any listed inventory.</p>';
       }
       ?>
     </dd>
@@ -93,8 +96,12 @@ if ($vendor_images) {
     <dd>
       <ul>
         <?php
-        foreach ($vendor->listed_dates as $listed_date) {
-          echo "<li>" . $listed_date->print_date() . "</li>";
+        if (count($vendor->listed_dates) > 0) {
+          foreach ($vendor->listed_dates as $listed_date) {
+            echo "<li>" . $listed_date->print_date() . "</li>";
+          }
+        } else {
+          echo '<p>This vendor has not currently marked themselves as attending any market days.</p>';
         }
         ?>
       </ul>

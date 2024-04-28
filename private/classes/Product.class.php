@@ -27,36 +27,13 @@ class Product extends DatabaseObject {
    */
   public $inventory_listings = [];
 
+
+
+
   // SQL Functions ====================================================
 
-  // static public function find_by_sql($sql) {
-  //   $result = self::$database->query($sql);
-  //   if(!$result) {
-  //     exit("Database query failed.");
-  //   }
 
-  //   // results into objects
-  //   $object_array = [];
 
-  //   // Reading each row
-  //   while($row = $result->fetch_assoc()) {
-  //     // Make a new Product object
-  //     $object = new static;
-
-  //     // Reading each cell
-  //     foreach($row as $property => $value) {
-  //       if(property_exists($object, $property)) {
-  //         $object->$property = $value;
-  //       }
-  //     } // End foreach for cells
-
-  //     $object_array[] = $object;
-  //   } // End while for rows
-
-  //   $result->free();
-
-  //   return $object_array;
-  // }
 
   /**
    * Queries the product_categories table and gets a list of all categories and returns them as an associative array. 1 Query
@@ -250,8 +227,13 @@ class Product extends DatabaseObject {
   }
 
 
+
+
   // RENDERING FUNCTIONS ==============================================
 
+
+
+  
   /**
    * Turns an unsorted list of Product objects and sorts them into an associative array keyed with category_names.
    * 

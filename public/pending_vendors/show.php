@@ -44,14 +44,12 @@ if (!$vendor) {
   ?>
   <a href="<?php echo url_for('index.php') ?>">Back to Home Page</a>
   <a href="<?php echo url_for('/pending_vendors/edit.php?id=' . $vendor_id); ?>" class="edit-button">Edit Vendor Application</a>
+  <a href="<?php echo url_for('/pending_vendors/delete.php?id=' . $vendor_id); ?>" class="delete-button">Withdraw Vendor Application</a>
   <dl>
     <dt>Vendor Display Name</dt>
     <dd><?php echo $vendor->vendor_display_name ?></dd>
     <dt>Description</dt>
     <dd><?php echo $vendor->vendor_desc ?></dd>
-    <!-- <dt>Contact Info</dt>
-      <dd><?php //echo $vendor->contact_info
-          ?></dd> -->
     <dt>Address</dt>
     <dd><?php echo $vendor->address ?></dd>
     <dt>City</dt>

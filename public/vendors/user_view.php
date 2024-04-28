@@ -56,7 +56,7 @@ if ($vendor_images) {
   <h2><?php echo $vendor->vendor_display_name; ?></h2>
 
   <?php
-  if ($profile_images) {
+  if (isset($profile_images)) {
     foreach ($profile_images as $profile_image) {
       $profile_image->print_image(600, 400);
     }
@@ -69,7 +69,7 @@ if ($vendor_images) {
     <dt>Vendor Display Name</dt>
     <dd><?php echo $vendor->vendor_display_name; ?></dd>
     <dt>Description</dt>
-    <dd><?php echo $vendor->vendor_desc; ?></dd>
+    <dd><?php echo (!is_blank($vendor->vendor_desc)) ? $vendor->vendor_desc : 'This vendor does not currently have a description.'; ?></dd>
     <dt>Address</dt>
     <dd><?php echo $vendor->address; ?></dd>
     <dt>City</dt>
@@ -82,9 +82,14 @@ if ($vendor_images) {
     <dt>Phones</dt>
 
     <?php
-    foreach ($vendor->phone_numbers as $phone) {
-      echo "<dd>" . ucwords($phone['phone_type']) . ": " . Vendor::phone_to_string($phone['phone_number']) . "</dd>";
+    if (count($vendor->phone_numbers) > 0) {
+      foreach ($vendor->phone_numbers as $phone) {
+        echo "<dd>" . ucwords($phone['phone_type']) . ": " . Vendor::phone_to_string($phone['phone_number']) . "</dd>";
+      }
+    } else {
+      echo '<dd>This vendor does not currently have any listed phone numbers.</dd>';
     }
+
     ?>
 
     <dt>Vendor Inventory</dt>
@@ -96,10 +101,16 @@ if ($vendor_images) {
         if ($sorted_inventory_array) {
           VendorInventory::create_products_table($sorted_inventory_array, $inventory_images_by_product_id ?? []);
         }
+      } else {
+        echo '<p>This vendor does not currently have any listed inventory.</p>';
       }
       ?>
     </dd>
-    <a href="<?php echo url_for('/vendor_inventory/edit.php?id=' . h(u($vendor_id))); ?>" class="edit-button">Edit Your Existing Product Listings</a>
+    <?php if ($vendor->vendor_inventory) { ?>
+      <a href="<?php echo url_for('/vendor_inventory/edit.php?id=' . h(u($vendor_id))); ?>" class="edit-button">Edit Your Existing Product Listings</a>
+    <?php
+    } ?>
+
     <a href="<?php echo url_for('/vendor_inventory/create.php?id=' . h(u($vendor_id))); ?>" class="create-button">Create a New Product Listing</a>
 
 
@@ -108,9 +119,14 @@ if ($vendor_images) {
     <dd>
       <ul>
         <?php
-        foreach ($vendor->listed_dates as $listed_date) {
-          echo "<li>" . $listed_date->print_date() . "</li>";
+        if (count($vendor->listed_dates) > 0) {
+          foreach ($vendor->listed_dates as $listed_date) {
+            echo "<li>" . $listed_date->print_date() . "</li>";
+          }
+        } else {
+          echo '<p>This vendor has not currently marked themselves as attending any market days.</p>';
         }
+
         ?>
       </ul>
     </dd>

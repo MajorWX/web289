@@ -28,9 +28,7 @@ class CalendarDate extends DatabaseObject {
    */
   public $listed_vendors = [];
 
-  // public $year;
-  // public $month;
-  // public $day;
+
 
 
   // DATE FUNCTIONS ================================================
@@ -309,8 +307,6 @@ class CalendarDate extends DatabaseObject {
     $sql .= "AND li.li_vendor_id = v.vendor_id ";
     $sql .= "AND date >= '" . static::to_sql_datetime($month_first_day) . "';";
 
-    // echo $sql;
-
     return static::find_listing_by_sql($sql);
   }
 
@@ -343,9 +339,6 @@ class CalendarDate extends DatabaseObject {
     $sql .= "AND li.li_vendor_id = " . $vendor_id . " ";
     $sql .= "AND c.date >= '" . date("Y-m-d") . "';";
 
-    // Debugging
-    // echo $sql;
-
     return static::find_date_by_sql($sql);
   }
 
@@ -367,7 +360,6 @@ class CalendarDate extends DatabaseObject {
       $next_market_day = $result[0];
       return $next_market_day;
     } else {
-      // echo "There is no calendar date listed";
       return false;
     }
     
@@ -391,7 +383,6 @@ class CalendarDate extends DatabaseObject {
       $upcoming_market_day = $result[1];
       return $upcoming_market_day;
     } else {
-      // echo "There is no calendar date listed";
       return false;
     }
     
@@ -724,8 +715,6 @@ class CalendarDate extends DatabaseObject {
       }
       $day = $explodedDate[2];
 
-      // Debugging
-      // echo $year . "-" . $month . "-" . $day . "<br>";
       $full_calendar[$year][$month][$day] = $calendarDate;
     }
 
@@ -743,14 +732,12 @@ class CalendarDate extends DatabaseObject {
 
     // Year loop
     foreach($full_calendar as $year => $month){
-      // echo '<div value="' . $year . '">';
       echo "<h3>" . $year . "</h3>";
 
       // Month loop
       foreach($month as $month => $days){
         // Creates a table to contain the entire month
         echo '<table data-date="' . $year . '-' . $month . '">';
-        // echo '<table value="' . $month . '">';
 
         // Captions the month with the month name, i.e 'April'
         echo "<caption>" . date("F", static::month_first_day($month, $year)) . "</caption>";
@@ -838,7 +825,6 @@ class CalendarDate extends DatabaseObject {
 
         echo "</table>";
       } // End Month
-      // echo "</div>";
     } // End Year
   } // End create_calendar()
 
@@ -852,7 +838,7 @@ class CalendarDate extends DatabaseObject {
     echo "Market day<br>";
     if(count($this->listed_vendors) > 0){
       echo "<ul>";
-      foreach($this->listed_vendors as $vendor_id => $vendor_display_name){
+      foreach($this->listed_vendors as $vendor_id => $vendor_display_name) {
         echo '<li><a href="' . url_for('vendors/show.php?id=' . $vendor_id) . '">' . $vendor_display_name . '</a></li>';
       }
       echo "</ul>";

@@ -27,6 +27,12 @@ if (!$vendor) {
 // Getting all the VendorInventory product listings for this vendor
 $vendor->populate_inventory();
 
+// Redirecting if there are no existing listings
+if(count($vendor->vendor_inventory) <= 0) {
+  $session->message($vendor->vendor_display_name . ' does not currently have any existing inventory to edit.');
+  redirect_to(url_for('index.php'));
+}
+
 // Writing all product ids to a list
 $valid_product_ids = [];
 foreach ($vendor->vendor_inventory as $inventory_listing) {

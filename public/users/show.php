@@ -52,7 +52,7 @@ $associated_vendor = Vendor::find_by_user_id($user_id);
     <h2><?php echo 'User Details for ' . $user->display_name; ?></h2>
     <a href="<?php echo url_for('/users/edit.php?id=' . $user->user_id); ?>" class="edit-button">Edit User Profile</a>
 
-    <a href="<?php echo url_for('/users/edit.php?id=' . $user->user_id); ?>" class="delete-button">Delete User Profile</a>
+    <a href="<?php echo url_for('/users/delete.php?id=' . $user->user_id); ?>" class="delete-button">Delete User Profile</a>
 
     <dl>
       <dt>User ID</dt>
