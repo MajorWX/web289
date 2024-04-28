@@ -37,7 +37,8 @@ daysWithoutVendors.forEach(function (el){
   let link = document.createElement('a');
   link.textContent = 'Sign up for this day.';
   link.href = publicURL + '/calendar/create.php?id=' + vendorID + '&date=' + el.dataset.date;
-  el.appendChild(link);
+  let dayContentDiv = el.querySelector('.day-content');
+  dayContentDiv.appendChild(link);
 });
 
 // Setting up the forms on days with vendors
@@ -45,6 +46,7 @@ daysWithVendors.forEach(function (el){
   let link = document.createElement('a');
   link.textContent = 'Retract availability for this day.';
   link.href = publicURL + '/calendar/delete.php?id=' + vendorID + '&date=' + el.dataset.date;
-  el.appendChild(link);
+  let dayContentDiv = el.querySelector('.day-content');
+  dayContentDiv.appendChild(link);
   el.style.backgroundColor = '#ffc';
 });

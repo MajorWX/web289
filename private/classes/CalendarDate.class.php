@@ -75,12 +75,29 @@ class CalendarDate extends DatabaseObject {
 
 
   /**
-   * Returns this CalendarDate object's date as part of a grammatical sentence, i.e: 'March, 27th'.
+   * Returns this CalendarDate object's date as part of a grammatical sentence, i.e: 'Wednesday, March 27th'.
    * 
    * @return string This CalendarDate object's date as part of a sentence
    */
   public function print_date() {
     $explodedDate = explode('-', $this->date);
+
+    $year = $explodedDate[0];
+    $month = $explodedDate[1];
+    $day = $explodedDate[2];
+
+    return date('l, F jS', mktime(0, 0, 0, $month, $day, $year));
+  }
+
+  /**
+   * Returns the provided date as part of a grammatical sentence, i.e: 'Wednesday, March 27th'.
+   * 
+   * @param string $date the date to print
+   * 
+   * @return string This date as part of a sentence
+   */
+  static public function print_date_from_string($date) {
+    $explodedDate = explode('-', $date);
 
     $year = $explodedDate[0];
     $month = $explodedDate[1];
@@ -738,14 +755,14 @@ class CalendarDate extends DatabaseObject {
         // Captions the month with the month name, i.e 'April'
         echo "<caption>" . date("F", static::month_first_day($month, $year)) . "</caption>";
         echo "<tr>";
-        echo "<th>Monday</th>";
-        echo "<th>Tuesday</th>";
-        echo "<th>Wednesday</th>";
-        echo "<th>Thursday</th>";
-        echo "<th>Friday</th>";
-        echo "<th>Saturday</th>";
-        echo "<th>Sunday</th>";
-        echo "</tr>";
+        echo '<th>Mon<span class="unabbreviated">day</span></th>';
+        echo '<th>Tue<span class="unabbreviated">sday</span></th>';
+        echo '<th>Wed<span class="unabbreviated">nesday</span></th>';
+        echo '<th>Thu<span class="unabbreviated">rsday</span></th>';
+        echo '<th>Fri<span class="unabbreviated">day</span></th>';
+        echo '<th>Sat<span class="unabbreviated">urday</span></th>';
+        echo '<th>Sun<span class="unabbreviated">day</span></th>';
+        echo '</tr>';
 
         $days_in_month = static::days_in_month($month, $year);
         $day_counter = 1;
@@ -774,7 +791,10 @@ class CalendarDate extends DatabaseObject {
             // Adds leading 0s to the day counter for single digit days
             $day_counter_string = $day_counter >= 10 ? $day_counter : '0' . $day_counter;
             // Change the cells class to market day and give it a dataset 'date' value, then print the day number
-            echo '<td class="market_day" data-date="' . $year . '-' . $month . '-' . $day_counter_string . '"><span>' . $day_counter . '</span>';
+            echo '<td class="market_day" data-date="' . $year . '-' . $month . '-' . $day_counter_string . '">';
+
+            echo '<a href="' . url_for('calendar/show.php?date=' . $year . '-' . $month . '-' . $day_counter_string) . '" class="show-link">' . $day_counter . '</a>';
+            echo '<span class="day-counter">' . $day_counter . '</span>';
 
             // Adds the Market day text and lists out all vendors
             $days[$day_counter]->list_as_day();
@@ -783,7 +803,13 @@ class CalendarDate extends DatabaseObject {
           // If the [$month][] associative array, does NOT contain a stored object for this day, print the cell as normal
           else {
             // Prints the day number
-            echo "<td>" . $day_counter;
+
+            // Adds leading 0s to the day counter for single digit days
+            $day_counter_string = $day_counter >= 10 ? $day_counter : '0' . $day_counter;
+            echo '<td>';
+            echo '<a href="' . url_for('calendar/show.php?date=' . $year . '-' . $month . '-' . $day_counter_string) . '" class="show-link">' . $day_counter . '</a>';
+            echo '<span class="day-counter">' . $day_counter . '</span>';
+            echo '<div class="day-content"></div';
           }
 
           // Close the cell
@@ -820,16 +846,18 @@ class CalendarDate extends DatabaseObject {
   /**
    * Called in CalendarDate::create_calendar(). Causes this CalendarDate object to list itself as a market day in the HTML calendar table and list out its listed_vendors in a ul if it as any.
    */
-  public function list_as_day(){
+  public function list_as_day() {
+    echo '<div class="day-content">';
     echo "<br>";
     echo "Market day<br>";
     if(count($this->listed_vendors) > 0){
       echo "<ul>";
-      foreach($this->listed_vendors as $vendor_display_name){
-        echo "<li>" . $vendor_display_name . "</li>";
+      foreach($this->listed_vendors as $vendor_id => $vendor_display_name){
+        echo '<li><a href="' . url_for('vendors/show.php?id=' . $vendor_id) . '">' . $vendor_display_name . '</a></li>';
       }
       echo "</ul>";
     }
+    echo '</div>';
   }
 
   /**

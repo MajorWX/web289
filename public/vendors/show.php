@@ -49,7 +49,7 @@ if($vendor_images) {
     <h2><?php echo $vendor->vendor_display_name; ?></h2>
 
     <?php 
-      if($profile_images) {
+      if(isset($profile_images)) {
         foreach($profile_images as $profile_image) {
           $profile_image->print_image(600, 400);
         }
@@ -75,7 +75,7 @@ if($vendor_images) {
           echo "<dd>" . ucwords($phone['phone_type']) . ": " . Vendor::phone_to_string($phone['phone_number']) . "</dd>";
         }
       ?>
-
+      
       <dt>Vendor Inventory</dt>
       <dd>
         <?php 

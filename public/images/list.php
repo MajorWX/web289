@@ -43,44 +43,45 @@ if ($users) {
 <main class="images">
   <h2>Images List</h2>
 
-  <table>
-    <tr>
-      <th>&nbsp;</th>
-      <th>Image ID</th>
-      <th>Image Name</th>
-      <th>Uploader</th>
-      <th>&nbsp;</th>
-      <th>&nbsp;</th>
-      <th>&nbsp;</th>
-    </tr>
+  <div style="overflow-x:auto;">
+    <table>
+      <tr>
+        <th>&nbsp;</th>
+        <th>Image ID</th>
+        <th>Image Name</th>
+        <th>Uploader</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+      </tr>
 
-    <?php
-    
-    foreach ($images as $image) {
-      echo "<tr>";
-      // Image itself
-      echo "<td>";
-      $image->print_image(200, 200);
-      echo "</td>";
-      // Image ID
-      echo "<td>" . $image->image_id . "</td>";
-      // Image Path
-      echo "<td>" . $image->content . "</td>";
-      // Uploader
-      echo "<td>" . $users_by_id[$image->im_user_id]->display_name . "</td>";
-      
-      // View
-      echo '<td><a href="' . url_for('/images/show.php?id=' . $image->image_id) . '">View</td>';
-      // Edit
-      echo '<td><a href="' . url_for('/images/edit.php?id=' . $image->image_id) . '">Edit</td>';
-      // Delete
-      echo '<td><a href="' . url_for('/images/delete.php?id=' . $image->image_id) . '">Delete</td>';
-      echo "</tr>";
-    }
-    ?>
+      <?php
 
-  </table>
+      foreach ($images as $image) {
+        echo "<tr>";
+        // Image itself
+        echo "<td>";
+        $image->print_image(200, 200);
+        echo "</td>";
+        // Image ID
+        echo "<td>" . $image->image_id . "</td>";
+        // Image Path
+        echo "<td>" . $image->content . "</td>";
+        // Uploader
+        echo "<td>" . $users_by_id[$image->im_user_id]->display_name . "</td>";
 
+        // View
+        echo '<td><a href="' . url_for('/images/show.php?id=' . $image->image_id) . '">View</td>';
+        // Edit
+        echo '<td><a href="' . url_for('/images/edit.php?id=' . $image->image_id) . '">Edit</td>';
+        // Delete
+        echo '<td><a href="' . url_for('/images/delete.php?id=' . $image->image_id) . '">Delete</td>';
+        echo "</tr>";
+      }
+      ?>
+
+    </table>
+  </div>
 
 
 </main>

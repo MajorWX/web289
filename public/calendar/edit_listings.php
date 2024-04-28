@@ -78,3 +78,6 @@ $vendors = Vendor::list_all();
     
 
   </main>
+<!-- End HTML -->
+
+<?php include(SHARED_PATH . '/public_footer.php'); ?>

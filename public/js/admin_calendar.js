@@ -311,10 +311,11 @@ function addAdminCreateButton(tableCellElement, year, month){
   // Creating the new link button
   let newLink = document.createElement('a');
   newLink.href = a_publicURL + '/calendar/create_day.php?date=' + fullDateString;
-  newLink.textContent = '+';
+  newLink.innerHTML = '<span>+</span>';
   newLink.className = 'create-button';
 
-  tableCellElement.appendChild(newLink);
+  let dayContentDiv = tableCellElement.querySelector('.day-content');
+  dayContentDiv.appendChild(newLink);
 }
 
 /**
@@ -332,10 +333,11 @@ function addAdminDeleteButton(tableCellElement, year, month){
   // Creating the new link button
   let newLink = document.createElement('a');
   newLink.href = a_publicURL + '/calendar/delete_day.php?date=' + fullDateString;
-  newLink.textContent = '-';
+  newLink.innerHTML = '<span>-</span>';
   newLink.className = 'delete-button';
 
-  tableCellElement.appendChild(newLink);
+  let dayContentDiv = tableCellElement.querySelector('.day-content');
+  dayContentDiv.appendChild(newLink);
 }
 
 function addAdminEditButton(tableCellElement, year, month){
@@ -349,5 +351,6 @@ function addAdminEditButton(tableCellElement, year, month){
   newLink.textContent = 'Edit';
   newLink.className = 'edit-button';
 
-  tableCellElement.appendChild(newLink);
+  let dayContentDiv = tableCellElement.querySelector('.day-content');
+  dayContentDiv.appendChild(newLink);
 }

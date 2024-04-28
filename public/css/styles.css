@@ -265,6 +265,10 @@ main:not(#calendar) .delete-button:hover {
   text-decoration: underline;
 }
 
+.images img {
+  max-width: none;
+}
+
 /***** Home *****/
 
 #home section {
@@ -370,6 +374,10 @@ td {
   position: relative;
 }
 
+#calendar .show-link {
+  display: none;
+}
+
 /* #calendar th {
   pa
 } */
@@ -416,7 +424,8 @@ td {
   text-decoration: none;
 }
 
-#calendar .create-button:hover {
+#calendar .create-button:hover,
+#inner .create-button:hover {
   background-color: #009400;
   text-decoration: underline;
 }
@@ -435,14 +444,16 @@ td {
   text-decoration: none;
 }
 
-#calendar .delete-button:hover {
+#calendar .delete-button:hover,
+#inner .delete-button:hover {
   background-color: #940000;
   text-decoration: underline;
 }
 
 /* The Admin view edit CalendarDate listings button */
 
-#calendar .edit-button {
+#calendar .edit-button,
+#inner .edit-button {
   background-color: #000074;
   border-radius: 4px;
   color: #fff;
@@ -457,9 +468,70 @@ td {
   width: fit-content;
 }
 
-#calendar .edit-button:hover {
+#calendar .edit-button:hover,
+#inner .edit-button:hover {
   background-color: #000094;
   text-decoration: underline;
+}
+
+#outer {
+  background-color: rgba(0, 0, 0, .5);
+  display: none;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+#inner {
+  background-color: #fff;
+  border: 3px solid #000;
+  border-top: 10px solid #333;
+  box-shadow: 0 0 5px #000;
+  margin: 2rem auto 0;
+  padding: 1rem;
+  position: relative;
+  width: 80%;
+}
+
+#inner .create-button {
+  background-color: #007400;
+  border-radius: 4px;
+  color: #fff;
+  display: block;
+  font-weight: bold;
+  margin-top: .5rem;
+  padding: 10px;
+  text-decoration: none;
+  width: fit-content;
+}
+
+#inner .delete-button {
+  background-color: #740000;
+  border-radius: 4px;
+  color: #fff;
+  display: block;
+  font-weight: bold;
+  margin-top: .5rem;
+  padding: 10px 13px;
+  text-decoration: none;
+  width: fit-content;
+}
+
+#inner .create-button span,
+#inner .delete-button span {
+  visibility: hidden;
+}
+
+#inner .create-button span:after {
+  content: 'Add as Market Day.';
+  visibility: visible;
+}
+
+#inner .delete-button span:after {
+  content: 'Remove as Market Day.';
+  visibility: visible;
 }
 
 /***** Vendor Page *****/
@@ -501,10 +573,23 @@ td {
 #product .product-group a {
   border: 2px solid black;
   border-radius: 8px;
+  color: #000;
   display: inline-block;
+  font-weight: bold;
   padding: 1rem;
   margin: 0 auto;
   max-width: 236px;
+  text-decoration: none;
+}
+
+#product .product-group a p {
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+#product .product-group a:hover {
+  background-color: #fff5d1;
+  text-decoration: underline;
 }
 
 #product .product-image {
@@ -645,6 +730,54 @@ footer {
   }
 }
 
+/** 1070 **/
+
+@media screen and (max-width: 1070px) {
+  #calendar .unabbreviated {
+    display: none;
+  }
+}
+
+/** 950 **/
+
+@media screen and (max-width: 950px) {
+  #calendar .day-content,
+  #calendar .create-button,
+  #calendar .day-counter {
+    display: none;
+  }
+
+  /* #calendar .day-counter {
+    display: block;
+    margin: auto auto;
+    text-align: center;
+  } */
+
+  #calendar .show-link {
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+  }
+
+  #calendar td {
+    justify-content: center;
+    display: flex;
+    padding: 0;
+  }
+
+  #calendar .market_day {
+    background-color: #daffbc;
+    box-shadow:inset 0px 0px 0px 3px #000;
+    font-weight: bold;
+  }
+
+
+}
+
 /** 770 **/
 
 @media screen and (max-width: 770px) {
@@ -707,7 +840,37 @@ footer {
   #home section:nth-of-type(2) div:nth-of-type(3) {
     max-width: 100%;
   }
+
+  main {
+    padding: 1rem 1rem;
+  }
+
+  #inner {
+    top: 185px;
+  }
+
+  main:not(#calendar) th {
+    min-width: fit-content;
+    padding: 2px;
+  }
+
+
 }
 
+/** 515 **/
 
+@media screen and (max-width: 515px) {
+  #calendar th,
+  #calendar td:not(.empty) {
+    margin: 0;
+    min-width: 0;
+  }
 
+  #calendar .empty {
+    margin: 2px;
+  }
+
+  main:not(#calendar) th {
+    font-size: 12px;
+  }
+}
