@@ -26,7 +26,7 @@
   require_once('status_error_functions.php');
 
   // Defining Database Credentials
-  // =================== UNCOMMENT WHEN UPLOADING======================
+  // =================== UNCOMMENT WHEN UPLOADING TO WEB HOST======================
   // require_once('db_credentials.php');
 
   if(!defined('DB_SERVER')) {

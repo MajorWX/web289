@@ -153,8 +153,7 @@ function createMonthElement(year, month){
 
   // Adds in day cells to the first week
   while(weekday_counter < 8) {
-    let new_day = document.createElement('td');
-    new_day.textContent = day_counter;
+    let new_day = createDayElement(day_counter);
     firstWeek.appendChild(new_day);
     weekday_counter++;
     day_counter++;
@@ -170,8 +169,7 @@ function createMonthElement(year, month){
     while(weekday_counter < 8) {
 
       if(day_counter <= days_in_month) {
-        let new_day = document.createElement('td');
-        new_day.textContent = day_counter;
+        let new_day = createDayElement(day_counter);
         new_week.appendChild(new_day);
         weekday_counter++;
         day_counter++;
@@ -187,6 +185,29 @@ function createMonthElement(year, month){
 
   return table;
 } // End createMonthElement
+
+
+/**
+ * Creates a new day td cell for a new month and populates it with the appropriate child content.
+ * 
+ * @param {int} day_counter - the current day within the month
+ * 
+ * @returns {HTMLElement} the table cell of the new day
+ */
+function createDayElement(day_counter) {
+  let new_day = document.createElement('td');
+
+  let dateSpan = document.createElement('span');
+  dateSpan.classList.add('day-counter');
+  dateSpan.textContent = day_counter;
+  new_day.appendChild(dateSpan);
+
+  let dayContentDiv = document.createElement('div');
+  dayContentDiv.classList.add('day-content');
+  new_day.appendChild(dayContentDiv);
+
+  return new_day;
+}
 
 /**
  * Creates a clickable link element that creates a new month table when clicked.
@@ -292,7 +313,7 @@ function setUpAdminDateCRUD(month_element){
  */
 function addAdminCreateButton(tableCellElement, year, month){
   // Getting this table cell's date
-  let day = tableCellElement.textContent;
+  let day = tableCellElement.querySelector('span').textContent;
   let fullDateString = year.concat('-', month, '-', day);
 
   // Creating the new link button
