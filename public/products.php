@@ -35,7 +35,7 @@
   $next_market_day = CalendarDate::get_next_market_day();
 
   // Fallback if there is no next market day listed
-  if(!$next_market_day){
+  if(!isset($next_market_day)) {
     // Sorting the products into categories
     $sorted_product_array = Product::sort_into_categories($products);
   } else {
@@ -50,7 +50,7 @@
   // Getting all product images
   $product_images = Image::find_by_purpose('inventory');
 
-  if($product_images) {
+  if(isset($product_images)) {
     // Storing the product images by product id
     $images_sorted_by_product_id = Image::sort_images_by_product_id($product_images);
     // Selecting one image per product to show
@@ -97,7 +97,10 @@
 
     <h3>Full Products List</h3>
     <?php 
-      
+      if(isset($next_market_day)){
+        echo '<p>Showing listings for the next market day: ' . $next_market_day->print_date() . '</p>'; 
+      }
+
       if($session->is_admin_logged_in()) { 
         // Admin View ?>
         <a href="<?php echo url_for('/products/create_category.php'); ?>" class="edit-button">Create New Product Category</a>

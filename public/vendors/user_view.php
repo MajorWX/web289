@@ -115,6 +115,7 @@ if ($vendor_images) {
 
 
     <dt>Upcoming Market Days</dt>
+    <p class="sign-up-warning"><?php echo date('l, F jS', CalendarDate::last_day_in_this_month()); ?>, is the last day to sign up for all <?php echo CalendarDate::next_month_name(); ?> market days.</p>
     <a href="<?php echo url_for('calendar.php'); ?>">Jump to Calendar</a>
     <dd>
       <ul>

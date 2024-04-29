@@ -3,9 +3,13 @@
 
 $date = h($_GET['date']);
 
+// Making sure there is a get value for the date
+if (!isset($_GET['date'])) {
+  $session->message('Failed to load page, no date provided.');
+  redirect_to(url_for('calendar.php'));
+}
 
-// Making sure the date already exists
-
+// Making sure the date actually exists
 $this_date = CalendarDate::find_by_date($date);
 
 if (!$this_date) {
@@ -31,7 +35,7 @@ if (!$this_date) {
 <!-- Begin HTML -->
 
 <main>
-  <a href="<?php echo url_for('calendar.php') ?>">Back to Calendar</a>
+  <a href="<?php echo url_for('calendar.php'); ?>">Back to Calendar</a>
 
   <h2>View Date <?php echo $date; ?></h2>
 
@@ -39,14 +43,14 @@ if (!$this_date) {
     if(!$is_market_date) {
       echo '<p>' . CalendarDate::print_date_from_string($date) . ' is not currently listed as a market day.</p>';
       if($session->is_admin_logged_in()) { ?>
-        <a class="create-button" href="<?php url_for('/calendar/create_day.php?date=' . $date); ?>">Add day as Market Day</a>
+        <a class="create-button" href="<?php echo url_for('calendar/create_day.php?date=' . $date); ?>">Add day as Market Day</a>
         <?php
       }
     } else {
       echo '<p>' . CalendarDate::print_date_from_string($date)  . ' is listed as a market day.</p>';
       if($session->is_admin_logged_in()) { ?>
-        <a class="delete-button" href="<?php url_for('/calendar/delete_day.php?date=' . $date); ?>">Remove day as Market Day</a>
-        <a class="edit-button" href="<?php url_for('/calendar/edit_listings.php?date=' . $date); ?>">Edit Listings</a>
+        <a class="delete-button" href="<?php echo url_for('calendar/delete_day.php?date=' . $date); ?>">Remove day as Market Day</a>
+        <a class="edit-button" href="<?php echo url_for('calendar/edit_listings.php?date=' . $date); ?>">Add Vendors</a>
         <?php
       }
       // If there are existing vendors listed

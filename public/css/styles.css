@@ -401,6 +401,10 @@ td {
   background-color: #bbb;
 }
 
+#calendar .excess-vendor {
+  display: none;
+}
+
 /* The new month button */
 #calendar > a {
   border: 2px solid #000;
@@ -459,7 +463,8 @@ td {
 /* The Admin view edit CalendarDate listings button */
 
 #calendar .edit-button,
-#inner .edit-button {
+#inner .edit-button,
+#calendar .view-full {
   background-color: #000074;
   border-radius: 4px;
   color: #fff;
@@ -475,7 +480,8 @@ td {
 }
 
 #calendar .edit-button:hover,
-#inner .edit-button:hover {
+#inner .edit-button:hover,
+#calendar .view-full:hover {
   background-color: #000094;
   text-decoration: underline;
 }
@@ -499,6 +505,14 @@ td {
   padding: 1rem;
   position: relative;
   width: 80%;
+}
+
+#inner .excess-vendor {
+  display: list-item;
+}
+
+#inner .view-full {
+  display: none;
 }
 
 #inner .create-button {
@@ -538,6 +552,12 @@ td {
 #inner .delete-button span:after {
   content: 'Remove as Market Day.';
   visibility: visible;
+}
+
+.sign-up-warning {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-decoration: underline;
 }
 
 /***** Vendor Page *****/

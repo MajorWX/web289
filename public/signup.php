@@ -30,10 +30,14 @@ if (is_post_request()) {
 
 <main>
   <div class="user new">
-    <h2>Create User</h2>
+    <h2>Become a Vendor</h2>
+    <p>If you wish to become a vendor, please first create a user account using the form below. You will then be able to submit a vendor application for admin approval.</p>
+
+
+    <h3>Create User Account</h3>
 
     <?php echo display_errors($user->errors); ?>
-
+      
     <form action="<?php echo url_for('signup.php'); ?>" method="post">
 
       <dl>

@@ -1,9 +1,23 @@
 <?php require_once('../../private/initialize.php'); ?>
 
 <?php 
+require_login();
+
 
 $vendor_id = h($_GET['id']);
 $date = h($_GET['date']);
+
+// Checking to make sure that a vendor id was provided
+if (!isset($_GET['id'])) {
+  $session->message('Failed to load page, no vendor_id provided.');
+  redirect_to(url_for('calendar.php'));
+}
+
+// Checking to make sure that a date was provided
+if (!isset($_GET['date'])) {
+  $session->message('Failed to load page, no date provided.');
+  redirect_to(url_for('calendar.php'));
+}
 
 // Checking to make sure only users logged in as this vendor can access this page, unless they are an admin
 if($vendor_id != $session->active_vendor_id && !$session->is_admin_logged_in()){

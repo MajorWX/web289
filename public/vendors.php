@@ -34,6 +34,13 @@ $is_admin_view = $session->is_admin_logged_in();
 <main id="vendor">
 
   <h2>Vendors</h2>
+  <?php 
+    // Allow logged in vendors to jump to their own vendor page
+    if($session->has_vendor() && !$session->is_pending) { ?>
+      <a href="<?php echo url_for('/vendors/user_view.php?id=' . $session->active_vendor_id); ?>" class="edit-button">View Your Vendor Profile</a>
+      <?php
+    }
+  ?>
 
   <h3>Search Vendors</h3>
   <form action="<?php echo url_for('vendors.php'); ?>" method="post">

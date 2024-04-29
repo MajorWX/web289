@@ -109,7 +109,7 @@ if (is_post_request()) {
 <script src="<?php echo url_for('/js/vendor_add_phones.js'); ?>" defer></script>
 
 <main>
-  <a href="<?php echo url_for('/vendors/user_view.php?id=' . h(u($vendor_id))); ?>">Back to Vendor User Page</a>
+  <a href="<?php echo url_for('/vendors/user_view.php?id=' . $vendor_id); ?>">Back to Vendor User Page</a>
 
   <h2>Edit Vendor: <?php echo $vendor->vendor_display_name; ?></h2>
 

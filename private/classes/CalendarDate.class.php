@@ -28,6 +28,10 @@ class CalendarDate extends DatabaseObject {
    */
   public $listed_vendors = [];
 
+  /**
+   * The maximum number of vendors to show in a calendar cell before instead linking them in a popup
+   */
+  static public $max_vendors_per_calendar_list = 3;
 
 
 
@@ -41,6 +45,7 @@ class CalendarDate extends DatabaseObject {
    * @return string Formatted date
    */
   static public function to_sql_datetime($date){
+    date_default_timezone_set('America/New_York');
     return date("Y-m-d", $date);
   }
 
@@ -50,7 +55,18 @@ class CalendarDate extends DatabaseObject {
    * @return string The name of the current month
    */
   static public function current_month_name(){
+    date_default_timezone_set('America/New_York');
     return date('F');
+  }
+
+  /**
+   * Returns the next month as a string, i.e 'April'
+   * 
+   * @return string The name of the next month
+   */
+  static public function next_month_name(){
+    date_default_timezone_set('America/New_York');
+    return date('F', CalendarDate::month_first_day(CalendarDate::current_month_number()+1));
   }
 
   /**
@@ -59,6 +75,7 @@ class CalendarDate extends DatabaseObject {
    * @return int The number of the current month
    */
   static public function current_month_number(){
+    date_default_timezone_set('America/New_York');
     return date('m');
   }
 
@@ -68,6 +85,7 @@ class CalendarDate extends DatabaseObject {
    * @return int The current year
    */
   static public function current_year(){
+    date_default_timezone_set('America/New_York');
     return date('Y');
   }
 
@@ -78,6 +96,7 @@ class CalendarDate extends DatabaseObject {
    * @return string This CalendarDate object's date as part of a sentence
    */
   public function print_date() {
+    date_default_timezone_set('America/New_York');
     $explodedDate = explode('-', $this->date);
 
     $year = $explodedDate[0];
@@ -95,6 +114,7 @@ class CalendarDate extends DatabaseObject {
    * @return string This date as part of a sentence
    */
   static public function print_date_from_string($date) {
+    date_default_timezone_set('America/New_York');
     $explodedDate = explode('-', $date);
 
     $year = $explodedDate[0];
@@ -110,6 +130,7 @@ class CalendarDate extends DatabaseObject {
    * @return string the market hours
    */
   public function print_market_hours() {
+    date_default_timezone_set('America/New_York');
     $explodedDate = explode('-', $this->date);
 
     $year = $explodedDate[0];
@@ -128,6 +149,7 @@ class CalendarDate extends DatabaseObject {
    * @return int The Unix timestamp of the first day of the month
    */
   static public function month_first_day($monthNumber = NULL, $year = NULL){
+    date_default_timezone_set('America/New_York');
     // Setting default values for $monthNumber and $year
     $monthNumber = ($monthNumber) ? $monthNumber : static::current_month_number();
     $year = ($year) ? $year : static::current_year();
@@ -145,6 +167,7 @@ class CalendarDate extends DatabaseObject {
    * @return int The first day of the month as a dat of the week integer
    */
   static public function month_starting_day_number($monthNumber = NULL, $year = NULL){
+    date_default_timezone_set('America/New_York');
     // Setting default values for $monthNumber and $year
     $monthNumber = ($monthNumber) ? $monthNumber : static::current_month_number();
     $year = ($year) ? $year : static::current_year();
@@ -163,6 +186,7 @@ class CalendarDate extends DatabaseObject {
    * @return int The total number of days in a month
    */
   static public function days_in_month($monthNumber = NULL, $year = NULL){
+    date_default_timezone_set('America/New_York');
     // Setting default values for $monthNumber and $year
     $monthNumber = ($monthNumber) ? $monthNumber : static::current_month_number();
     $year = ($year) ? $year : static::current_year(); 
@@ -170,6 +194,20 @@ class CalendarDate extends DatabaseObject {
     $firstDay = static::month_first_day($monthNumber, $year);
     $daysInMonth = date('t', $firstDay);
     return $daysInMonth;
+  }
+
+  /**
+   * Returns the last day of this month, as a Unix timestamp.
+   * 
+   * @return int The Unix timestamp of the last day of this month
+   */
+  static public function last_day_in_this_month() {
+    date_default_timezone_set('America/New_York');
+    // Setting values for $monthNumber and $year
+    $monthNumber = static::current_month_number();
+    $year = static::current_year(); 
+
+    return  mktime(0, 0, 0, $monthNumber, CalendarDate::days_in_month(), $year);
   }
 
   /**
@@ -198,6 +236,20 @@ class CalendarDate extends DatabaseObject {
     $todayDay = $explodedToday[2];
 
     return ($year == $todayYear && $month == $todayMonth && $day == $todayDay);
+  }
+
+  /**
+   * Checks if a given CalendarDate object corresponds to this month.
+   * 
+   * @return bool if the CalendarDate object is today
+   */
+  public function is_current_month() {
+    date_default_timezone_set('America/New_York');
+    $explodedDate = explode('-', $this->date);
+    $year = $explodedDate[0];
+    $month = $explodedDate[1];
+
+    return (($month == CalendarDate::current_month_number()) && ($year == CalendarDate::current_year()));
   }
 
   // SQL FUNCTIONS =====================================================
@@ -777,14 +829,16 @@ class CalendarDate extends DatabaseObject {
             
             // Adds leading 0s to the day counter for single digit days
             $day_counter_string = $day_counter >= 10 ? $day_counter : '0' . $day_counter;
-            // Change the cells class to market day and give it a dataset 'date' value, then print the day number
-            echo '<td class="market_day" data-date="' . $year . '-' . $month . '-' . $day_counter_string . '">';
+            $full_date_as_string = $year . '-' . $month . '-' . $day_counter_string;
 
-            echo '<a href="' . url_for('calendar/show.php?date=' . $year . '-' . $month . '-' . $day_counter_string) . '" class="show-link">' . $day_counter . '</a>';
+            // Change the cells class to market day and give it a dataset 'date' value, then print the day number
+            echo '<td class="market_day" data-date="' . $full_date_as_string . '">';
+
+            echo '<a href="' . url_for('calendar/show.php?date=' . $full_date_as_string) . '" class="show-link">' . $day_counter . '</a>';
             echo '<span class="day-counter">' . $day_counter . '</span>';
 
             // Adds the Market day text and lists out all vendors
-            $days[$day_counter]->list_as_day();
+            $days[$day_counter]->list_as_day($full_date_as_string);
 
           } 
           // If the [$month][] associative array, does NOT contain a stored object for this day, print the cell as normal
@@ -793,8 +847,9 @@ class CalendarDate extends DatabaseObject {
 
             // Adds leading 0s to the day counter for single digit days
             $day_counter_string = $day_counter >= 10 ? $day_counter : '0' . $day_counter;
+            $full_date_as_string = $year . '-' . $month . '-' . $day_counter_string;
             echo '<td>';
-            echo '<a href="' . url_for('calendar/show.php?date=' . $year . '-' . $month . '-' . $day_counter_string) . '" class="show-link">' . $day_counter . '</a>';
+            echo '<a href="' . url_for('calendar/show.php?date=' . $full_date_as_string) . '" class="show-link">' . $day_counter . '</a>';
             echo '<span class="day-counter">' . $day_counter . '</span>';
             echo '<div class="day-content"></div';
           }
@@ -831,15 +886,33 @@ class CalendarDate extends DatabaseObject {
 
   /**
    * Called in CalendarDate::create_calendar(). Causes this CalendarDate object to list itself as a market day in the HTML calendar table and list out its listed_vendors in a ul if it as any.
+   * 
+   * @param string $full_date_as_string
    */
-  public function list_as_day() {
+  public function list_as_day($full_date_as_string) {
     echo '<div class="day-content">';
     echo "<br>";
     echo "Market day<br>";
     if(count($this->listed_vendors) > 0){
       echo "<ul>";
+      $num_listed_vendors = 1;
       foreach($this->listed_vendors as $vendor_id => $vendor_display_name) {
-        echo '<li><a href="' . url_for('vendors/show.php?id=' . $vendor_id) . '">' . $vendor_display_name . '</a></li>';
+        // Only allow for a set maximum of vendors to be displayed normally
+        if($num_listed_vendors <= CalendarDate::$max_vendors_per_calendar_list) {
+          echo '<li><a href="' . url_for('vendors/show.php?id=' . h($vendor_id)) . '">' . $vendor_display_name . '</a></li>';
+        } 
+        // Afterwards, print the link an change the class of the list items to be hidden
+        else {
+          // If it's the first listed vendor after the maximum, print the link
+          if($num_listed_vendors == CalendarDate::$max_vendors_per_calendar_list + 1) {
+            echo '<a href="' . url_for('calendar/show.php?date=' . h($full_date_as_string)) . '" class="view-full">Show all Vendors.</a>';
+          }
+          // Print the listing with a special hidden class
+          echo '<li class="excess-vendor"><a href="' . url_for('vendors/show.php?id=' . h($vendor_id)) . '">' . $vendor_display_name . '</a></li>';
+        }
+
+        
+        $num_listed_vendors++;
       }
       echo "</ul>";
     }

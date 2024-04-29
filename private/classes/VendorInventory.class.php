@@ -209,9 +209,10 @@ class VendorInventory extends DatabaseObject {
 
 
   /**
-   * Deletes existing inventory_listings from the vendor_inventory table. N Queries
+   * Deletes existing inventory_listings from the vendor_inventory table, along with their images. 2N Queries
    * 
    * @param VendorInventory[] $listings_to_delete the list of VendorInventory objects to be deleted from the database
+   * @param Image[] $inventory_images_by_product_id [OPTIONAL] an associative array of images keyed by their associated product id, to be deleted from the database if they correspond to one of the deletable listings
    * 
    * @return mysqli_result[]|bool[] the query result
    */
@@ -228,7 +229,7 @@ class VendorInventory extends DatabaseObject {
       // Checking if this inventory listing has any images to delete
       if($has_images) {
         if(array_key_exists($inventory_listing->inv_product_id, $inventory_images_by_product_id)) { 
-          $result_array[] = $inventory_images_by_product_id[$inventory_listing->inv_product_id]->delete;
+          $result_array[] = $inventory_images_by_product_id[$inventory_listing->inv_product_id]->delete();
         }
       }
 
@@ -236,6 +237,7 @@ class VendorInventory extends DatabaseObject {
       $result_array[] = $inventory_listing->delete();
     }
 
+    // Returning the array of mysqli_results of the deletions
     return $result_array;
   }
 

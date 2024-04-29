@@ -3,6 +3,10 @@
 // An array of all <td>s with the market_day class
 let allMarketDays = Array.from(document.querySelectorAll('.market_day'));
 
+// Getting the first month, the current month
+let firstMonth = document.querySelector('#calendar table');
+let firstMonthDate = firstMonth.dataset.date;
+
 const loginButton = document.querySelector('#logged-in');
 let vendorName = loginButton.querySelectorAll('a')[1].textContent;
 let vendorPage = loginButton.querySelectorAll('a')[1].href;
@@ -15,6 +19,7 @@ let daysWithoutVendors = [];
 
 // For each market day td
 allMarketDays.forEach(function (el) {
+  let marketDayDate = el.dataset.date;
   let listedVendors = [];
   // Get the content of every li inside each market day td
   el.querySelectorAll('li').forEach(function (el) {
@@ -22,7 +27,8 @@ allMarketDays.forEach(function (el) {
   });
   if(listedVendors.includes(vendorName)){
     daysWithVendors.push(el);
-  } else {
+  } else if(!marketDayDate.includes(firstMonthDate)) {
+    // Adding this table cell element to the list of days the vendor can sign up to if it is not the current month
     daysWithoutVendors.push(el);
   }
 });

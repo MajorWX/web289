@@ -8,10 +8,17 @@
 
 <main id="calendar">
   <h2>Calendar</h2>
+  <?php 
+  // Printing the signup warning for users
+  if($session->is_logged_in()) { ?>
+    <p class="sign-up-warning"><?php echo date('l, F jS', CalendarDate::last_day_in_this_month()); ?>, is the last day to sign up for all <?php echo CalendarDate::next_month_name(); ?> market days.</p>
+    <?php
+  }
+  ?>
 
   <?php
   // Public view
-  if (!$session->has_vendor()) {
+  if (!$session->has_vendor() || $session->is_pending) {
     // Only show dates with vendors
     $calendarDateArray = CalendarDate::find_all_dates_with_vendors();
   }

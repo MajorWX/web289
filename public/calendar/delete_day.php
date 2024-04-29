@@ -4,6 +4,12 @@
 
 $date = h($_GET['date']);
 
+// Making sure there is a get value for the date
+if (!isset($_GET['date'])) {
+  $session->message('Failed to load page, no date provided.');
+  redirect_to(url_for('calendar.php'));
+}
+
 // Checking to make sure only admins can create new market dates
 if(!$session->is_admin_logged_in()){
   $session->message("You do not have permission to delete market days.");
