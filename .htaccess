@@ -1,0 +1,7 @@
+<IfModule mod_headers.c>
+  <FilesMatch ".(php)$">
+    Header set Cache-Control "private"
+  </FilesMatch>
+</IfModule>
+
+ErrorDocument 404 http://localhost/web289/public/not_found.php

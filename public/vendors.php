@@ -71,6 +71,7 @@ $is_admin_view = $session->is_admin_logged_in();
         if($is_admin_view) { 
           echo "<th>&nbsp;</th>";
           echo "<th>&nbsp;</th>";
+          echo "<th>&nbsp;</th>";
         }
       ?>
     </tr>
@@ -82,6 +83,7 @@ $is_admin_view = $session->is_admin_logged_in();
 
       // Admin specific vendor CRUD links
       if($is_admin_view) {
+        echo '<td><a href="' . url_for('/vendors/user_view.php?id=' . $vendor->vendor_id) . '">View As Themselves</a></td>';
         echo '<td><a href="' . url_for('/vendors/edit.php?id=' . $vendor->vendor_id) . '">Edit</a></td>';
         echo '<td><a href="' . url_for('/vendors/delete.php?id=' . $vendor->vendor_id) . '">Delete</a></td>';
       }

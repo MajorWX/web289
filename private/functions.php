@@ -168,7 +168,7 @@ function read_home_content() {
  * @return string[] the contact info with each line as an item in the array
  */
 function read_contact_info() {
-  $filepath = path_to_public() . '../../' . url_for('/home/home-content.txt');
+  $filepath = path_to_public() . '../..' . url_for('/home/home-content.txt');
   $readFile = fopen($filepath, "r");
   $contact_info_content = [];
 

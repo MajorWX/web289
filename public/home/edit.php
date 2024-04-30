@@ -201,7 +201,7 @@ if (is_post_request()) {
         <ul>
           <li>May only have 3 home page images.</li>
           <li>8 MB maximum file size.</li>
-          <li>Ratio of ? wide by ? high works best.</li>
+          <li>Ratio of 3 wide by 2 high works best.</li>
           <li>Will be scaled to fit.</li>
         </ul>
         <dd>
