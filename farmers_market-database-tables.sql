@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 30, 2024 at 04:54 AM
+-- Generation Time: Apr 30, 2024 at 05:07 AM
 -- Server version: 8.0.34-26
 -- PHP Version: 7.4.33
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `calendar` (
   `calendar_id` int NOT NULL,
   `date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `calendar`
@@ -58,7 +58,7 @@ CREATE TABLE `calendar_listing` (
   `listing_id` int NOT NULL,
   `li_calendar_id` int NOT NULL,
   `li_vendor_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `calendar_listing`
@@ -94,7 +94,7 @@ CREATE TABLE `images` (
   `im_vendor_id` int DEFAULT NULL,
   `im_product_id` int DEFAULT NULL,
   `image_purpose` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `images`
@@ -120,7 +120,7 @@ CREATE TABLE `phone_numbers` (
   `ph_vendor_id` int NOT NULL,
   `phone_number` char(10) NOT NULL,
   `phone_type` enum('home','mobile','work') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `phone_numbers`
@@ -140,7 +140,7 @@ CREATE TABLE `products` (
   `product_id` int NOT NULL,
   `prd_category_id` int NOT NULL,
   `product_name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `products`
@@ -162,7 +162,7 @@ INSERT INTO `products` (`product_id`, `prd_category_id`, `product_name`) VALUES
 CREATE TABLE `product_categories` (
   `category_id` int NOT NULL,
   `category_name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `product_categories`
@@ -190,7 +190,7 @@ INSERT INTO `product_categories` (`category_id`, `category_name`) VALUES
 CREATE TABLE `states` (
   `state_id` int NOT NULL,
   `state_name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `states`
@@ -211,7 +211,7 @@ CREATE TABLE `users` (
   `hashed_password` varchar(255) NOT NULL,
   `email` varchar(50) NOT NULL,
   `role` char(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
@@ -241,7 +241,7 @@ CREATE TABLE `vendors` (
   `vd_state_id` int NOT NULL,
   `zip` int NOT NULL,
   `is_pending` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `vendors`
@@ -267,7 +267,7 @@ CREATE TABLE `vendor_inventory` (
   `inv_product_id` int NOT NULL,
   `listing_price` decimal(10,2) DEFAULT NULL,
   `in_stock` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `vendor_inventory`
