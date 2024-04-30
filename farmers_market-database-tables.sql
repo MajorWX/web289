@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.1.4
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Apr 29, 2024 at 01:48 AM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 8.1.6
+-- Host: localhost
+-- Generation Time: Apr 30, 2024 at 04:54 AM
+-- Server version: 8.0.34-26
+-- PHP Version: 7.4.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `farmers_market`
+-- Database: `dbu7plrbumrykh`
 --
 
 -- --------------------------------------------------------
@@ -28,9 +28,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `calendar` (
-  `calendar_id` int(11) NOT NULL,
+  `calendar_id` int NOT NULL,
   `date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `calendar`
@@ -55,10 +55,10 @@ INSERT INTO `calendar` (`calendar_id`, `date`) VALUES
 --
 
 CREATE TABLE `calendar_listing` (
-  `listing_id` int(11) NOT NULL,
-  `li_calendar_id` int(11) NOT NULL,
-  `li_vendor_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `listing_id` int NOT NULL,
+  `li_calendar_id` int NOT NULL,
+  `li_vendor_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `calendar_listing`
@@ -75,7 +75,9 @@ INSERT INTO `calendar_listing` (`listing_id`, `li_calendar_id`, `li_vendor_id`) 
 (74, 23, 2),
 (75, 23, 1),
 (76, 26, 1),
-(77, 29, 1);
+(77, 29, 1),
+(80, 23, 9),
+(81, 23, 10);
 
 -- --------------------------------------------------------
 
@@ -84,24 +86,28 @@ INSERT INTO `calendar_listing` (`listing_id`, `li_calendar_id`, `li_vendor_id`) 
 --
 
 CREATE TABLE `images` (
-  `image_id` int(11) NOT NULL,
-  `im_user_id` int(11) NOT NULL,
+  `image_id` int NOT NULL,
+  `im_user_id` int NOT NULL,
   `content` varchar(255) NOT NULL,
-  `upload_date` datetime NOT NULL DEFAULT current_timestamp(),
-  `alt_text` text DEFAULT NULL,
-  `im_vendor_id` int(11) DEFAULT NULL,
-  `im_product_id` int(11) DEFAULT NULL,
+  `upload_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `alt_text` text,
+  `im_vendor_id` int DEFAULT NULL,
+  `im_product_id` int DEFAULT NULL,
   `image_purpose` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `images`
 --
 
 INSERT INTO `images` (`image_id`, `im_user_id`, `content`, `upload_date`, `alt_text`, `im_vendor_id`, `im_product_id`, `image_purpose`) VALUES
-(2, 1, '24-04-23-02-48-42-$SSU_Kirby_artwork.png', '2024-04-23 02:48:42', '', 1, 0, 'profile'),
-(16, 1, '24-04-25-07-35-33-$Lettuce.jpg', '2024-04-25 07:35:33', '', 1, 3, 'inventory'),
-(17, 1, '24-04-25-07-35-33-$image-of-baby-french-carrots-vegetables-33420562759724_600x600.jpg', '2024-04-25 07:35:33', '', 1, 13, 'inventory');
+(24, 1, '24-04-30-03-42-35-$Eggs_Chicken.jpg', '2024-04-30 03:42:35', '', 1, 4, 'inventory'),
+(25, 1, '24-04-30-03-52-43-$Spinach_Plant_Nourishment_Meal_Fresh_Healthy_Bio.jpg', '2024-04-30 03:52:43', '', 1, 1, 'inventory'),
+(26, 1, '24-04-30-03-57-25-$640px-5495Romaine_lettuce_in_the_Philippines_01.jpg', '2024-04-30 03:57:25', '', 1, 3, 'inventory'),
+(27, 1, '24-04-30-03-59-09-$Carrots_in_Freiburg_-_DSC06503.jpg', '2024-04-30 03:59:09', '', 1, 13, 'inventory'),
+(28, 1, '24-04-30-04-01-54-$1024px-Hill_Farm_Single_Plot.jpg', '2024-04-30 04:01:54', '', 1, 0, 'profile'),
+(29, 1, '24-04-30-04-05-52-$The_USDA_Farmers_Market_on_the_National_Mall_during_the_2023_market_season_is_the_Department’s_own_“living_laboratory”_for_farmers_market_operations_across_the_country_-_.jpg', '2024-04-30 04:05:52', '', 0, 0, 'home_page'),
+(30, 1, '24-04-30-04-07-28-$Peaches_at_a_Farmers_Market_-_49806604067.jpg', '2024-04-30 04:07:28', '', 0, 0, 'home_page');
 
 -- --------------------------------------------------------
 
@@ -110,11 +116,11 @@ INSERT INTO `images` (`image_id`, `im_user_id`, `content`, `upload_date`, `alt_t
 --
 
 CREATE TABLE `phone_numbers` (
-  `phone_id` int(11) NOT NULL,
-  `ph_vendor_id` int(11) NOT NULL,
+  `phone_id` int NOT NULL,
+  `ph_vendor_id` int NOT NULL,
   `phone_number` char(10) NOT NULL,
   `phone_type` enum('home','mobile','work') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `phone_numbers`
@@ -131,10 +137,10 @@ INSERT INTO `phone_numbers` (`phone_id`, `ph_vendor_id`, `phone_number`, `phone_
 --
 
 CREATE TABLE `products` (
-  `product_id` int(11) NOT NULL,
-  `prd_category_id` int(11) NOT NULL,
+  `product_id` int NOT NULL,
+  `prd_category_id` int NOT NULL,
   `product_name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `products`
@@ -154,9 +160,9 @@ INSERT INTO `products` (`product_id`, `prd_category_id`, `product_name`) VALUES
 --
 
 CREATE TABLE `product_categories` (
-  `category_id` int(11) NOT NULL,
+  `category_id` int NOT NULL,
   `category_name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `product_categories`
@@ -182,9 +188,9 @@ INSERT INTO `product_categories` (`category_id`, `category_name`) VALUES
 --
 
 CREATE TABLE `states` (
-  `state_id` int(11) NOT NULL,
+  `state_id` int NOT NULL,
   `state_name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `states`
@@ -200,12 +206,12 @@ INSERT INTO `states` (`state_id`, `state_name`) VALUES
 --
 
 CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL,
+  `user_id` int NOT NULL,
   `display_name` varchar(30) NOT NULL,
   `hashed_password` varchar(255) NOT NULL,
   `email` varchar(50) NOT NULL,
   `role` char(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
@@ -214,7 +220,10 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`user_id`, `display_name`, `hashed_password`, `email`, `role`) VALUES
 (1, 'admin', '$2y$10$FiDPPxQDjnunBcyrVxh7d.1JRO6bO/ZwQsyRyHQly/kvYyhPbtRJO', 'majorwx2@gmail.com', 's'),
 (2, 'TestUser', '$2y$10$FiDPPxQDjnunBcyrVxh7d.1JRO6bO/ZwQsyRyHQly/kvYyhPbtRJO', 'majorwx2@Gmail.com', 'm'),
-(3, 'AsLongAsICanReasonablyMakeIt', '$2y$10$RUEZfaZ0JHkKybYUOsNlsuafsklHyPFrfS1dXtIunPXKZn.sUlNZO', 'majorwx2@Gmail.com', 'm');
+(3, 'AsLongAsICanReasonablyMakeIt', '$2y$10$RUEZfaZ0JHkKybYUOsNlsuafsklHyPFrfS1dXtIunPXKZn.sUlNZO', 'majorwx2@Gmail.com', 'm'),
+(7, 'Userman', '$2y$10$eMM/kKXL6cEhN48zxNlDRePsoezBPEiXFXAV6PDHbQaeB7PTsxePS', 'majorwx2@Gmail.com', 'm'),
+(8, 'VendorUser', '$2y$10$t/aeKHpme9Da/5aDmQP4K.0seV.fkwwimLdxOxO3.dcTJcRjXEg2.', 'majorwx2@Gmail.com', 'm'),
+(9, 'AdminUser', '$2y$10$Lfoy8sIUfwUSd9seWDLzJu.VW5ClpT9724F76fVTYb89Sx0aTQxNa', 'majorwx2@Gmail.com', 's');
 
 -- --------------------------------------------------------
 
@@ -223,24 +232,28 @@ INSERT INTO `users` (`user_id`, `display_name`, `hashed_password`, `email`, `rol
 --
 
 CREATE TABLE `vendors` (
-  `vendor_id` int(11) NOT NULL,
-  `vd_user_id` int(11) DEFAULT NULL,
+  `vendor_id` int NOT NULL,
+  `vd_user_id` int DEFAULT NULL,
   `vendor_display_name` varchar(50) NOT NULL,
   `vendor_desc` text NOT NULL,
   `address` varchar(255) NOT NULL,
   `city` varchar(255) NOT NULL,
-  `vd_state_id` int(11) NOT NULL,
-  `zip` int(5) NOT NULL,
+  `vd_state_id` int NOT NULL,
+  `zip` int NOT NULL,
   `is_pending` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `vendors`
 --
 
 INSERT INTO `vendors` (`vendor_id`, `vd_user_id`, `vendor_display_name`, `vendor_desc`, `address`, `city`, `vd_state_id`, `zip`, `is_pending`) VALUES
-(1, 1, 'Test Vendor', 'Not a real vendor, just a test.', '18 Spring Hollow Ln.', 'Fairview', 1, 28730, 0),
-(2, 3, 'Very Long Vendor Name Test', 'Testing Longways', '18 Spring Hollow Ln.', 'Fairview', 1, 28730, 0);
+(1, 1, 'Reynolds Hill Farms', 'A farm like any other.', '18 Spring Hollow Ln.', 'Fairview', 1, 28730, 0),
+(2, 3, 'Very Long Vendor Name Test', 'Testing Longways', '18 Spring Hollow Ln.', 'Fairview', 1, 28730, 0),
+(9, 7, 'Vendorman', '', '18 Spring Hollow Ln.', 'Fairview', 1, 28730, 0),
+(10, 2, 'Usability Tester', '', '18 Spring Hollow Ln.', 'Fairview', 1, 28730, 0),
+(11, 8, 'Test Farm', '', '18 Spring Hollow Ln.', 'Fairview', 1, 28730, 0),
+(12, 9, 'Admin Farm', '', '18 Spring Hollow Ln.', 'Fairview', 1, 28730, 0);
 
 -- --------------------------------------------------------
 
@@ -249,12 +262,12 @@ INSERT INTO `vendors` (`vendor_id`, `vd_user_id`, `vendor_display_name`, `vendor
 --
 
 CREATE TABLE `vendor_inventory` (
-  `inventory_id` int(11) NOT NULL,
-  `inv_vendor_id` int(11) NOT NULL,
-  `inv_product_id` int(11) NOT NULL,
+  `inventory_id` int NOT NULL,
+  `inv_vendor_id` int NOT NULL,
+  `inv_product_id` int NOT NULL,
   `listing_price` decimal(10,2) DEFAULT NULL,
   `in_stock` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `vendor_inventory`
@@ -349,61 +362,61 @@ ALTER TABLE `vendor_inventory`
 -- AUTO_INCREMENT for table `calendar`
 --
 ALTER TABLE `calendar`
-  MODIFY `calendar_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `calendar_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `calendar_listing`
 --
 ALTER TABLE `calendar_listing`
-  MODIFY `listing_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `listing_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- AUTO_INCREMENT for table `images`
 --
 ALTER TABLE `images`
-  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `image_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `phone_numbers`
 --
 ALTER TABLE `phone_numbers`
-  MODIFY `phone_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `phone_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `product_categories`
 --
 ALTER TABLE `product_categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `category_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `states`
 --
 ALTER TABLE `states`
-  MODIFY `state_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `state_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `vendors`
 --
 ALTER TABLE `vendors`
-  MODIFY `vendor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `vendor_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `vendor_inventory`
 --
 ALTER TABLE `vendor_inventory`
-  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `inventory_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
@@ -420,8 +433,7 @@ ALTER TABLE `calendar_listing`
 -- Constraints for table `images`
 --
 ALTER TABLE `images`
-  ADD CONSTRAINT `images fk user` FOREIGN KEY (`im_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `images fk vendor` FOREIGN KEY (`im_vendor_id`) REFERENCES `vendors` (`vendor_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `images fk user` FOREIGN KEY (`im_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `phone_numbers`

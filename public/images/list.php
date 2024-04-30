@@ -66,7 +66,7 @@ if ($users) {
         // Image ID
         echo "<td>" . $image->image_id . "</td>";
         // Image Path
-        echo "<td>" . $image->content . "</td>";
+        echo '<td style="max-width: 600px; word-wrap: break-word;">' . $image->content . '</td>';
         // Uploader
         echo "<td>" . $users_by_id[$image->im_user_id]->display_name . "</td>";
 

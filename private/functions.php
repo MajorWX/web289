@@ -119,6 +119,10 @@ function read_home_content() {
   // Reading and storing information
   $filepath = path_to_public() . '../../' . url_for('/home/home-content.txt');
   $readFile = fopen($filepath, "r");
+  if(!$readFile) {
+    echo $filepath . " IS NOT VALID!";
+    exit;
+  }
   $about_section_content = [];
   $address_content = [];
   $market_hour_content = [];
@@ -170,6 +174,10 @@ function read_home_content() {
 function read_contact_info() {
   $filepath = path_to_public() . '../..' . url_for('/home/home-content.txt');
   $readFile = fopen($filepath, "r");
+  if(!$readFile) {
+    echo $filepath . " IS NOT VALID!";
+    exit;
+  }
   $contact_info_content = [];
 
   // Going through the file until it reaches contact info

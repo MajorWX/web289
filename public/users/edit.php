@@ -44,6 +44,7 @@ if(is_post_request()) {
   $user->merge_attributes($args);
   $result = $user->save();
   if($result) {
+    $session->display_name = $_SESSION['display_name'] = $user->display_name;
     $session->message("Edited User profile for " . $user->display_name . " successfully.");
     redirect_to(url_for('/users/show.php?id=' . $user->user_id));
   } else {

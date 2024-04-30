@@ -87,6 +87,9 @@ if (is_post_request()) {
   $result = $vendor_result && $new_image_result && $image_deletion_result;
 
   if ($result) {
+    if($vendor_id == $session->active_vendor_id) {
+      $session->active_vendor_name = $_SESSION['active_vendor_name'] = $vendor->vendor_display_name;
+    }
     $session->message('Modified vendor: "' . $vendor->vendor_display_name . '" successfully.');
     redirect_to(url_for('/vendors/user_view.php?id=' . $vendor_id));
   } else {
@@ -129,11 +132,11 @@ if (is_post_request()) {
         foreach ($vendor->phone_numbers as $phone_id => $phone_attributes) {
           // Phone Number
           echo '<dd>';
-          echo '<label for="phone-' . $phone_id . '-number">Phone Number: </label>';
+          echo '<label for="phone-' . $phone_id . '-number" class="show">Phone Number: </label>';
           echo '<input type="text" id="phone-' . $phone_id . '-number" name="vendor[phone_numbers][' . $phone_id . '][phone_number]' . '" value="' . Vendor::phone_to_string($phone_attributes['phone_number']) . '">';
 
           // Phone Type
-          echo ' <label for="phone-' . $phone_id . '-type">Phone Type: </label>';
+          echo ' <label for="phone-' . $phone_id . '-type" class="show">Phone Type: </label>';
           echo '<select id="phone-' . $phone_id . '-type" name="vendor[phone_numbers][' . $phone_id . '][phone_type]">';
           echo '<option value="">Select a phone type:</option>';
 
@@ -160,7 +163,7 @@ if (is_post_request()) {
           echo '</select>';
 
           // Deletion
-          echo ' <label for="phone-' . $phone_id . '-delete">Mark For Deletion: </label>';
+          echo ' <label for="phone-' . $phone_id . '-delete" class="show">Mark For Deletion: </label>';
           echo '<input type="checkbox" id="phone-' . $phone_id . '-delete" name="vendor[phone_numbers][' . $phone_id . '][delete]">';
 
           echo '</dd>';

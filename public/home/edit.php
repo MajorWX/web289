@@ -182,10 +182,12 @@ if (is_post_request()) {
           <dt>Existing Home Page Images</dt>
           <?php
           foreach ($home_page_images as $home_page_image) {
+            echo '<div>';
             $home_page_image->print_image(600, 400);
             echo '<br>';
             echo '<label for="image-' . $home_page_image->image_id . '-delete">Mark Above Image For Deletion: </label>';
             echo '<input type="checkbox" id="image-' . $home_page_image->image_id . '-delete" name="delete_home_image[' . $home_page_image->image_id . ']">';
+            echo '</div>';
           }
           ?>
         </dl>

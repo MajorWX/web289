@@ -269,7 +269,7 @@ main:not(#calendar) .delete-button:hover {
   max-width: none;
 }
 
-dd label {
+dd label:not(.show) {
   left: -9999px;
   position: absolute;
   top: -9999px;
@@ -284,6 +284,19 @@ dd label {
   grid-template-columns: minmax(200px, 950px) auto;
   margin-bottom: 2rem;
   overflow: hidden;
+}
+
+#home .home-image-holder {
+  display: grid;
+  column-gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, auto));
+  margin: 0 auto 10px;
+}
+
+#home .home-image {
+  align-content: center;
+  height: 400px;
+  justify-self: center;
 }
 
 #home section:nth-of-type(2) {

@@ -37,9 +37,13 @@ CalendarDate::randomly_select_featured_vendors([$next_market_day, $upcoming_mark
 
   <?php
   if ($home_page_images) {
+    echo '<div class="home-image-holder">';
     foreach ($home_page_images as $home_page_image) {
+      echo '<div class="home-image">';
       $home_page_image->print_image(600, 400);
+      echo '</div>';
     }
+    echo '</div>';
   }
   ?>
 

@@ -4,7 +4,7 @@
 <?php include(SHARED_PATH . '/public_header.php'); ?>
 
 <main>
-  <h2>404 Page Not Found</h2>
+  <h2>Error 404: Page Not Found</h2>
   <p>The page you were trying to reach does not exist.</p>
 </main>
 
