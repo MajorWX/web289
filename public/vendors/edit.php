@@ -179,7 +179,7 @@ if (is_post_request()) {
     </dl>
 
     <?php
-    if (isset($profile_images)) { ?>
+    if ($profile_images) { ?>
       <dl>
         <dt>Existing Profile Pictures</dt>
         <?php
@@ -207,7 +207,7 @@ if (is_post_request()) {
           <li>Will be scaled to fit.</li>
         </ul>
         <dd>
-          <label for="profile-image"></label>
+          <label for="profile-image">Profile Image: </label>
           <input type="file" id="profile-image" name="profile_image">
         </dd>
       </dl>

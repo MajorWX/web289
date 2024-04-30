@@ -3,7 +3,6 @@
 <?php 
 require_login();
 
-
 $vendor_id = h($_GET['id']);
 $date = h($_GET['date']);
 
