@@ -81,9 +81,9 @@ class Image extends DatabaseObject {
     $image_is_valid = $this->validate_image_file($image_file);
     if(!$image_is_valid) { return false; }
 
-    // Get the name of the image file in the upload file
-    $image_name = date("y-m-d-H-i-s") . '-$' . basename($image_file["name"]);
-
+    // Get the name of the image file in the upload file, cleaning the file name of any ' or " characters
+    $image_name = date("y-m-d-H-i-s") . '-$' . str_replace(array('"', "'", ), "", basename($image_file["name"]));
+    
     // Create the File Path to store the image at, relative to this Class
     $uploadFile = path_to_public() . Image::$public_image_path . $image_name;
 

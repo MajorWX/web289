@@ -38,13 +38,30 @@ class CalendarDate extends DatabaseObject {
   // DATE FUNCTIONS ================================================
 
   /**
+   * Returns this CalendarDate's date as an array [0] = year, [1] = month, [2] = day
+   * 
+   * @return int[] the exploded date
+   */
+  public function explode_this_date() {
+    date_default_timezone_set('America/New_York');
+    $explodedDate = explode('-', $this->date);
+
+    // Removing the 0 in single digit dates
+    if($explodedDate[2] < 10){
+      $explodedDate[2] = substr($explodedDate[2], 1);
+    }
+
+    return $explodedDate;
+  }
+
+  /**
    * Returns a date formatted to SQL datetime, i.e '2024-4-7'.
    * 
    * @param string $date Unformatted date, Unix timestamp
    * 
    * @return string Formatted date
    */
-  static public function to_sql_datetime($date){
+  static public function to_sql_datetime($date) {
     date_default_timezone_set('America/New_York');
     return date("Y-m-d", $date);
   }
@@ -631,7 +648,7 @@ class CalendarDate extends DatabaseObject {
    * 
    * @param string $date a date formatted to SQL datetime, i.e '2024-4-7'
    * 
-   * @return mysqli_result|bool the query result
+   * @return CalendarDate|bool the created CalendarDate object
    */
   static public function create_new_date($date) {
     // Creating a new CalendarDate object
